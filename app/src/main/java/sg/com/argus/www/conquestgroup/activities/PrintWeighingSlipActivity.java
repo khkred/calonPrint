@@ -1,5 +1,7 @@
 package sg.com.argus.www.conquestgroup.activities;
 
+import static java.util.Calendar.getInstance;
+
 import android.Manifest;
 import android.app.Activity;
 import android.bluetooth.BluetoothAdapter;
@@ -8,19 +10,15 @@ import android.bluetooth.BluetoothSocket;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -55,8 +53,6 @@ import java.util.UUID;
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.PrinterCommandTranslator;
-
-import static java.util.Calendar.getInstance;
 
 
 public class PrintWeighingSlipActivity extends AppCompatActivity {

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -100,16 +101,20 @@ public class BTConnection {
                 mmInputStream.wait(1500);
             }
             String data = "";
+           int count = 0;
             while (mmInputStream.available() > 0) {
+
                 final byte[] packetBytes = new byte[mmInputStream.available()];
                 mmInputStream.read(packetBytes);
                 data = data + ";" + new String(packetBytes);
-                if(!data.isEmpty())
-                    break;
+                Log.d("HarishData",data);
+                count++;
             }
+            Log.d("HarishData",""+count);
             if (data == "" && data == null) {
                 return;
             }
+
             BluetoothActivity.receivedData(data);
             closeBT();
         } catch (Exception e3) {

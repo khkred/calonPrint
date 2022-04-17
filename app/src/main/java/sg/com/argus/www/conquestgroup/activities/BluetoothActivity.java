@@ -427,11 +427,11 @@ public class BluetoothActivity extends AppCompatActivity {
 
     }
 
-   // parse weight geeting from bluetooth and show in textview
+   // parse weight greeting from bluetooth and show in textview
     public static void receivedData(String data) {
 
-        String[] data_arry = data.split(";")[1].replace("\r\n", "").split("=");
-        FetchWeight = data_arry[data_arry.length - 2].split("\\+")[1];
+        String[] data_arry = data.split(";")[1].replace("\r\n", "\n").split("\n");
+        FetchWeight = data_arry[data_arry.length - 2].replace(" ","").replaceAll("=0*\\+","").replaceAll("000.","00.");
 
         weightTxt.setText(" " + FetchWeight + " Kg");
         QuintalWeight = SumWeight(startWeight, FetchWeight);
