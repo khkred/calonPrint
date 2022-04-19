@@ -345,6 +345,9 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             String formatted_Date = df.format(c.getTime());
             PrinterCommandTranslator translator = new PrinterCommandTranslator();
 
+            if(WelcomeUserActivity.ngxPrinter == null) {
+                Log.d("HARISHEX","It's null");
+            }
 
             WelcomeUserActivity.ngxPrinter.printText("Date    :" + formatted_Date);
             WelcomeUserActivity.ngxPrinter.printText("Lot Id  :" + lotId);
@@ -411,6 +414,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             print(translator.toMiniLeft("-------------------------------"));
             print(translator.toMiniLeft("\n"));*/
         } catch (Exception excep) {
+            Log.d("HARISHEX",excep.toString());
             Toast.makeText(PrintWeighingSlipActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
