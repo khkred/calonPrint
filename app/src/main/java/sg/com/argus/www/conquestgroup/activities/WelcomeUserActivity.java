@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -48,6 +49,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -65,6 +67,9 @@ import sg.com.argus.www.conquestgroup.models.AppController;
 import sg.com.argus.www.conquestgroup.models.Client;
 import sg.com.argus.www.conquestgroup.models.HttpsTrustManager;
 import sg.com.argus.www.conquestgroup.models.MenuCategories;
+import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
+import sg.com.argus.www.conquestgroup.utils.ESCUtil;
+import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
 public class WelcomeUserActivity extends AppCompatActivity {
     private Button next;
@@ -87,11 +92,15 @@ public class WelcomeUserActivity extends AppCompatActivity {
     ArrayList<String> stringLotArray = new ArrayList<String>();
     private ArrayList<MenuCategories> hotelCnstsesList;
     String feeCategoryId;
+    Handler handler;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_user);
+        init_printer();
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
@@ -130,6 +139,10 @@ public class WelcomeUserActivity extends AppCompatActivity {
         } else {
             showInternetAlert();
         }
+
+        handler = new Handler();
+        initPrinterstyle();
+
 
         try{
             ingxCallback = new INGXCallback() {
@@ -215,6 +228,24 @@ public class WelcomeUserActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void init_printer() {
+        SunmiPrintHelper.getInstance().initSunmiPrinterService(this);
+    }
+
+    private void initPrinterstyle() {
+        if(BluetoothUtil.isBlueToothPrinter){
+            BluetoothUtil.sendData(ESCUtil.init_printer());
+        }
+        else{
+            SunmiPrintHelper.getInstance().initPrinter();
+        }
+
+    }
+
+
+
+
 
     void showInternetAlert() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);

@@ -15,6 +15,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -36,6 +37,10 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.sunmi.peripheral.printer.InnerPrinterCallback;
+import com.sunmi.peripheral.printer.InnerPrinterManager;
+import com.sunmi.peripheral.printer.InnerResultCallback;
+import com.sunmi.peripheral.printer.SunmiPrinterService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,6 +58,9 @@ import java.util.UUID;
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.PrinterCommandTranslator;
+import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
+import sg.com.argus.www.conquestgroup.utils.ESCUtil;
+import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
 
 public class PrintWeighingSlipActivity extends AppCompatActivity {
@@ -86,6 +94,10 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     //Creating a global Doc Variable
     // Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
     Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
+
+
+    //From Sunmi
+    private String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "Windows-1252", "CP866", "CP852", "CP858", "CP874",  "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "utf-8"};
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -188,13 +200,11 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
                     createandDisplayPdf(formattedDate);
-                    sendData();
-                } catch (IOException e) {
-                   // Toast.makeText(PrintWeighingSlipActivity.this, "" + e, Toast.LENGTH_SHORT).show();
-                    e.printStackTrace();
-                }
+                    //sendData();
+                printSampleText();
+
+
             }
         });
       /*  closebtn.setOnClickListener(new View.OnClickListener() {
@@ -236,6 +246,99 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         } catch (Exception ex) {
             Toast.makeText(getApplicationContext(), "Bluetooth Connection Failed!" + ex, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    public void printSampleText() {
+        String content = "Random Text";
+
+        float size = 24;
+        if (!BluetoothUtil.isBlueToothPrinter) {
+            SunmiPrintHelper.getInstance().printText(content, size, true, true, null);
+            SunmiPrintHelper.getInstance().feedPaper();
+        } else {
+            printByBluTooth(content);
+        }
+    }
+
+    private void printByBluTooth(String content) {
+        try {
+            if (true) {
+                BluetoothUtil.sendData(ESCUtil.boldOn());
+            } else {
+                BluetoothUtil.sendData(ESCUtil.boldOff());
+            }
+
+            if (true) {
+                BluetoothUtil.sendData(ESCUtil.underlineWithOneDotWidthOn());
+            } else {
+                BluetoothUtil.sendData(ESCUtil.underlineOff());
+            }
+            int record =17;
+
+            if (record < 17) {
+                BluetoothUtil.sendData(ESCUtil.singleByte());
+                BluetoothUtil.sendData(ESCUtil.setCodeSystemSingle(codeParse(record)));
+            } else {
+                BluetoothUtil.sendData(ESCUtil.singleByteOff());
+                BluetoothUtil.sendData(ESCUtil.setCodeSystem(codeParse(record)));
+            }
+
+            BluetoothUtil.sendData(content.getBytes(mStrings[record]));
+            BluetoothUtil.sendData(ESCUtil.nextLine(3));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+    private byte codeParse(int value) {
+        byte res = 0x00;
+        switch (value) {
+            case 0:
+                res = 0x00;
+                break;
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+                res = (byte) (value + 1);
+                break;
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+            case 11:
+                res = (byte) (value + 8);
+                break;
+            case 12:
+                res = 21;
+                break;
+            case 13:
+                res = 33;
+                break;
+            case 14:
+                res = 34;
+                break;
+            case 15:
+                res = 36;
+                break;
+            case 16:
+                res = 37;
+                break;
+            case 17:
+            case 18:
+            case 19:
+                res = (byte) (value - 17);
+                break;
+            case 20:
+                res = (byte) 0xff;
+                break;
+            default:
+                break;
+        }
+        return (byte) res;
     }
 
     public void openBluetooth() {
@@ -349,38 +452,84 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
                 Log.d("HARISHEX","It's null");
             }
 
-            WelcomeUserActivity.ngxPrinter.printText("Date    :" + formatted_Date);
-            WelcomeUserActivity.ngxPrinter.printText("Lot Id  :" + lotId);
-            WelcomeUserActivity.ngxPrinter.printText("CA Name :" + cName);
-            WelcomeUserActivity.ngxPrinter.printText("FARMER NAME     :");
-            WelcomeUserActivity.ngxPrinter.printText( SName);
-            WelcomeUserActivity.ngxPrinter.printText("COMMODITY:" + Com);
-            WelcomeUserActivity.ngxPrinter.printText("TRADER   :" + tName);
-            WelcomeUserActivity.ngxPrinter.printText("ACTUAL NO OF BAGS  :" + roundOffTo0DecPlaces(ActualNoofBags));
-            WelcomeUserActivity.ngxPrinter.printText("TOTAL NO OF BAGS   :" + noOfBag);
-            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-            WelcomeUserActivity.ngxPrinter.printText("SERIAL NO" + "        QUANTITY(Kg)");
-            for (int i = 0; i < dr.length; i++) {
-                k++;
-                WelcomeUserActivity.ngxPrinter.printText("    " + k + "              " + dr[i]);
-            }
-            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-            WelcomeUserActivity.ngxPrinter.printText("Gross Wt (Qt):     " + QuintalWeight);
-            WelcomeUserActivity.ngxPrinter.printText("Bag Wt (Qt)  :     " + roundOffTo3DecPlaces(BagsWeightValue / 100));
-            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-            WelcomeUserActivity.ngxPrinter.printText("Net Wt (Qt)  :     " + roundOffTo5DecPlaces(NetWeightValue / 100));
-            WelcomeUserActivity.ngxPrinter.printText("Lot Amt (Rs) :     " + lRate);
-            WelcomeUserActivity.ngxPrinter.printText("Net Amt (Rs) :     " + netAmt);
-            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-            WelcomeUserActivity.ngxPrinter.printText("Sign of Farmer");
-            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-            WelcomeUserActivity.ngxPrinter.printText("Sign of Dadwal");
-            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-            WelcomeUserActivity.ngxPrinter.lineFeed(1);
+            InnerPrinterCallback innerPrinterCallback = new InnerPrinterCallback(){
+
+                @Override
+                protected void onConnected(SunmiPrinterService service){
+//Here is the remote service interface handle after the binding service has been successfully connected
+
+                    try {
+                        service.printText("content to printer/n", new InnerResultCallback() {
+                            @Override
+                            public void onRunResult(boolean isSuccess) throws RemoteException {
+                                Log.d("HARISH_PRINT","Success");
+
+                            }
+
+                            @Override
+                            public void onReturnString(String result) throws RemoteException {
+                                Log.d("HARISH_PRINT","Success");
+
+                            }
+
+                            @Override
+                            public void onRaiseException(int code, String msg) throws RemoteException {
+                                Log.d("HARISH_PRINT","Success");
+
+                            }
+
+                            @Override
+                            public void onPrintResult(int code, String msg) throws RemoteException {
+
+
+                            }
+                        });
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
+                }
+//Supported print methods can be called through service
+                @Override
+                protected void onDisconnected() {
+//The method will be called back after the service is disconnected. A reconnection strategy is recommended here
+                }
+            };
+
+            boolean result = InnerPrinterManager.getInstance().bindService(this,innerPrinterCallback);
+
+
+//            WelcomeUserActivity.ngxPrinter.printText("Date    :" + formatted_Date);
+//            WelcomeUserActivity.ngxPrinter.printText("Lot Id  :" + lotId);
+//            WelcomeUserActivity.ngxPrinter.printText("CA Name :" + cName);
+//            WelcomeUserActivity.ngxPrinter.printText("FARMER NAME     :");
+//            WelcomeUserActivity.ngxPrinter.printText( SName);
+//            WelcomeUserActivity.ngxPrinter.printText("COMMODITY:" + Com);
+//            WelcomeUserActivity.ngxPrinter.printText("TRADER   :" + tName);
+//            WelcomeUserActivity.ngxPrinter.printText("ACTUAL NO OF BAGS  :" + roundOffTo0DecPlaces(ActualNoofBags));
+//            WelcomeUserActivity.ngxPrinter.printText("TOTAL NO OF BAGS   :" + noOfBag);
+//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
+//            WelcomeUserActivity.ngxPrinter.printText("SERIAL NO" + "        QUANTITY(Kg)");
+//            for (int i = 0; i < dr.length; i++) {
+//                k++;
+//                WelcomeUserActivity.ngxPrinter.printText("    " + k + "              " + dr[i]);
+//            }
+//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
+//            WelcomeUserActivity.ngxPrinter.printText("Gross Wt (Qt):     " + QuintalWeight);
+//            WelcomeUserActivity.ngxPrinter.printText("Bag Wt (Qt)  :     " + roundOffTo3DecPlaces(BagsWeightValue / 100));
+//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
+//            WelcomeUserActivity.ngxPrinter.printText("Net Wt (Qt)  :     " + roundOffTo5DecPlaces(NetWeightValue / 100));
+//            WelcomeUserActivity.ngxPrinter.printText("Lot Amt (Rs) :     " + lRate);
+//            WelcomeUserActivity.ngxPrinter.printText("Net Amt (Rs) :     " + netAmt);
+//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
+//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
+//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
+//            WelcomeUserActivity.ngxPrinter.printText("Sign of Farmer");
+//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
+//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
+//            WelcomeUserActivity.ngxPrinter.printText("Sign of Dadwal");
+//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
+//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
+//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
 
 
 
