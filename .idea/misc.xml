@@ -3,14 +3,19 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/toolbar_style.xml" value="0.1975" />
         <entry key="app/src/main/res/layout/activity_bluetooth.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_gateentry.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/activity_print_weighing_slip.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_welcome_user.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/alert_exit.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/delete_bag.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_selection.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/item_religion.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/toolbar.xml" value="0.36041666666666666" />
       </map>
     </option>
   </component>

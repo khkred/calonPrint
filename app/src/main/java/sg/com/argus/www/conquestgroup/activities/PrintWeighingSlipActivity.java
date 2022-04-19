@@ -83,6 +83,11 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private static final int REQUEST_CONNECT_DEVICE = 1;
     List<BluetoothDevice> devices = new ArrayList<>();
 
+    //Creating a global Doc Variable
+    // Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
+    Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_weighing_slip);
@@ -406,7 +411,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             print(translator.toMiniLeft("-------------------------------"));
             print(translator.toMiniLeft("\n"));*/
         } catch (Exception excep) {
-            Toast.makeText(PrintWeighingSlipActivity.this, "Somethnig went wrong", Toast.LENGTH_SHORT).show();
+            Toast.makeText(PrintWeighingSlipActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -500,8 +505,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     public void createandDisplayPdf(String date) {
 
-        // Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
-        Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
         Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
         try {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WeighingScale";

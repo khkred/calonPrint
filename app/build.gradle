@@ -32,15 +32,16 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:26.0.0'
-    implementation 'com.android.support:design:26.0.0'
-    implementation 'com.android.support:cardview-v7:26.0.0'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:design:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
     implementation 'com.github.castorflex.smoothprogressbar:library:1.0.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'
-    implementation 'org.apache.httpcomponents:httpcore:4.3.2'
-    implementation 'com.google.code.gson:gson:1.7.2'
-    testImplementation 'junit:junit:4.12'
+    implementation 'org.apache.httpcomponents:httpcore:4.4.10'
+    implementation 'com.sunmi:printerlibrary:1.0.16'
+    implementation 'com.google.code.gson:gson:2.8.6'
+    testImplementation 'junit:junit:4.13.2'
     implementation 'com.itextpdf:itextpdf:5.0.6'
     implementation files('libs/ngx_nix_sdk_1.0.1.jar')
     implementation 'com.intuit.sdp:sdp-android:1.0.3'
