@@ -68,6 +68,7 @@ import sg.com.argus.www.conquestgroup.models.Client;
 import sg.com.argus.www.conquestgroup.models.HttpsTrustManager;
 import sg.com.argus.www.conquestgroup.models.MenuCategories;
 import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
+import sg.com.argus.www.conquestgroup.utils.DialogScreens;
 import sg.com.argus.www.conquestgroup.utils.ESCUtil;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
@@ -659,14 +660,15 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
-        Intent i = new Intent(WelcomeUserActivity.this, LoginActivity.class);
-        i.putExtra("u_name", loginid.toString());
-        i.putExtra("u_pass", password.toString());
-        i.putExtra("u_orgid", orgid.toString());
-        i.putExtra("opr_id", oprId.toString());
-        startActivity(i);
-        finish();
+
+        DialogScreens.show_exitAlert(WelcomeUserActivity.this);
+//        Intent i = new Intent(WelcomeUserActivity.this, LoginActivity.class);
+//        i.putExtra("u_name", loginid.toString());
+//        i.putExtra("u_pass", password.toString());
+//        i.putExtra("u_orgid", orgid.toString());
+//        i.putExtra("opr_id", oprId.toString());
+//        startActivity(i);
+
     }
 }
 

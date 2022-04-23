@@ -53,6 +53,7 @@ import sg.com.argus.www.conquestgroup.adapters.Stateadapter;
 import sg.com.argus.www.conquestgroup.models.AppController;
 import sg.com.argus.www.conquestgroup.models.Client;
 import sg.com.argus.www.conquestgroup.models.HttpsTrustManager;
+import sg.com.argus.www.conquestgroup.utils.DialogScreens;
 
 public class LoginActivity extends AppCompatActivity {
     private Button login, Cancel;
@@ -142,7 +143,8 @@ public class LoginActivity extends AppCompatActivity {
         Cancel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                show_exitAlert();
+                DialogScreens.show_exitAlert(LoginActivity.this);
+
             }
         });
 
@@ -152,7 +154,9 @@ public class LoginActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        show_exitAlert();
+
+        DialogScreens.show_exitAlert(LoginActivity.this);
+
     }
 
     void showInternetAlert() {
@@ -177,42 +181,6 @@ public class LoginActivity extends AppCompatActivity {
         // Setting the title manually
         alert.setTitle("Internet Connection");
         alert.show();
-
-    }
-
-    void show_exitAlert() {
-        LayoutInflater layoutInflater = LayoutInflater.from(LoginActivity.this);
-        View promptView = layoutInflater.inflate(R.layout.dialog_exit, null);
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                LoginActivity.this);
-
-        final Button no = (Button) promptView
-                .findViewById(R.id.b_exit_no);
-
-        final Button yes = (Button) promptView
-                .findViewById(R.id.b_exit_yes);
-
-        alertDialogBuilder.setView(promptView).setCancelable(true);
-
-        final AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // cancel dialog
-                alert.cancel();
-            }
-        });
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  getIntent().setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                android.os.Process.killProcess(android.os.Process.myPid());
-                // finish();
-
-            }
-        });
 
     }
 
