@@ -75,8 +75,6 @@ import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 public class WelcomeUserActivity extends AppCompatActivity {
     private Button next;
     private final static String TAG = WelcomeUserActivity.class.getSimpleName();
-    public static NGXPrinter ngxPrinter = NGXPrinter.getNgxPrinterInstance();
-    private INGXCallback ingxCallback;
 
     private boolean mConnected = false;
     ConnectionDetector cd;
@@ -145,45 +143,15 @@ public class WelcomeUserActivity extends AppCompatActivity {
         initPrinterstyle();
 
 
-        try{
-            ingxCallback = new INGXCallback() {
-                @Override
-                public void onRunResult(boolean isSuccess) {
-                    Log.i("NGX", "onRunResult:" + isSuccess);
-                }
 
-                @Override
-                public void onReturnString(String result) {
-                    Log.i("NGX", "onReturnString:" + result);
-                }
 
-                @Override
-                public void onRaiseException(int code, String msg) {
-                    Log.i("NGX", "onRaiseException:" + code + ":" + msg);
-                }
-            };
-            ngxPrinter.initService(this,ingxCallback);
-        }
-        catch (Exception e)
-        {
+        logout.setOnClickListener(v -> {
+            Intent intent1 = new Intent(WelcomeUserActivity.this, LoginActivity.class);
+            startActivity(intent1);
 
-        }
-
-        logout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(WelcomeUserActivity.this, LoginActivity.class);
-                startActivity(intent);
-                ngxPrinter.onActivityDestroy();
-                finish();
-            }
+            finish();
         });
-        searchbtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ShowData(searchLotDetails.getText().toString());
-            }
-        });
+        searchbtn.setOnClickListener(v -> ShowData(searchLotDetails.getText().toString()));
         searchLotDetails.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
@@ -192,41 +160,37 @@ public class WelcomeUserActivity extends AppCompatActivity {
                 return false;
             }
         });
-        next.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    if (sellerName.getText().toString().equals("")) {
-                        Toast.makeText(WelcomeUserActivity.this, "Please Search Lot Details First", Toast.LENGTH_SHORT).show();
-                    } else {
-                        BagTypeRelation();
-                        Intent i = new Intent(WelcomeUserActivity.this, BluetoothActivity.class);
-                        i.putExtra("u_name", loginid.toString());
-                        i.putExtra("u_pass", password.toString());
-                        i.putExtra("u_orgid", orgid.toString());
-                        i.putExtra("u_id", userid.toString());
-                        i.putExtra("opr_id", oprId);
-                        i.putExtra("lotId", lotId.toString());
-                        i.putExtra("bagTypeId", bagTypeId.toString());
-                        i.putExtra("commodityName", commodity.getText().toString());
-                        i.putExtra("farmerName", sellerName.getText().toString());
-                        i.putExtra("caName", caName.toString());
-                        i.putExtra("lotRate", lotRate.toString());
-                        i.putExtra("traderName", traderName.toString());
-                        i.putExtra("actualBags", actualBags.toString());
-                        i.putExtra("newBagTypeValue", Double.toString(newbagTypeValue));
-                        i.putExtra("BagTypeDesc", bagType.getSelectedItem().toString());
-                        i.putExtra("feeCategoryId", feeCategoryId.toString());
-                        startActivity(i);
-                        finish();
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(WelcomeUserActivity.this, "BagType not selected", Toast.LENGTH_SHORT).show();
+        next.setOnClickListener(v -> {
+            try {
+                if (sellerName.getText().toString().equals("")) {
+                    Toast.makeText(WelcomeUserActivity.this, "Please Search Lot Details First", Toast.LENGTH_SHORT).show();
+                } else {
+                    BagTypeRelation();
+                    Intent i = new Intent(WelcomeUserActivity.this, BluetoothActivity.class);
+                    i.putExtra("u_name", loginid.toString());
+                    i.putExtra("u_pass", password.toString());
+                    i.putExtra("u_orgid", orgid.toString());
+                    i.putExtra("u_id", userid.toString());
+                    i.putExtra("opr_id", oprId);
+                    i.putExtra("lotId", lotId.toString());
+                    i.putExtra("bagTypeId", bagTypeId.toString());
+                    i.putExtra("commodityName", commodity.getText().toString());
+                    i.putExtra("farmerName", sellerName.getText().toString());
+                    i.putExtra("caName", caName.toString());
+                    i.putExtra("lotRate", lotRate.toString());
+                    i.putExtra("traderName", traderName.toString());
+                    i.putExtra("actualBags", actualBags.toString());
+                    i.putExtra("newBagTypeValue", Double.toString(newbagTypeValue));
+                    i.putExtra("BagTypeDesc", bagType.getSelectedItem().toString());
+                    i.putExtra("feeCategoryId", feeCategoryId.toString());
+                    startActivity(i);
+                    finish();
                 }
-
+            } catch (Exception e) {
+                e.printStackTrace();
+                Toast.makeText(WelcomeUserActivity.this, "BagType not selected", Toast.LENGTH_SHORT).show();
             }
+
         });
     }
 
