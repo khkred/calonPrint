@@ -70,7 +70,7 @@
 
 
         <Button
-            android:id="@+id/b_exit_no"
+            android:id="@+id/exit_no_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@android:color/transparent"
@@ -88,7 +88,7 @@
 
 
         <Button
-            android:id="@+id/b_exit_yes"
+            android:id="@+id/exit_yes_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:textSize="@dimen/textsize_14sp"

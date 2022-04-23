@@ -15,20 +15,20 @@
         android:src="@mipmap/ic_launcher" />
 
     <TextView
-        android:id="@+id/tv_exit_text"
+        android:id="@+id/exit_prompt_textview"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@id/iv_exit_logo"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="10dp"
-        android:text="@string/do_you_really_want_to_exit"
+        android:text="@string/exit_dialog_prompt"
         android:textAllCaps="false"
         android:textSize="@dimen/textsize_14sp"
         android:textColor="@color/colorPrimaryDark"
         android:textStyle="normal" />
 
     <RelativeLayout
-        android:layout_below="@id/tv_exit_text"
+        android:layout_below="@id/exit_prompt_textview"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"
         android:layout_width="match_parent"
@@ -39,7 +39,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/tv_exit_text"
+        android:layout_below="@id/exit_prompt_textview"
         android:layout_marginTop="10dp"
         android:background="@android:color/transparent"
         android:weightSum="1"
@@ -47,7 +47,7 @@
 
 
         <Button
-            android:id="@+id/b_exit_no"
+            android:id="@+id/exit_no_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:background="@android:color/transparent"
@@ -65,7 +65,7 @@
 
 
         <Button
-            android:id="@+id/b_exit_yes"
+            android:id="@+id/exit_yes_btn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:textSize="@dimen/textsize_14sp"

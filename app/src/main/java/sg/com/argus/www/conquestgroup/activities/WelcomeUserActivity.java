@@ -1,8 +1,8 @@
 package sg.com.argus.www.conquestgroup.activities;
 
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -17,39 +17,30 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.NetworkError;
-import com.android.volley.NoConnectionError;
-import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
-import com.android.volley.ServerError;
-import com.android.volley.TimeoutError;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.ngx.mp100sdk.Intefaces.INGXCallback;
-import com.ngx.mp100sdk.NGXPrinter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -61,10 +52,8 @@ import java.util.Map;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
-import sg.com.argus.www.conquestgroup.adapters.Stateadapter;
 import sg.com.argus.www.conquestgroup.adapters.Stateadapter1;
 import sg.com.argus.www.conquestgroup.models.AppController;
-import sg.com.argus.www.conquestgroup.models.Client;
 import sg.com.argus.www.conquestgroup.models.HttpsTrustManager;
 import sg.com.argus.www.conquestgroup.models.MenuCategories;
 import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
@@ -81,10 +70,10 @@ public class WelcomeUserActivity extends AppCompatActivity {
     Boolean isInternetPresent = false;
     ImageView searchbtn;
     private AutoCompleteTextView searchLotDetails;
-    private String username,loginid, password, orgid, userid, bagTypeId, lotId, caName, lotRate, traderName, actualBags;
+    private String username, loginid, password, orgid, userid, bagTypeId, lotId, caName, lotRate, traderName, actualBags;
     private SharedPreferences savedata;
     private TextView sellerName, commodity, lotPrice, tradderName, welcomeuser, logout, onlyBagWeight;
-    private Spinner bagType,fee_category;
+    private Spinner bagType, fee_category;
     private double bagtypecal, newbagTypeValue;
     private String bagtypeRel;
     String oprId;
@@ -92,7 +81,6 @@ public class WelcomeUserActivity extends AppCompatActivity {
     private ArrayList<MenuCategories> hotelCnstsesList;
     String feeCategoryId;
     Handler handler;
-
 
 
     @Override
@@ -143,13 +131,8 @@ public class WelcomeUserActivity extends AppCompatActivity {
         initPrinterstyle();
 
 
-
-
         logout.setOnClickListener(v -> {
-            Intent intent1 = new Intent(WelcomeUserActivity.this, LoginActivity.class);
-            startActivity(intent1);
-
-            finish();
+            showLogoutAlert(WelcomeUserActivity.this,LoginActivity.class);
         });
         searchbtn.setOnClickListener(v -> ShowData(searchLotDetails.getText().toString()));
         searchLotDetails.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -194,22 +177,58 @@ public class WelcomeUserActivity extends AppCompatActivity {
         });
     }
 
+    public void showLogoutAlert(Context context, Class<?> parentClass) {
+
+        //Inflate Logout AlertDialog
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View logoutPromptView = layoutInflater.inflate(R.layout.dialog_logout, null);
+
+        final  Button logoutNoBtn = logoutPromptView.findViewById(R.id.logout_no_btn);
+        final Button logoutYesBtn = logoutPromptView.findViewById(R.id.logout_yes_btn);
+        final TextView logoutTextPrompt = logoutPromptView.findViewById(R.id.logout_prompt_textview);
+
+        logoutTextPrompt.setText(R.string.logout_dialog_prompt);
+
+        /**
+         * Alert Dialog Builder
+         */
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+        alertDialogBuilder.setView(logoutPromptView).setCancelable(true);
+
+        final AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+
+        logoutNoBtn.setOnClickListener(v -> {
+            // cancel dialog
+            alert.cancel();
+        });
+
+        logoutYesBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(context,parentClass);
+            intent.putExtra("screen", "1");
+            startActivity(intent);
+
+            finish();
+
+        });
+
+
+
+    }
+
+
     private void init_printer() {
         SunmiPrintHelper.getInstance().initSunmiPrinterService(this);
     }
 
     private void initPrinterstyle() {
-        if(BluetoothUtil.isBlueToothPrinter){
+        if (BluetoothUtil.isBlueToothPrinter) {
             BluetoothUtil.sendData(ESCUtil.init_printer());
-        }
-        else{
+        } else {
             SunmiPrintHelper.getInstance().initPrinter();
         }
 
     }
-
-
-
 
 
     void showInternetAlert() {
@@ -240,20 +259,20 @@ public class WelcomeUserActivity extends AppCompatActivity {
     public void getfeecategory(String url) {
         hotelCnstsesList = new ArrayList<MenuCategories>();
         final Map<String, String> postParameters = new HashMap<String, String>();
-        postParameters.put("orgId",orgid);
-        postParameters.put("oprId",oprId);
+        postParameters.put("orgId", orgid);
+        postParameters.put("oprId", oprId);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(postParameters),
                 new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject jsonObject) {
                         // TODO Auto-generated method stub
-                        Log.e("jsonObject123","jsonObject"+jsonObject);
+                        Log.e("jsonObject123", "jsonObject" + jsonObject);
 
                         try {
 
                             String result = jsonObject.getString("statusMsg");
-                            if(result.equals("S")){
+                            if (result.equals("S")) {
                                 JSONArray array = jsonObject.getJSONArray("listFeeCategoryForAutoSaleModel");
                                 if (array.length() != 0) {
                                     for (int i = 0; i < array.length(); i++) {
@@ -261,7 +280,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                                         final String feeCategoryId = job.getString("feeCategoryId");
                                         String feeCategoryName = job.getString("feeCategoryName");
 
-                                        MenuCategories offersCnsts = new MenuCategories(feeCategoryId,feeCategoryName);
+                                        MenuCategories offersCnsts = new MenuCategories(feeCategoryId, feeCategoryName);
                                         offersCnsts.setFeeCategoryId(feeCategoryId);
                                         offersCnsts.setFeeCategoryName(feeCategoryName);
                                         hotelCnstsesList.add(offersCnsts);
@@ -272,7 +291,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                                             MenuCategories constants = (MenuCategories) hotelCnstsesList.get(position);
                                             feeCategoryId = constants.getFeeCategoryId();
-                                            Log.e("feeCategoryId","feeCategoryId"+feeCategoryId);
+                                            Log.e("feeCategoryId", "feeCategoryId" + feeCategoryId);
 
                                         }
 
@@ -281,7 +300,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                                         }
                                     });
                                 }
-                            }else {
+                            } else {
                                 Toast.makeText(WelcomeUserActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
                             }
                         } catch (Exception e) {
@@ -305,8 +324,8 @@ public class WelcomeUserActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> postParameters = new HashMap<String, String>();
-                postParameters.put("orgId",orgid);
-                postParameters.put("oprId",oprId);
+                postParameters.put("orgId", orgid);
+                postParameters.put("oprId", oprId);
                 return postParameters;
             }
         };
@@ -338,7 +357,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
             try {
                 HttpsTrustManager.allowAllSSL();
                 String urlParameters = "orgId=" + orgid + "&oprId=" + oprId;
-                Log.e("params",""+urlParameters);
+                Log.e("params", "" + urlParameters);
                 byte[] postData = new byte[0];
 
                 postData = urlParameters.getBytes(StandardCharsets.UTF_8);
@@ -355,7 +374,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                 int respo = connection.getResponseCode();
                 String res = connection.getResponseMessage();
 
-                Log.e("ressss","ressss==>"+res);
+                Log.e("ressss", "ressss==>" + res);
                 BufferedReader br;
                 if (respo != 200) {
 
@@ -379,7 +398,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String result) {
-            Log.e("result","result"+result);
+            Log.e("result", "result" + result);
             hotelCnstsesList = new ArrayList<MenuCategories>();
             p.dismiss();
             try {
@@ -391,7 +410,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                         JSONObject json = Jarray.getJSONObject(i);
                         String feeCategoryId = json.getString("feeCategoryId");
                         String feeCategoryName = json.getString("feeCategoryName");
-                        MenuCategories offersCnsts = new MenuCategories(feeCategoryId,feeCategoryName);
+                        MenuCategories offersCnsts = new MenuCategories(feeCategoryId, feeCategoryName);
                         offersCnsts.setFeeCategoryId(feeCategoryId);
                         offersCnsts.setFeeCategoryName(feeCategoryName);
                         hotelCnstsesList.add(offersCnsts);
@@ -402,7 +421,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                             MenuCategories constants = (MenuCategories) hotelCnstsesList.get(position);
                             feeCategoryId = constants.getFeeCategoryId();
-                            Log.e("feeCategoryId","feeCategoryId"+feeCategoryId);
+                            Log.e("feeCategoryId", "feeCategoryId" + feeCategoryId);
 
                         }
 
@@ -423,6 +442,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
         }
     }
+
     private class GetLotIdDetails extends AsyncTask<String, Void, String[]> {
         String[] text = {"", ""};
         ProgressDialog p = new ProgressDialog(WelcomeUserActivity.this);
@@ -625,7 +645,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        DialogScreens.show_exitAlert(WelcomeUserActivity.this);
+        DialogScreens.showExitAlert(WelcomeUserActivity.this);
 //        Intent i = new Intent(WelcomeUserActivity.this, LoginActivity.class);
 //        i.putExtra("u_name", loginid.toString());
 //        i.putExtra("u_pass", password.toString());

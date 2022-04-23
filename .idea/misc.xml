@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/layout/alert_exit.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/delete_bag.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/dialog_logout.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_selection.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/item_religion.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/toolbar.xml" value="0.36041666666666666" />

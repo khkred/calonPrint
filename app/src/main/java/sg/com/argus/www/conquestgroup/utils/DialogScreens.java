@@ -11,19 +11,20 @@ import sg.com.argus.www.conquestgroup.R;
 
 public class DialogScreens {
 
-    public static void show_exitAlert(Context context) {
+
+    public static void showExitAlert(Context context) {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View promptView = layoutInflater.inflate(R.layout.dialog_exit, null);
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
 
         final Button no = (Button) promptView
-                .findViewById(R.id.b_exit_no);
+                .findViewById(R.id.exit_no_btn);
 
         final Button yes = (Button) promptView
-                .findViewById(R.id.b_exit_yes);
+                .findViewById(R.id.exit_yes_btn);
 
         final TextView txt = (TextView) promptView
-                .findViewById(R.id.tv_exit_text);
+                .findViewById(R.id.exit_prompt_textview);
 
         txt.setText(R.string.exit_dialog_prompt);
 
@@ -32,12 +33,9 @@ public class DialogScreens {
         final AlertDialog alert = alertDialogBuilder.create();
         alert.show();
 
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // cancel dialog
-                alert.cancel();
-            }
+        no.setOnClickListener(v -> {
+            // cancel dialog
+            alert.cancel();
         });
         yes.setOnClickListener(new View.OnClickListener() {
             @Override
