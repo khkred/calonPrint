@@ -68,7 +68,6 @@ public class LoginActivity extends AppCompatActivity {
     String apmcId = "72";
 
     private Spinner spin_states;
-    private RelativeLayout rl_spin;
     private ArrayList<Client> hotelCnstsesList;
     String GetLogid;
 
@@ -85,7 +84,7 @@ public class LoginActivity extends AppCompatActivity {
         login = (Button) findViewById(R.id.LogIn);
         Cancel = (Button) findViewById(R.id.Cancel);
         spin_states = (Spinner) findViewById(R.id.spin_states);
-        rl_spin = (RelativeLayout) findViewById(R.id.rl_spin);
+        RelativeLayout rl_spin = (RelativeLayout) findViewById(R.id.rl_spin);
 
         Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
@@ -95,14 +94,16 @@ public class LoginActivity extends AppCompatActivity {
         loginPrefsEditor = loginPreferences.edit();
 
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
-        if (saveLogin == true) {
+        if (saveLogin) {
             loginid.setText(loginPreferences.getString("username", ""));
             userpassword.setText(loginPreferences.getString("password", ""));
             saveLoginCheckBox.setChecked(true);
         }
         GetLogid = getIntent().getStringExtra("screen");
         Log.e("GetLogid","GetLogid"+GetLogid);
+
         if(GetLogid.equalsIgnoreCase("1")){
+
             rl_spin.setVisibility(View.GONE);
         }else if(GetLogid.equalsIgnoreCase("2")){
              GetStates("https://train.enam.gov.in/NamWebSrv/rest/MastersUpdate/getStates");

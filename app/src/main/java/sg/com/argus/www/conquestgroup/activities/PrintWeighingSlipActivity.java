@@ -91,9 +91,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private static final int REQUEST_CONNECT_DEVICE = 1;
     List<BluetoothDevice> devices = new ArrayList<>();
 
-    //Creating a global Doc Variable
-    // Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
-    Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
 
 
     //From Sunmi
@@ -201,8 +198,11 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                     createandDisplayPdf(formattedDate);
-                    //sendData();
-                printSampleText();
+                try {
+                    sendData();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
 
             }
@@ -228,6 +228,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         }
     }
 
+
+
     public void findBluetooth() {
         try {
             bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
@@ -248,12 +250,11 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         }
     }
 
-    public void printSampleText() {
-        String content = "Random Text";
+    public void printSampleText(String content) {
 
         float size = 24;
         if (!BluetoothUtil.isBlueToothPrinter) {
-            SunmiPrintHelper.getInstance().printText(content, size, true, true, null);
+            SunmiPrintHelper.getInstance().printText(content, size, true, false, null);
             SunmiPrintHelper.getInstance().feedPaper();
         } else {
             printByBluTooth(content);
@@ -448,89 +449,44 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             String formatted_Date = df.format(c.getTime());
             PrinterCommandTranslator translator = new PrinterCommandTranslator();
 
-            if(WelcomeUserActivity.ngxPrinter == null) {
-                Log.d("HARISHEX","It's null");
-            }
+            StringBuilder printString = new StringBuilder();
 
-            InnerPrinterCallback innerPrinterCallback = new InnerPrinterCallback(){
-
-                @Override
-                protected void onConnected(SunmiPrinterService service){
-//Here is the remote service interface handle after the binding service has been successfully connected
-
-                    try {
-                        service.printText("content to printer/n", new InnerResultCallback() {
-                            @Override
-                            public void onRunResult(boolean isSuccess) throws RemoteException {
-                                Log.d("HARISH_PRINT","Success");
-
-                            }
-
-                            @Override
-                            public void onReturnString(String result) throws RemoteException {
-                                Log.d("HARISH_PRINT","Success");
-
-                            }
-
-                            @Override
-                            public void onRaiseException(int code, String msg) throws RemoteException {
-                                Log.d("HARISH_PRINT","Success");
-
-                            }
-
-                            @Override
-                            public void onPrintResult(int code, String msg) throws RemoteException {
-
-
-                            }
-                        });
-                    } catch (RemoteException e) {
-                        e.printStackTrace();
-                    }
-                }
-//Supported print methods can be called through service
-                @Override
-                protected void onDisconnected() {
-//The method will be called back after the service is disconnected. A reconnection strategy is recommended here
-                }
-            };
-
-            boolean result = InnerPrinterManager.getInstance().bindService(this,innerPrinterCallback);
-
+            printString.append("Date    :").append(formatted_Date).append("\n");
 
 //            WelcomeUserActivity.ngxPrinter.printText("Date    :" + formatted_Date);
-//            WelcomeUserActivity.ngxPrinter.printText("Lot Id  :" + lotId);
-//            WelcomeUserActivity.ngxPrinter.printText("CA Name :" + cName);
-//            WelcomeUserActivity.ngxPrinter.printText("FARMER NAME     :");
-//            WelcomeUserActivity.ngxPrinter.printText( SName);
-//            WelcomeUserActivity.ngxPrinter.printText("COMMODITY:" + Com);
-//            WelcomeUserActivity.ngxPrinter.printText("TRADER   :" + tName);
-//            WelcomeUserActivity.ngxPrinter.printText("ACTUAL NO OF BAGS  :" + roundOffTo0DecPlaces(ActualNoofBags));
-//            WelcomeUserActivity.ngxPrinter.printText("TOTAL NO OF BAGS   :" + noOfBag);
-//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-//            WelcomeUserActivity.ngxPrinter.printText("SERIAL NO" + "        QUANTITY(Kg)");
-//            for (int i = 0; i < dr.length; i++) {
-//                k++;
-//                WelcomeUserActivity.ngxPrinter.printText("    " + k + "              " + dr[i]);
-//            }
-//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-//            WelcomeUserActivity.ngxPrinter.printText("Gross Wt (Qt):     " + QuintalWeight);
-//            WelcomeUserActivity.ngxPrinter.printText("Bag Wt (Qt)  :     " + roundOffTo3DecPlaces(BagsWeightValue / 100));
-//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-//            WelcomeUserActivity.ngxPrinter.printText("Net Wt (Qt)  :     " + roundOffTo5DecPlaces(NetWeightValue / 100));
-//            WelcomeUserActivity.ngxPrinter.printText("Lot Amt (Rs) :     " + lRate);
-//            WelcomeUserActivity.ngxPrinter.printText("Net Amt (Rs) :     " + netAmt);
-//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-//            WelcomeUserActivity.ngxPrinter.printText("Sign of Farmer");
-//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-//            WelcomeUserActivity.ngxPrinter.printText("Sign of Dadwal");
-//            WelcomeUserActivity.ngxPrinter.printText("-----------------------------");
-//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
-//            WelcomeUserActivity.ngxPrinter.lineFeed(1);
+         printString.append("Lot Id  :").append(lotId).append("\n");
 
+
+            printString.append("CA Name :").append(cName).append("\n");
+            printString.append("FARMER NAME     :").append("\n");
+            printString.append( SName).append("\n");
+            printString.append("COMMODITY:").append(Com).append("\n");
+            printString.append("TRADER   :").append(tName).append("\n");
+            printString.append("ACTUAL NO OF BAGS  :").append(roundOffTo0DecPlaces(ActualNoofBags)).append("\n");
+            printString.append("TOTAL NO OF BAGS   :").append(noOfBag).append("\n");
+            printString.append("-----------------------------").append("\n");
+            printString.append("SERIAL NO" + "        QUANTITY(Kg)").append("\n");
+            for (int i = 0; i < dr.length; i++) {
+                k++;
+                printString.append("    ").append(k).append("              ").append(dr[i]).append("\n");
+            }
+
+            printString.append("-----------------------------").append("\n");
+            printString.append("Gross Wt (Qt):     ").append(QuintalWeight).append("\n");
+            printString.append("Bag Wt (Qt)  :     ").append(roundOffTo3DecPlaces(BagsWeightValue / 100)).append("\n");
+            printString.append("-----------------------------").append("\n");
+            printString.append("Net Wt (Qt)  :     ").append(roundOffTo5DecPlaces(NetWeightValue / 100)).append("\n");
+           printString.append("Lot Amt (Rs) :     ").append(lRate).append("\n");
+            printString.append("Net Amt (Rs) :     ").append(netAmt).append("\n");
+            printString.append("-----------------------------").append("\n");
+            printString.append("\n\n");
+            printString.append("Sign of Farmer").append("\n");
+           printString.append("\n\n");
+            printString.append("Sign of Dadwal").append("\n");
+            printString.append("-----------------------------").append("\n");
+             printString.append("\n\n");
+
+            printSampleText(printString.toString());
 
 
             /*print(translator.toMiniLeft("Date       :" + formatted_Date));
@@ -658,6 +614,11 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     public void createandDisplayPdf(String date) {
 
+        //Creating a global Doc Variable
+        // Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
+        Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
+
+
         Font boldFont = new Font(Font.FontFamily.TIMES_ROMAN, 14, Font.BOLD);
         try {
             String path = Environment.getExternalStorageDirectory().getAbsolutePath() + "/WeighingScale";
@@ -667,6 +628,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
                 dir.mkdirs();
 
             File file = new File(dir, "WeighingSlip.pdf");
+
+
             FileOutputStream fOut = new FileOutputStream(file);
 
             PdfWriter.getInstance(doc, fOut);

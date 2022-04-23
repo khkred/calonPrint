@@ -412,6 +412,8 @@ public class BluetoothActivity extends AppCompatActivity {
     protected void onPause() {
         super.onPause();
 
+        
+
     }
 
     void showStatus(TextView theTextView, String theLabel, boolean theValue) {

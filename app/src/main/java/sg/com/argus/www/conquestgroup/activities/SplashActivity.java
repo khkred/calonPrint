@@ -27,6 +27,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
+        // Getting the Android Unique ID
+
         unique_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.e("uniqid","uniqid===>"+unique_id);
         //aae3ec516fbf30cb
@@ -49,77 +51,32 @@ public class SplashActivity extends AppCompatActivity {
             public void run() {
                 try {
                     if(unique_id.equals(defaultid)){
-                        show_selection();
+
+                        runLoginActivity();
 
                     }else{
                        //show_exitAlert();
-                        show_selection();
+                        runLoginActivity();
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
-        }, 1000);
+        }, 500);
     }
 
-    void show_selection() {
-        LayoutInflater layoutInflater = LayoutInflater.from(SplashActivity.this);
-        final View promptView = layoutInflater.inflate(R.layout.dialog_selection, null);
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                SplashActivity.this);
-
-        final Button no = (Button) promptView
-                .findViewById(R.id.b_exit_no);
-
-        final Button yes = (Button) promptView
-                .findViewById(R.id.b_exit_yes);
-
-        final TextView txt = (TextView) promptView
-                .findViewById(R.id.tv_exit_text);
-        final RadioGroup group=(RadioGroup)promptView.findViewById(R.id.radioGroup);
-
-
-
-        alertDialogBuilder.setView(promptView).setCancelable(true);
-
-        final AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-
-
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // cancel dialog
-                alert.cancel();
-            }
-        });
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int selectedId=group.getCheckedRadioButtonId();
-                final RadioButton radioButton=(RadioButton)promptView.findViewById(selectedId);
-                if (radioButton.getText().equals("Weighing Scale")){
-                    Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                    i.putExtra("screen","1");
-                        startActivity(i);
-                        finish();
-                    alert.cancel();
-                }
-                if(radioButton.getText().equals("Gate Entry")){
-                    /*Intent i = new Intent(SplashActivity.this, LoginActivity.class);
-                    i.putExtra("screen","2");
-                    startActivity(i);
-                    finish();*/
-                    Toast.makeText(SplashActivity.this, "Comming Soon...", Toast.LENGTH_SHORT).show();
-                    alert.cancel();
-                }
-
-            }
-        });
-
+    private void runLoginActivity(){
+        Intent i = new Intent(SplashActivity.this, LoginActivity.class);
+        i.putExtra("screen","1");
+        startActivity(i);
+        finish();
     }
 
+
+//
+//   TODO: Implement show_exitAlert() when the back button is pressed Again after Login
+//
     void show_exitAlert() {
         LayoutInflater layoutInflater = LayoutInflater.from(SplashActivity.this);
         View promptView = layoutInflater.inflate(R.layout.dialog_exit, null);

@@ -111,7 +111,7 @@ public class BTConnection {
                 count++;
             }
             Log.d("HarishData",""+count);
-            if (data == "" && data == null) {
+            if (data == "") {
                 return;
             }
 
