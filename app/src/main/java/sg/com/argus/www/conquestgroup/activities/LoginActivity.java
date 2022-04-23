@@ -23,9 +23,11 @@ import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -44,6 +46,7 @@ import sg.com.argus.www.conquestgroup.models.AppController;
 import sg.com.argus.www.conquestgroup.models.Client;
 import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.DialogScreens;
+import sg.com.argus.www.conquestgroup.utils.NetworkQueueManager;
 
 public class LoginActivity extends AppCompatActivity {
     private Button login, Cancel;
@@ -189,6 +192,26 @@ public class LoginActivity extends AppCompatActivity {
         // Setting the title manually
         alert.setTitle("Internet Connection");
         alert.show();
+
+    }
+
+    private void volleyQueue(){
+
+        ProgressDialog p = new ProgressDialog(LoginActivity.this);
+        p.setMessage("Please Wait...");
+        p.show();
+        String username = loginid.getText().toString();
+        String password = userpassword.getText().toString();
+
+        //Calling the Singleton
+        NetworkQueueManager singleton =  NetworkQueueManager.getInstance(this);
+
+        //Call the Request Queue
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+
+        //Call the JSON Object Request
+
+
 
     }
 

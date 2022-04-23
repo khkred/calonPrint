@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import sg.com.argus.www.conquestgroup.R;
+import sg.com.argus.www.conquestgroup.utils.NetworkQueueManager;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -25,6 +26,9 @@ public class SplashActivity extends AppCompatActivity {
         Log.e("uniqid","uniqid===>"+unique_id);
         //aae3ec516fbf30cb
         StartApp();
+
+        NetworkQueueManager networkQueueManager = NetworkQueueManager.getInstance(SplashActivity.this);
+
     }
          /*
          * Showing splash screen with a timer. This will be useful when you
