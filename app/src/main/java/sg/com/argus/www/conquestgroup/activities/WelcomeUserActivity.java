@@ -62,10 +62,9 @@ import sg.com.argus.www.conquestgroup.utils.ESCUtil;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
 public class WelcomeUserActivity extends AppCompatActivity {
-    private Button next;
     private final static String TAG = WelcomeUserActivity.class.getSimpleName();
 
-    private boolean mConnected = false;
+    private final boolean mConnected = false;
     ConnectionDetector cd;
     Boolean isInternetPresent = false;
     ImageView searchbtn;
@@ -95,7 +94,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         savedata = getSharedPreferences("weighing_scale", MODE_PRIVATE);
 
         searchbtn = (ImageView) findViewById(R.id.searchbtn);
-        next = (Button) findViewById(R.id.next);
+        Button next = (Button) findViewById(R.id.next);
         sellerName = (TextView) findViewById(R.id.sellerName);
         commodity = (TextView) findViewById(R.id.commodity);
         bagType = (Spinner) findViewById(R.id.bagType);

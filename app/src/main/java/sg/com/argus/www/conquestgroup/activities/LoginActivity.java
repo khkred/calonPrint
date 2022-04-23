@@ -43,6 +43,7 @@ import sg.com.argus.www.conquestgroup.adapters.Stateadapter;
 import sg.com.argus.www.conquestgroup.models.AppController;
 import sg.com.argus.www.conquestgroup.models.Client;
 import sg.com.argus.www.conquestgroup.models.HttpsTrustManager;
+import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.DialogScreens;
 
 public class LoginActivity extends AppCompatActivity {
@@ -93,11 +94,15 @@ public class LoginActivity extends AppCompatActivity {
         GetLogid = getIntent().getStringExtra("screen");
         Log.e("GetLogid","GetLogid"+GetLogid);
 
+        /**
+         * TODO 3: What is the point of the states spinner?
+         */
+
         if(GetLogid.equalsIgnoreCase("1")){
 
             rl_spin.setVisibility(View.GONE);
         }else if(GetLogid.equalsIgnoreCase("2")){
-             GetStates("https://train.enam.gov.in/NamWebSrv/rest/MastersUpdate/getStates");
+             GetStates(Constants.GET_STATES_URL);
             spin_states.setVisibility(View.VISIBLE);
 
         }
@@ -107,10 +112,22 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 isInternetPresent = cd.isConnectingToInternet();
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                //Suggested by IDE to insert the assert
+                assert imm != null;
+
                 imm.hideSoftInputFromWindow(loginid.getWindowToken(), 0);
 
                 username = loginid.getText().toString();
+                if (username.isEmpty()){
+                    Toast.makeText(LoginActivity.this, "Enter Username", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 password = userpassword.getText().toString();
+
+                if (password.isEmpty()) {
+                    Toast.makeText(LoginActivity.this,"Enter Password",Toast.LENGTH_SHORT).show();
+                    return;
+                }
                // save username and password in sharedpreferences
                 if (isInternetPresent) {
                     if (saveLoginCheckBox.isChecked()) {
@@ -290,7 +307,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void GetStates(String url) {
-        hotelCnstsesList = new ArrayList<Client>();
+        hotelCnstsesList = new ArrayList<>();
         JsonObjectRequest jsonRequest = new JsonObjectRequest(
                 Request.Method.GET, url, null,
                 new Response.Listener<JSONObject>() {
