@@ -54,10 +54,8 @@ import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
 import sg.com.argus.www.conquestgroup.adapters.Stateadapter1;
 import sg.com.argus.www.conquestgroup.models.AppController;
-import sg.com.argus.www.conquestgroup.models.HttpsTrustManager;
 import sg.com.argus.www.conquestgroup.models.MenuCategories;
 import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
-import sg.com.argus.www.conquestgroup.utils.DialogScreens;
 import sg.com.argus.www.conquestgroup.utils.ESCUtil;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
@@ -354,7 +352,6 @@ public class WelcomeUserActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             try {
-                HttpsTrustManager.allowAllSSL();
                 String urlParameters = "orgId=" + orgid + "&oprId=" + oprId;
                 Log.e("params", "" + urlParameters);
                 byte[] postData = new byte[0];
@@ -460,7 +457,6 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
             try {
                 // String urlParameters = "orgId=1&oprId=30&loginId=TS014A00001&password=Pass@123";
-                HttpsTrustManager.allowAllSSL();
                 String urlParameters = "orgId=" + orgid + "&oprId=" + oprId + "&loginId=" + loginid + "&password=" + password + "";
 
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);

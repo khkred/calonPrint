@@ -42,7 +42,6 @@ import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
 import sg.com.argus.www.conquestgroup.adapters.Stateadapter;
 import sg.com.argus.www.conquestgroup.models.AppController;
 import sg.com.argus.www.conquestgroup.models.Client;
-import sg.com.argus.www.conquestgroup.models.HttpsTrustManager;
 import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.DialogScreens;
 
@@ -111,10 +110,13 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 isInternetPresent = cd.isConnectingToInternet();
+
+                /**
+                 * Following 3 lines hide keyboard when the login button is clicked
+                 */
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 //Suggested by IDE to insert the assert
                 assert imm != null;
-
                 imm.hideSoftInputFromWindow(loginid.getWindowToken(), 0);
 
                 username = loginid.getText().toString();
@@ -123,12 +125,11 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 password = userpassword.getText().toString();
-
                 if (password.isEmpty()) {
                     Toast.makeText(LoginActivity.this,"Enter Password",Toast.LENGTH_SHORT).show();
                     return;
                 }
-               // save username and password in sharedpreferences
+               // save username and password in shared preferences
                 if (isInternetPresent) {
                     if (saveLoginCheckBox.isChecked()) {
                         loginPrefsEditor.putBoolean("saveLogin", true);
@@ -212,7 +213,6 @@ public class LoginActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             try {
-                HttpsTrustManager.allowAllSSL();
                 String urlParameters = "loginId=" + uname + "&password=" + pass + "&apmcId=" + apmcId;
                 Log.e("params",""+urlParameters);
                 byte[] postData = new byte[0];
@@ -220,7 +220,7 @@ public class LoginActivity extends AppCompatActivity {
                     postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 
                 //URL url = new URL("https://enam.gov.in/NamWebSrv/rest/verifyUser");
-                URL url = new URL("http://www.train.enam.gov.in/NamWebSrv/rest/verifyUser");
+                URL url = new URL(Constants.VERIFY_USER_URL);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("POST");
