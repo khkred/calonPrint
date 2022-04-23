@@ -74,49 +74,6 @@ public class SplashActivity extends AppCompatActivity {
     }
 
 
-//
-//   TODO: Implement show_exitAlert() when the back button is pressed Again after Login
-//
-    void show_exitAlert() {
-        LayoutInflater layoutInflater = LayoutInflater.from(SplashActivity.this);
-        View promptView = layoutInflater.inflate(R.layout.dialog_exit, null);
-        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
-                SplashActivity.this);
-
-        final Button no = (Button) promptView
-                .findViewById(R.id.b_exit_no);
-
-        final Button yes = (Button) promptView
-                .findViewById(R.id.b_exit_yes);
-
-        final TextView txt = (TextView) promptView
-                .findViewById(R.id.tv_exit_text);
-
-        txt.setText("Hoo! Your Device Is Not Recognize To This App");
-
-        alertDialogBuilder.setView(promptView).setCancelable(true);
-
-        final AlertDialog alert = alertDialogBuilder.create();
-        alert.show();
-
-        no.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // cancel dialog
-                alert.cancel();
-            }
-        });
-        yes.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //  getIntent().setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                android.os.Process.killProcess(android.os.Process.myPid());
-                // finish();
-
-            }
-        });
-
-    }
 
 
 

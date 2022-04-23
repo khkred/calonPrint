@@ -66,5 +66,6 @@
     <string name="bagtype">Bag Type : </string>
     <string name="tradername">Trader Name : </string>
     <string name="close_bt">Close</string>
+    <string name="exit_dialog_prompt">Exit App?</string>
 
 </resources>
