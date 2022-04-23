@@ -72,6 +72,7 @@ public class BluetoothActivity extends AppCompatActivity {
     boolean isPrinterConnected;
     Button connect_btn, submit, delete_btn;
     ConnectionDetector cd;
+    private String userActualName;
     Boolean isInternetPresent = false;
     ArrayList<String> bagNetWeight = new ArrayList<String>();
     ArrayList<String> bagGrossWeight = new ArrayList<String>();
@@ -109,6 +110,7 @@ public class BluetoothActivity extends AppCompatActivity {
         connect_btn = (Button) findViewById(R.id.btn_connect);
         final Intent intent = getIntent();
         loginid = intent.getStringExtra("u_name");
+        userActualName = intent.getStringExtra("username");
         password = intent.getStringExtra("u_pass");
         orgid = intent.getStringExtra("u_orgid");
         userid = intent.getStringExtra("u_id");
@@ -803,6 +805,7 @@ public class BluetoothActivity extends AppCompatActivity {
         Intent intent = new Intent(BluetoothActivity.this, WelcomeUserActivity.class);
         intent.putExtra("u_name", loginid.toString());
         intent.putExtra("u_pass", password.toString());
+        intent.putExtra("username",userActualName.toString());
         intent.putExtra("u_orgid", orgid.toString());
         intent.putExtra("u_id", userid.toString());
         intent.putExtra("opr_id", oprId.toString());

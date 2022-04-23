@@ -125,7 +125,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         }
 
         handler = new Handler();
-        initPrinterstyle();
+//        initPrinterstyle();
 
 
         logout.setOnClickListener(v -> {
@@ -148,6 +148,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     BagTypeRelation();
                     Intent i = new Intent(WelcomeUserActivity.this, BluetoothActivity.class);
                     i.putExtra("u_name", loginid.toString());
+                    i.putExtra("username",username.toString());
                     i.putExtra("u_pass", password.toString());
                     i.putExtra("u_orgid", orgid.toString());
                     i.putExtra("u_id", userid.toString());
@@ -218,14 +219,15 @@ public class WelcomeUserActivity extends AppCompatActivity {
         SunmiPrintHelper.getInstance().initSunmiPrinterService(this);
     }
 
-    private void initPrinterstyle() {
-        if (BluetoothUtil.isBlueToothPrinter) {
-            BluetoothUtil.sendData(ESCUtil.init_printer());
-        } else {
-            SunmiPrintHelper.getInstance().initPrinter();
-        }
 
-    }
+//    private void initPrinterstyle() {
+//        if (BluetoothUtil.isBlueToothPrinter) {
+//            BluetoothUtil.sendData(ESCUtil.init_printer());
+//        } else {
+//            SunmiPrintHelper.getInstance().initPrinter();
+//        }
+//
+//    }
 
 
     void showInternetAlert() {
