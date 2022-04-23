@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 
 import sg.com.argus.www.conquestgroup.R;
-import sg.com.argus.www.conquestgroup.utils.NetworkQueueManager;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -27,7 +26,6 @@ public class SplashActivity extends AppCompatActivity {
         //aae3ec516fbf30cb
         StartApp();
 
-        NetworkQueueManager networkQueueManager = NetworkQueueManager.getInstance(SplashActivity.this);
 
     }
          /*
