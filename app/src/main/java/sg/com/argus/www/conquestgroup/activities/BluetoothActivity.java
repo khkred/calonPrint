@@ -70,7 +70,7 @@ public class BluetoothActivity extends AppCompatActivity {
     private static TextView bagTxt, weightTxt, TotalBaightInQuintal;
     LinearLayout ll, llh;
     boolean isPrinterConnected;
-    Button connect_btn, submit, delete_btn;
+    Button addBagBtn, submit, delete_btn;
     ConnectionDetector cd;
     private String userActualName;
     Boolean isInternetPresent = false;
@@ -90,7 +90,7 @@ public class BluetoothActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bluetooth);
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         final Activity activity = this;
@@ -99,15 +99,15 @@ public class BluetoothActivity extends AppCompatActivity {
         submit = (Button) findViewById(R.id.submit);
         delete_btn = (Button) findViewById(R.id.removebag);
 
-        ll = (LinearLayout) findViewById(R.id.linearLayout);
-        scrollView = (ScrollView) findViewById(R.id.scrollView);
+        ll = findViewById(R.id.linearLayout);
+        scrollView = findViewById(R.id.scrollView);
 
         blueDisable = (LinearLayout) findViewById(R.id.blueDisable);
         bluetooth_devices = (Spinner) findViewById(R.id.bluetoothDevices);
         onlyBagWeight = (TextView) findViewById(R.id.onlyBagWeight);
         NumofBags = (TextView) findViewById(R.id.numBag);
         TotalBaightInQuintal = (TextView) findViewById(R.id.totalWeight);
-        connect_btn = (Button) findViewById(R.id.btn_connect);
+        addBagBtn = (Button) findViewById(R.id.add_bag_btn);
         final Intent intent = getIntent();
         loginid = intent.getStringExtra("u_name");
         userActualName = intent.getStringExtra("username");
@@ -135,11 +135,12 @@ public class BluetoothActivity extends AppCompatActivity {
 
         }
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        connect_btn.setOnClickListener(new View.OnClickListener() {
+        addBagBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (bluetooth_devices.getSelectedItem() != null) {
                     double emptycount = BagWeight(onlyBagWeight.getText().toString());
+
                     if (emptycount <= 3) {
                         addBAgAndFetchWeight();
                         individualBagWeight(onlyBagWeight.getText().toString(), FetchWeight);
@@ -341,14 +342,14 @@ public class BluetoothActivity extends AppCompatActivity {
 
     private void showDisonnected() {
         showToast("Disconnected");
-        connect_btn.setVisibility(View.VISIBLE);
+        addBagBtn.setVisibility(View.VISIBLE);
         bluetooth_devices.setEnabled(true);
     }
 
     private void showUnsupported() {
         showToast("Bluetooth is unsupported by this device");
 
-        connect_btn.setEnabled(false);
+        addBagBtn.setEnabled(false);
         bluetooth_devices.setEnabled(false);
     }
 

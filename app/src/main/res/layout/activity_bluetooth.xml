@@ -16,7 +16,7 @@
             android:src="@drawable/conquest1" />
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10dp"
             android:layout_weight="0.40">
@@ -103,7 +103,7 @@
         android:layout_marginLeft="@dimen/margin_10dp">
 
         <Button
-            android:id="@+id/btn_connect"
+            android:id="@+id/add_bag_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight=".5"
