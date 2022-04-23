@@ -3,6 +3,7 @@
     void show_selection() {
         LayoutInflater layoutInflater = LayoutInflater.from(SplashActivity.this);
         final View promptView = layoutInflater.inflate(R.layout.dialog_selection, null);
+        
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 SplashActivity.this);
 

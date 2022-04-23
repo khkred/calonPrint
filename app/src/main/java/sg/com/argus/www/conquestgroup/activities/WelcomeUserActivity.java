@@ -132,7 +132,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
 
         logout.setOnClickListener(v -> {
-            showLogoutAlert(WelcomeUserActivity.this,LoginActivity.class);
+            showLogoutAlert(WelcomeUserActivity.this);
         });
         searchbtn.setOnClickListener(v -> ShowData(searchLotDetails.getText().toString()));
         searchLotDetails.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -177,7 +177,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         });
     }
 
-    public void showLogoutAlert(Context context, Class<?> parentClass) {
+    public void showLogoutAlert(Context context) {
 
         //Inflate Logout AlertDialog
         LayoutInflater layoutInflater = LayoutInflater.from(context);
@@ -204,7 +204,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         });
 
         logoutYesBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(context,parentClass);
+            Intent intent = new Intent(context,LoginActivity.class);
             intent.putExtra("screen", "1");
             startActivity(intent);
 
@@ -645,7 +645,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        DialogScreens.showExitAlert(WelcomeUserActivity.this);
+        showLogoutAlert(WelcomeUserActivity.this);
 //        Intent i = new Intent(WelcomeUserActivity.this, LoginActivity.class);
 //        i.putExtra("u_name", loginid.toString());
 //        i.putExtra("u_pass", password.toString());
