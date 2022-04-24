@@ -19,6 +19,8 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -47,8 +49,10 @@ import java.util.Set;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.BTConnection;
+import sg.com.argus.www.conquestgroup.adapters.BagViewAdapter;
 import sg.com.argus.www.conquestgroup.adapters.P25Connector;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
+import sg.com.argus.www.conquestgroup.models.Bag;
 
 public class BluetoothActivity extends AppCompatActivity {
 
@@ -66,9 +70,9 @@ public class BluetoothActivity extends AppCompatActivity {
     private TextView NumofBags, onlyBagWeight;
     LinearLayout blueDisable;
     LinearLayout blueEnable;
-    private static int i = 0, numbag = 0, ActualNoofBags = 0;
+    private static int i = 0, numbag = 0, ActualNoOfBags = 1;
     private static TextView bagTxt, weightTxt, TotalBaightInQuintal;
-    LinearLayout ll, llh;
+    LinearLayout bagsLinearLayout, llh;
     boolean isPrinterConnected;
     Button addBagBtn, submit, delete_btn;
     ConnectionDetector cd;
@@ -76,6 +80,15 @@ public class BluetoothActivity extends AppCompatActivity {
     Boolean isInternetPresent = false;
     ArrayList<String> bagNetWeight = new ArrayList<String>();
     ArrayList<String> bagGrossWeight = new ArrayList<String>();
+
+    RecyclerView bagRecyclerView;
+
+      //=========Single Bag Layout Variables================
+    LinearLayout singleBagLayout;
+    TextView singleBagNoTV, singleGoodsWeightTV;
+    ArrayList<Bag> bagArrayList = new ArrayList<>();
+    BagViewAdapter bagViewAdapter;
+
 
     private static String startWeight = "0.0", FetchWeight = "", QuintalWeight = "", BagTypeDesc, ConvertedWeight = "", bagConvertedWeight = "";
     private static String outputWeight = "", netWeightProduct, calBagsWeight;
@@ -99,9 +112,13 @@ public class BluetoothActivity extends AppCompatActivity {
         submit = (Button) findViewById(R.id.submit);
         delete_btn = (Button) findViewById(R.id.removebag);
 
-        ll = findViewById(R.id.linearLayout);
+        bagsLinearLayout = findViewById(R.id.bags_list_linear_layout);
         scrollView = findViewById(R.id.scrollView);
 
+        //Single Bag Layout
+        singleBagNoTV = findViewById(R.id.bag_label_text_view);
+        singleGoodsWeightTV = findViewById(R.id.bag_weight_text_view);
+        bagRecyclerView = findViewById(R.id.recycler_view);
         blueDisable = (LinearLayout) findViewById(R.id.blueDisable);
         bluetooth_devices = (Spinner) findViewById(R.id.bluetoothDevices);
         onlyBagWeight = (TextView) findViewById(R.id.onlyBagWeight);
@@ -129,29 +146,28 @@ public class BluetoothActivity extends AppCompatActivity {
 
         try {
             GotBags = Double.parseDouble(actualBags);
-            ActualNoofBags = Integer.parseInt(roundOffTo0DecPlaces(GotBags));
+            ActualNoOfBags = Integer.parseInt(roundOffTo0DecPlaces(GotBags));
         } catch (NumberFormatException nfe) {
             Toast.makeText(BluetoothActivity.this, "Could not parse", Toast.LENGTH_SHORT).show();
 
         }
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        addBagBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (bluetooth_devices.getSelectedItem() != null) {
-                    double emptycount = BagWeight(onlyBagWeight.getText().toString());
+        addBagBtn.setOnClickListener(v -> {
+            if (bluetooth_devices.getSelectedItem() != null) {
 
-                    if (emptycount <= 3) {
-                        addBAgAndFetchWeight();
-                        individualBagWeight(onlyBagWeight.getText().toString(), FetchWeight);
-                    } else {
-                        Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
-                    }
+                double emptyBagWeight = BagWeight(onlyBagWeight.getText().toString());
+
+                // emptyBagWeight shouldn't be more than 3 KG.
+                if (emptyBagWeight <= 3) {
+                    addBagAndFetchWeight();
+                    individualBagWeight(onlyBagWeight.getText().toString(), FetchWeight);
                 } else {
-                    Toast.makeText(BluetoothActivity.this, "Device is not connected", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
                 }
-
+            } else {
+                Toast.makeText(BluetoothActivity.this, "Device is not connected", Toast.LENGTH_SHORT).show();
             }
+
         });
 
         delete_btn.setOnClickListener(new View.OnClickListener() {
@@ -200,6 +216,18 @@ public class BluetoothActivity extends AppCompatActivity {
                     updateDeviceList();
                 }
             }
+
+            /**
+             * Recyclerview
+             */
+            bagRecyclerView.setHasFixedSize(true);
+            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
+            bagRecyclerView.setLayoutManager(linearLayoutManager);
+
+            bagViewAdapter = new BagViewAdapter(getApplicationContext(),bagArrayList);
+
+
+
 
             mProgressDlg = new ProgressDialog(this);
 
@@ -510,7 +538,7 @@ public class BluetoothActivity extends AppCompatActivity {
         i = 0;
         numbag = 0;
         newbag = 0;
-        ActualNoofBags = 0;
+        ActualNoOfBags = 0;
         stringbuilder = null;
         startWeight = "0.0";
     }
@@ -523,16 +551,29 @@ public class BluetoothActivity extends AppCompatActivity {
         return netWeightProduct;
     }
 
-    public void addBAgAndFetchWeight() {
+    public void addBagAndFetchWeight() {
         AddBag();
         numbag++;
         connect();
         NumofBags.setText("No of Bags:  " + numbag);
         onlyBagWeight.setFocusable(false);
     }
-    // to add empty textview for bag1 and bag2 and so on
+
+    private void AddSingleBag() {
+
+        numbag++;
+        String bagLabel = "Bag "+numbag;
+        String fetchWeightString = " "+FetchWeight+" KG";
+
+        bagArrayList.add(new Bag(bagLabel,fetchWeightString));
+        bagViewAdapter.notifyDataSetChanged();
+
+
+    }
+    // to add empty textview for bag 1 and bag2 and so on
     private void AddBag() {
        try {
+
            llh = new LinearLayout(BluetoothActivity.this);
            llh.setOrientation(LinearLayout.HORIZONTAL);
            llh.setId(R.id.addHoriBag);
@@ -570,7 +611,7 @@ public class BluetoothActivity extends AppCompatActivity {
            // Finally, add the drawable background to TextView
            weightTxt.setBackground(sd);
            llh.addView(weightTxt);
-           ll.addView(llh);
+           bagsLinearLayout.addView(llh);
        }catch (Exception e){
            e.printStackTrace();
        }

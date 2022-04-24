@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.RemoteException;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
@@ -37,10 +36,6 @@ import com.itextpdf.text.Font;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.sunmi.peripheral.printer.InnerPrinterCallback;
-import com.sunmi.peripheral.printer.InnerPrinterManager;
-import com.sunmi.peripheral.printer.InnerResultCallback;
-import com.sunmi.peripheral.printer.SunmiPrinterService;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -57,7 +52,6 @@ import java.util.UUID;
 
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
-import sg.com.argus.www.conquestgroup.adapters.PrinterCommandTranslator;
 import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
 import sg.com.argus.www.conquestgroup.utils.ESCUtil;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
@@ -104,7 +98,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         final Activity activity = this;
-        ll = (LinearLayout) findViewById(R.id.linearLayout);
+        ll = (LinearLayout) findViewById(R.id.bags_list_linear_layout);
 
         sellerNAme = (TextView) findViewById(R.id.sellName);
         commodity = (TextView) findViewById(R.id.commod);
@@ -447,7 +441,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String formatted_Date = df.format(c.getTime());
-            PrinterCommandTranslator translator = new PrinterCommandTranslator();
 
             StringBuilder printString = new StringBuilder();
 
