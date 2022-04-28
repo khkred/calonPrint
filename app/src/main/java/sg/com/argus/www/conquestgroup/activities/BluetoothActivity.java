@@ -9,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -95,27 +96,21 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     /**
      * Check if Bluetooth is enabled through broadcast receiver
      */
-    public BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        @Override
+    public final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("android.bluetooth.adapter.action.STATE_CHANGED")) {
-
-                //Get status of bluetooth
-                int btStatus = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", Integer.MIN_VALUE);
-
-                //STATE_OFF = 10
-                if (btStatus == 10) {
-                    Toast.makeText(context, "Turn on Bluetooth", Toast.LENGTH_LONG).show();
-
+                int intExtra = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", Integer.MIN_VALUE);
+                if (intExtra == 10) {
                     if (BluetoothActivity.this.registered) {
-                        unregisterReceiver(mReceiver);
+                        BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
                     }
-                    goBackToWelcomeActivity();
-                    BluetoothActivity.this.finish();
-                }
-                //STATE_ON = 12
-                else if (btStatus == 12){
-                    BluetoothActivity.this.addDevicesToList();
+                    //TODO implement bluetooth state 10 dialog
+                } else if (intExtra == 13) {
+                    if (BluetoothActivity.this.registered) {
+                        BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
+                        BluetoothActivity.this.registered = false;
+                    }
+                    //TODO implement bluetooth state 13 dialog
                 }
             }
         }
@@ -183,6 +178,14 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         f30b.enableBluetooth();
         f30b.setCommunicationCallback(this);
 
+        addDevicesToList();
+        Display("Connecting...");
+        this.f30b.connectToDevice(this.f30b.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
+        Log.d("Harish",bluetooth_devices.getSelectedItemPosition()+" pos");
+        registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
+        this.registered = true;
+
+
 
         /**
          * Spinner dropdown selection from here
@@ -190,7 +193,22 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
         bluetooth_devices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if (BluetoothActivity.this.registered) {
+                    BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
+                    BluetoothActivity.this.registered = false;
+                }
+
+                Log.e("Harish","Clicked Position"+position);
+                Display("Connecting...");
+                BluetoothActivity.this.f30b.removeCommunicationCallback();
+                BluetoothActivity.this.f30b.disconnect();
+                BluetoothActivity.this.f30b = new Bluetooth(BluetoothActivity.this);
+                BluetoothActivity.this.f30b.enableBluetooth();
+                BluetoothActivity.this.f30b.setCommunicationCallback(BluetoothActivity.this);
+                BluetoothActivity.this.f30b.connectToDevice(BluetoothActivity.this.f30b.getPairedDevices().get(position));
+
+
 
             }
 
@@ -284,6 +302,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     @Override
     public void onConnect(BluetoothDevice bluetoothDevice) {
 
+        Display("Connected to " + bluetoothDevice.getName() + " - " + bluetoothDevice.getAddress());
+
     }
 
     @Override
@@ -293,6 +313,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     @Override
     public void onDisconnect(BluetoothDevice bluetoothDevice, String str) {
+        Display("Disconnected!");
+        Display("Connecting again...");
 
     }
 
@@ -303,6 +325,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     @Override
     public void onMessage(String str) {
+        Display(str);
 
     }
 
@@ -389,12 +412,9 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        try {
-            //  if(mReceiver!=null)
-            // unregisterReceiver(mReceiver);
-            BluetoothActivity.reset();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (this.registered) {
+            unregisterReceiver(this.mReceiver);
+            this.registered = false;
         }
 
     }
