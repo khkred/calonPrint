@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -39,6 +40,7 @@ import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.BagViewAdapter;
@@ -52,6 +54,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     static StringBuilder stringbuilder;
     Spinner bluetooth_devices;
+     List<BluetoothDevice> mDeviceList;
     private final String TAG = BluetoothActivity.class.getSimpleName();
     private TextView NumofBags, onlyBagWeight;
     LinearLayout blueDisable;
@@ -80,7 +83,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     private static double WeightbeforeDeletebag, TotalWeight, newbag;
     private double GotBags;
     private String loginid, password, orgid, actualBags, userid, bagTypeId, lotId, caName, lotRate, SellerName, Commodity, traderName, feeCategoryId, newBagTypeValue;
-    private ArrayList<BluetoothDevice> mDeviceList = new ArrayList<BluetoothDevice>();
+
     String oprId, Sequence = "1";
     ScrollView scrollView;
     public Bluetooth f30b;
@@ -106,6 +109,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     }
                     goBackToWelcomeActivity();
                     BluetoothActivity.this.finish();
+                }
+                //STATE_ON = 12
+                else if (btStatus == 12){
+                    BluetoothActivity.this.addDevicesToList();
                 }
             }
         }
@@ -165,7 +172,9 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
         }
 
-
+        /**
+         * Bluetooth code from here
+         */
 
 
 
@@ -220,6 +229,20 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
             }
         });
 
+
+    }
+
+    public void addDevicesToList(){
+
+        mDeviceList = f30b.getPairedDevices();
+        ArrayList<String> stringArrayList = new ArrayList<>();
+
+        for (BluetoothDevice device: mDeviceList) {
+            stringArrayList.add(device.getName());
+        }
+        ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.simple_spinner_item, stringArrayList);
+        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
+        bluetooth_devices.setAdapter(adapter);
 
     }
 
