@@ -4,13 +4,11 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.ShapeDrawable;
@@ -19,13 +17,11 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
@@ -37,43 +33,32 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
-import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Set;
 
 import sg.com.argus.www.conquestgroup.R;
-import sg.com.argus.www.conquestgroup.adapters.BTConnection;
 import sg.com.argus.www.conquestgroup.adapters.BagViewAdapter;
-import sg.com.argus.www.conquestgroup.adapters.P25Connector;
+import sg.com.argus.www.conquestgroup.adapters.Bluetooth;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
 import sg.com.argus.www.conquestgroup.models.Bag;
 
-public class BluetoothActivity extends AppCompatActivity {
+
+public class BluetoothActivity extends AppCompatActivity implements Bluetooth.CommunicationCallback {
 
 
     static StringBuilder stringbuilder;
     Spinner bluetooth_devices;
-    private P25Connector mConnector;
-    private ProgressDialog mProgressDlg;
-    private ProgressDialog mConnectingDlg;
-    private BluetoothAdapter mBluetoothAdapter;
-    public static String BTAddress;
-    boolean blueToothconnected = false;
     private final String TAG = BluetoothActivity.class.getSimpleName();
-    BTConnection uConn;
     private TextView NumofBags, onlyBagWeight;
     LinearLayout blueDisable;
     LinearLayout blueEnable;
     private static int i = 0, numbag = 0, ActualNoOfBags = 1;
     private static TextView bagTxt, weightTxt, TotalBaightInQuintal;
     LinearLayout bagsLinearLayout, llh;
-    boolean isPrinterConnected;
     Button addBagBtn, submit, delete_btn;
     ConnectionDetector cd;
     private String userActualName;
@@ -83,7 +68,7 @@ public class BluetoothActivity extends AppCompatActivity {
 
     RecyclerView bagRecyclerView;
 
-      //=========Single Bag Layout Variables================
+    //=========Single Bag Layout Variables================
     LinearLayout singleBagLayout;
     TextView singleBagNoTV, singleGoodsWeightTV;
     ArrayList<Bag> bagArrayList = new ArrayList<>();
@@ -94,10 +79,38 @@ public class BluetoothActivity extends AppCompatActivity {
     private static String outputWeight = "", netWeightProduct, calBagsWeight;
     private static double WeightbeforeDeletebag, TotalWeight, newbag;
     private double GotBags;
-    private String loginid, password, orgid, actualBags, userid, bagTypeId, lotId, caName, lotRate, SellerName, Commodity, traderName,feeCategoryId, newBagTypeValue;
+    private String loginid, password, orgid, actualBags, userid, bagTypeId, lotId, caName, lotRate, SellerName, Commodity, traderName, feeCategoryId, newBagTypeValue;
     private ArrayList<BluetoothDevice> mDeviceList = new ArrayList<BluetoothDevice>();
     String oprId, Sequence = "1";
     ScrollView scrollView;
+    public Bluetooth f30b;
+    public boolean registered = false;
+
+    /**
+     * Check if Bluetooth is enabled through broadcast receiver
+     */
+    public BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction().equals("android.bluetooth.adapter.action.STATE_CHANGED")) {
+
+                //Get status of bluetooth
+                int btStatus = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", Integer.MIN_VALUE);
+
+                //STATE_OFF = 10
+                if (btStatus == 10) {
+                    Toast.makeText(context, "Turn on Bluetooth", Toast.LENGTH_LONG).show();
+
+                    if (BluetoothActivity.this.registered) {
+                        unregisterReceiver(mReceiver);
+                    }
+                    goBackToWelcomeActivity();
+                    BluetoothActivity.this.finish();
+                }
+            }
+        }
+    };
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -151,7 +164,13 @@ public class BluetoothActivity extends AppCompatActivity {
             Toast.makeText(BluetoothActivity.this, "Could not parse", Toast.LENGTH_SHORT).show();
 
         }
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+
+
+
+
+
+
+
         addBagBtn.setOnClickListener(v -> {
             if (bluetooth_devices.getSelectedItem() != null) {
 
@@ -200,256 +219,45 @@ public class BluetoothActivity extends AppCompatActivity {
                 }
             }
         });
-        if (mBluetoothAdapter == null) {
-            showUnsupported();
-        } else {
-            if (!mBluetoothAdapter.isEnabled()) {
-                showDisabled();
-            } else {
-                showEnabled();
-
-                Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-
-                if (pairedDevices != null) {
-                    mDeviceList.addAll(pairedDevices);
-
-                    updateDeviceList();
-                }
-            }
-
-            /**
-             * Recyclerview
-             */
-            bagRecyclerView.setHasFixedSize(true);
-            LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(),LinearLayoutManager.VERTICAL,false);
-            bagRecyclerView.setLayoutManager(linearLayoutManager);
-
-            bagViewAdapter = new BagViewAdapter(getApplicationContext(),bagArrayList);
-
-
-
-
-            mProgressDlg = new ProgressDialog(this);
-
-            mProgressDlg.setMessage("Scanning...");
-            mProgressDlg.setCancelable(false);
-            mProgressDlg.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancel", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-
-                    mBluetoothAdapter.cancelDiscovery();
-                }
-            });
-
-            mConnectingDlg = new ProgressDialog(this);
-
-            mConnectingDlg.setMessage("Connecting...");
-            mConnectingDlg.setCancelable(false);
-
-            mConnector = new P25Connector(new P25Connector.P25ConnectionListener() {
-
-                @Override
-                public void onStartConnecting() {
-                    mConnectingDlg.show();
-                }
-
-                @Override
-                public void onConnectionSuccess() {
-                    mConnectingDlg.dismiss();
-                    showConnected();
-                }
-
-                @Override
-                public void onConnectionFailed(String error) {
-                    mConnectingDlg.dismiss();
-                }
-
-                @Override
-                public void onConnectionCancelled() {
-                    mConnectingDlg.dismiss();
-                }
-
-                @Override
-                public void onDisconnected() {
-                    showDisonnected();
-                }
-            });
-        }
-        uConn = new BTConnection();
-        IntentFilter filter = new IntentFilter();
-        filter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        filter.addAction(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        filter.addAction(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
-        registerReceiver(mReceiver, filter);
 
 
     }
 
-    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
-        public void onReceive(Context context, Intent intent) {
-            String action = intent.getAction();
 
-            if (BluetoothAdapter.ACTION_STATE_CHANGED.equals(action)) {
-                final int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, BluetoothAdapter.ERROR);
+    /**
+     * Methods for Bluetooth.callback
+     */
+    @Override
+    public void onConnect(BluetoothDevice bluetoothDevice) {
 
-                if (state == BluetoothAdapter.STATE_ON) {
-                    showEnabled();
-                } else if (state == BluetoothAdapter.STATE_OFF) {
-                    showDisabled();
-                }
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)) {
-                mDeviceList = new ArrayList<BluetoothDevice>();
-
-                mProgressDlg.show();
-            } else if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)) {
-                mProgressDlg.dismiss();
-
-                updateDeviceList();
-            } else if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-                BluetoothDevice device = (BluetoothDevice) intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-
-                mDeviceList.add(device);
-
-                showToast("Found device " + device.getName());
-            } else if (BluetoothDevice.ACTION_BOND_STATE_CHANGED.equals(action)) {
-                final int state = intent.getIntExtra(BluetoothDevice.EXTRA_BOND_STATE, BluetoothDevice.ERROR);
-
-                if (state == BluetoothDevice.BOND_BONDED) {
-                    showToast("Paired");
-
-                    connect();
-                }
-            }
-        }
-    };
-
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    private String[] getArray(ArrayList<BluetoothDevice> data) {
-        String[] list = new String[0];
+    @Override
+    public void onConnectError(BluetoothDevice bluetoothDevice, String str) {
 
-        if (data == null) return list;
-
-        int size = data.size();
-        list = new String[size];
-
-        for (int i = 0; i < size; i++) {
-            list[i] = data.get(i).getName();
-        }
-
-        return list;
     }
 
-    private void updateDeviceList() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.simple_spinner_item, getArray(mDeviceList));
+    @Override
+    public void onDisconnect(BluetoothDevice bluetoothDevice, String str) {
 
-        adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
-
-        bluetooth_devices.setAdapter(adapter);
-        bluetooth_devices.setSelection(0);
     }
 
-    private void showDisabled() {
-        showToast("Bluetooth disabled");
+    @Override
+    public void onError(String str) {
+
     }
 
-    private void showEnabled() {
-        showToast("Bluetooth enabled");
+    @Override
+    public void onMessage(String str) {
+
     }
 
-    private void showConnected() {
-        showToast("Connected");
-        isPrinterConnected = true;
-        bluetooth_devices.setEnabled(false);
-    }
+    //==========================================================================================================
 
-    private void showDisonnected() {
-        showToast("Disconnected");
-        addBagBtn.setVisibility(View.VISIBLE);
-        bluetooth_devices.setEnabled(true);
-    }
-
-    private void showUnsupported() {
-        showToast("Bluetooth is unsupported by this device");
-
-        addBagBtn.setEnabled(false);
-        bluetooth_devices.setEnabled(false);
-    }
-
-    public void createBond(BluetoothDevice device) throws Exception {
-        BTAddress = device.toString();
-        BTAddress.trim();
-        try {
-            uConn.openBT(BTAddress);
-            Log.e("coonected", "bt connected2");
-            Log.e("coonected", BTAddress);
-        } catch (IOException e) {
-
-            e.printStackTrace();
-        }
-        try {
-            Class<?> cl = Class.forName("android.bluetooth.BluetoothDevice");
-            Class<?>[] par = {};
-
-            Method method = cl.getMethod("createBond", par);
-
-            method.invoke(device);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-
-            throw e;
-        }
-    }
-
-    private void connect() {
-        if (mDeviceList == null || mDeviceList.size() == 0) {
-            return;
-        }
-
-        BluetoothDevice device = mDeviceList.get(bluetooth_devices.getSelectedItemPosition());
-
-        if (device.getBondState() == BluetoothDevice.BOND_NONE) {
-            try {
-                uConn.openBT(device.getAddress());
-                registerReceiver(mReceiver, new IntentFilter(BluetoothDevice.ACTION_FOUND));
-                createBond(device);
-            } catch (Exception e) {
-                showToast("Failed to pair device");
-
-                return;
-            }
-        }
-
-        try {
-            if (!blueToothconnected) {
-                Log.e("coonected", "bt connected2");
-                uConn.openBT(device.getAddress());
-                Log.e("blueToothconnected", String.valueOf(blueToothconnected));
-                Thread.sleep(500);
-                blueToothconnected = false;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void onPause() {
         super.onPause();
-
-        
-
-    }
-
-    void showStatus(TextView theTextView, String theLabel, boolean theValue) {
-        String msg = theLabel + ": " + (theValue ? "enabled" : "disabled") + "\n";
-        theTextView.append(msg);
     }
 
 
@@ -460,11 +268,11 @@ public class BluetoothActivity extends AppCompatActivity {
 
     }
 
-   // parse weight greeting from bluetooth and show in textview
+    // parse weight greeting from bluetooth and show in textview
     public static void receivedData(String data) {
 
         String[] data_arry = data.split(";")[1].replace("\r\n", "\n").split("\n");
-        FetchWeight = data_arry[data_arry.length - 2].replace(" ","").replaceAll("=0*\\+","").replaceAll("000.","00.");
+        FetchWeight = data_arry[data_arry.length - 2].replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
 
         weightTxt.setText(" " + FetchWeight + " Kg");
         QuintalWeight = SumWeight(startWeight, FetchWeight);
@@ -473,6 +281,7 @@ public class BluetoothActivity extends AppCompatActivity {
         StoreBagWeight(FetchWeight);
 
     }
+
     // to get total weight
     public static String SumWeight(String str1, String str2) {
         try {
@@ -485,6 +294,7 @@ public class BluetoothActivity extends AppCompatActivity {
         }
         return ConvertedWeight;
     }
+
     // store the individual gross weight and net weight
     public void individualBagWeight(String str1, String str2) {
         try {
@@ -495,6 +305,7 @@ public class BluetoothActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
     // formatstring to two decimal places
     static String roundOffTo2DecPlaces(double val) {
         return String.format("%.2f", val);
@@ -509,6 +320,7 @@ public class BluetoothActivity extends AppCompatActivity {
     static String roundOffTo5DecPlaces(double val) {
         return String.format("%.5f", val);
     }
+
     //store empty bagweight
     public double BagWeight(String bag) {
         bag = bag.replace(" ", "");
@@ -524,16 +336,16 @@ public class BluetoothActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         try {
-          //  if(mReceiver!=null)
-               // unregisterReceiver(mReceiver);
+            //  if(mReceiver!=null)
+            // unregisterReceiver(mReceiver);
             BluetoothActivity.reset();
-            BTConnection.closeBT();
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
-   // to clear all static values
+
+    // to clear all static values
     public static void reset() {
         i = 0;
         numbag = 0;
@@ -542,6 +354,7 @@ public class BluetoothActivity extends AppCompatActivity {
         stringbuilder = null;
         startWeight = "0.0";
     }
+
     // to calculate netweight
     public static String CalculateNetWeight() {
         double bagsWeight = newbag * i;
@@ -554,7 +367,6 @@ public class BluetoothActivity extends AppCompatActivity {
     public void addBagAndFetchWeight() {
         AddBag();
         numbag++;
-        connect();
         NumofBags.setText("No of Bags:  " + numbag);
         onlyBagWeight.setFocusable(false);
     }
@@ -562,62 +374,64 @@ public class BluetoothActivity extends AppCompatActivity {
     private void AddSingleBag() {
 
         numbag++;
-        String bagLabel = "Bag "+numbag;
-        String fetchWeightString = " "+FetchWeight+" KG";
+        String bagLabel = "Bag " + numbag;
+        String fetchWeightString = " " + FetchWeight + " KG";
 
-        bagArrayList.add(new Bag(bagLabel,fetchWeightString));
+        bagArrayList.add(new Bag(bagLabel, fetchWeightString));
         bagViewAdapter.notifyDataSetChanged();
 
 
     }
+
     // to add empty textview for bag 1 and bag2 and so on
     private void AddBag() {
-       try {
+        try {
 
-           llh = new LinearLayout(BluetoothActivity.this);
-           llh.setOrientation(LinearLayout.HORIZONTAL);
-           llh.setId(R.id.addHoriBag);
-           i++;
+            llh = new LinearLayout(BluetoothActivity.this);
+            llh.setOrientation(LinearLayout.HORIZONTAL);
+            llh.setId(R.id.addHoriBag);
+            i++;
 
-           bagTxt = new TextView(getApplicationContext());
-           LinearLayout.LayoutParams textviewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-           textviewLayoutParams.setMargins(30, 10, 0, 5);
+            bagTxt = new TextView(getApplicationContext());
+            LinearLayout.LayoutParams textviewLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            textviewLayoutParams.setMargins(30, 10, 0, 5);
 
-           bagTxt.setLayoutParams(textviewLayoutParams);
-           bagTxt.setWidth(200);
-        //   bagTxt.setHeight(50);
-           bagTxt.setTextColor(Color.parseColor("#000000"));
-           bagTxt.setText("Bag " + i);
-           llh.addView(bagTxt);
+            bagTxt.setLayoutParams(textviewLayoutParams);
+            bagTxt.setWidth(200);
+            //   bagTxt.setHeight(50);
+            bagTxt.setTextColor(Color.parseColor("#000000"));
+            bagTxt.setText("Bag " + i);
+            llh.addView(bagTxt);
 
-           weightTxt = new TextView(getApplicationContext());
-           LinearLayout.LayoutParams textview1LayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-           textview1LayoutParams.setMargins(30, 10, 0, 5);
+            weightTxt = new TextView(getApplicationContext());
+            LinearLayout.LayoutParams textview1LayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            textview1LayoutParams.setMargins(30, 10, 0, 5);
 
-           weightTxt.setLayoutParams(textview1LayoutParams);
-           weightTxt.setTextColor(Color.parseColor("#000000"));
-           weightTxt.setWidth(400);
-          // weightTxt.setHeight(50);
-           ShapeDrawable sd = new ShapeDrawable();
-           // Specify the shape of ShapeDrawable
-           sd.setShape(new RectShape());
-           // Specify the border color of shape
-           sd.getPaint().setColor(Color.BLACK);
-           // Set the border width
-           sd.getPaint().setStrokeWidth(5f);
-           // Specify the style is a Stroke
-           sd.getPaint().setStyle(Paint.Style.STROKE);
-           sd.setPadding(5,5,5,5);
-           // Finally, add the drawable background to TextView
-           weightTxt.setBackground(sd);
-           llh.addView(weightTxt);
-           bagsLinearLayout.addView(llh);
-       }catch (Exception e){
-           e.printStackTrace();
-       }
+            weightTxt.setLayoutParams(textview1LayoutParams);
+            weightTxt.setTextColor(Color.parseColor("#000000"));
+            weightTxt.setWidth(400);
+            // weightTxt.setHeight(50);
+            ShapeDrawable sd = new ShapeDrawable();
+            // Specify the shape of ShapeDrawable
+            sd.setShape(new RectShape());
+            // Specify the border color of shape
+            sd.getPaint().setColor(Color.BLACK);
+            // Set the border width
+            sd.getPaint().setStrokeWidth(5f);
+            // Specify the style is a Stroke
+            sd.getPaint().setStyle(Paint.Style.STROKE);
+            sd.setPadding(5, 5, 5, 5);
+            // Finally, add the drawable background to TextView
+            weightTxt.setBackground(sd);
+            llh.addView(weightTxt);
+            bagsLinearLayout.addView(llh);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
+
     // delete all bag one by one
     public void deleteBag(View v) {
         try {
@@ -657,7 +471,8 @@ public class BluetoothActivity extends AppCompatActivity {
             Toast.makeText(BluetoothActivity.this, "Please Add Bag First", Toast.LENGTH_SHORT).show();
         }
     }
-  // to send individual weight
+
+    // to send individual weight
     public String sendIndividualBagWeight() {
         String bagWeight = "", updateBagWeight = "";
         try {
@@ -675,16 +490,16 @@ public class BluetoothActivity extends AppCompatActivity {
                         "}\n";
 
                 jsonObject = new JSONObject();
-                jsonObject.put("bagTypeId",bagTypeId);
-                jsonObject.put("sequence",Sequence);
-                jsonObject.put("netWeight",bagNetWeight.get(k));
-                jsonObject.put("grossWeight",bagGrossWeight.get(k));
-                jsonObject.put("tareWeigh",String.valueOf(newbag));
+                jsonObject.put("bagTypeId", bagTypeId);
+                jsonObject.put("sequence", Sequence);
+                jsonObject.put("netWeight", bagNetWeight.get(k));
+                jsonObject.put("grossWeight", bagGrossWeight.get(k));
+                jsonObject.put("tareWeigh", String.valueOf(newbag));
                 map.put("json" + k, jsonObject);
                 arr.put(map.get("json" + k));
 
             }
-            Log.e("The json string is ","" + arr.toString());
+            Log.e("The json string is ", "" + arr.toString());
             updateBagWeight = updateBagWeight + arr.toString();
 
         } catch (Exception e) {
@@ -701,6 +516,7 @@ public class BluetoothActivity extends AppCompatActivity {
             e.printStackTrace();
         }
     }
+
 
     // to call send weight api
     private class SendBag extends AsyncTask<String, Void, String> {
@@ -732,12 +548,12 @@ public class BluetoothActivity extends AppCompatActivity {
                         "\"noOfBags\": \"" + numbag + "\",\n" +
                         "\"bagTypeId\": \"" + bagTypeId + "\",\n" +
                         "\"bags\": " + IndividualBagWeight +
-                        ",\n"+
-                        "\"feeCategoryId\": \"" +feeCategoryId +
+                        ",\n" +
+                        "\"feeCategoryId\": \"" + feeCategoryId +
                         "\"}\n" +
                         "}";
 
-                Log.e("Data","Data"+urlParameters);
+                Log.e("Data", "Data" + urlParameters);
 
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 
@@ -770,7 +586,7 @@ public class BluetoothActivity extends AppCompatActivity {
 
             } catch (Exception exc) {
                 String excep = exc.getMessage();
-                Log.e("TAG","excep"+excep);
+                Log.e("TAG", "excep" + excep);
             }
             return text;
         }
@@ -780,7 +596,7 @@ public class BluetoothActivity extends AppCompatActivity {
                 p.dismiss();
                 JSONObject object = new JSONObject(result);
                 String StatusMsg = object.getString("statusMsg");
-                Log.e("TAG","StatusMsg"+StatusMsg);
+                Log.e("TAG", "StatusMsg" + StatusMsg);
                 if (StatusMsg.equals("S")) {
                     Toast.makeText(BluetoothActivity.this, "Weight Sent Successfully", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(BluetoothActivity.this, PrintWeighingSlipActivity.class);
@@ -811,7 +627,7 @@ public class BluetoothActivity extends AppCompatActivity {
                 }
             } catch (Exception e) {
                 p.dismiss();
-                Log.e("TAG","e"+e.toString());
+                Log.e("TAG", "e" + e.toString());
             }
 
         }
@@ -842,12 +658,24 @@ public class BluetoothActivity extends AppCompatActivity {
 
     }
 
+    public void goBackToWelcomeActivity() {
+        Intent intent = new Intent(BluetoothActivity.this, WelcomeUserActivity.class);
+        intent.putExtra("u_name", loginid.toString());
+        intent.putExtra("u_pass", password.toString());
+        intent.putExtra("username", userActualName.toString());
+        intent.putExtra("u_orgid", orgid.toString());
+        intent.putExtra("u_id", userid.toString());
+        intent.putExtra("opr_id", oprId.toString());
+        startActivity(intent);
+        finish();
+    }
+
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(BluetoothActivity.this, WelcomeUserActivity.class);
         intent.putExtra("u_name", loginid.toString());
         intent.putExtra("u_pass", password.toString());
-        intent.putExtra("username",userActualName.toString());
+        intent.putExtra("username", userActualName.toString());
         intent.putExtra("u_orgid", orgid.toString());
         intent.putExtra("u_id", userid.toString());
         intent.putExtra("opr_id", oprId.toString());
