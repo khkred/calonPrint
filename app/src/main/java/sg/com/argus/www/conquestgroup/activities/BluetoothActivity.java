@@ -22,6 +22,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -70,6 +71,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     ArrayList<String> bagGrossWeight = new ArrayList<String>();
 
     RecyclerView bagRecyclerView;
+
+    TextView liveFeedTV;
 
     //=========Single Bag Layout Variables================
     LinearLayout singleBagLayout;
@@ -135,6 +138,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         bagsLinearLayout = findViewById(R.id.bags_list_linear_layout);
         scrollView = findViewById(R.id.scrollView);
 
+        liveFeedTV = findViewById(R.id.live_weight_textView);
         //Single Bag Layout
         singleBagNoTV = findViewById(R.id.bag_label_text_view);
         singleGoodsWeightTV = findViewById(R.id.bag_weight_text_view);
@@ -175,7 +179,26 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         /**
          * Bluetooth code from here
          */
+        f30b = new Bluetooth(this);
+        f30b.enableBluetooth();
+        f30b.setCommunicationCallback(this);
 
+
+        /**
+         * Spinner dropdown selection from here
+         */
+
+        bluetooth_devices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
 
 
 
@@ -244,6 +267,14 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         adapter.setDropDownViewResource(R.layout.simple_spinner_dropdown_item);
         bluetooth_devices.setAdapter(adapter);
 
+    }
+
+    public void Display(final String str) {
+        runOnUiThread(new Runnable() {
+            public void run() {
+                liveFeedTV.setText(str);
+            }
+        });
     }
 
 
