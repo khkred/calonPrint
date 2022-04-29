@@ -56,7 +56,7 @@ public class Bluetooth {
             }
         }
     };
-    /* access modifiers changed from: private */
+
     public BroadcastReceiver mReceiverScan = new BroadcastReceiver() {
         /* JADX WARNING: Removed duplicated region for block: B:17:0x003b  */
         /* JADX WARNING: Removed duplicated region for block: B:20:0x0055  */
@@ -72,7 +72,6 @@ public class Bluetooth {
     /* access modifiers changed from: private */
     public BluetoothSocket socket;
 
-    /* renamed from: me.aflak.bluetooth.Bluetooth$CommunicationCallback */
     public interface CommunicationCallback {
         void onConnect(BluetoothDevice bluetoothDevice);
 
@@ -85,7 +84,6 @@ public class Bluetooth {
         void onMessage(String str);
     }
 
-    /* renamed from: me.aflak.bluetooth.Bluetooth$DiscoveryCallback */
     public interface DiscoveryCallback {
         void onDevice(BluetoothDevice bluetoothDevice);
 
@@ -157,7 +155,6 @@ public class Bluetooth {
         }
     }
 
-    /* renamed from: me.aflak.bluetooth.Bluetooth$ReceiveThread */
     private class ReceiveThread extends Thread implements Runnable {
         private ReceiveThread() {
         }
@@ -184,7 +181,6 @@ public class Bluetooth {
         }
     }
 
-    /* renamed from: me.aflak.bluetooth.Bluetooth$ConnectThread */
     private class ConnectThread extends Thread {
         public ConnectThread(BluetoothDevice bluetoothDevice) {
             BluetoothDevice unused = Bluetooth.this.device = bluetoothDevice;
