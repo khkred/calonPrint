@@ -24,6 +24,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.Spinner;
@@ -34,6 +35,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,15 +56,15 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     static StringBuilder stringbuilder;
     Spinner bluetooth_devices;
-     List<BluetoothDevice> mDeviceList;
+    List<BluetoothDevice> mDeviceList;
     private final String TAG = BluetoothActivity.class.getSimpleName();
-    private TextView  onlyBagWeight;
+    private TextView onlyBagWeight;
     private static TextView NumofBags;
     LinearLayout blueDisable;
     LinearLayout blueEnable;
-    private static TextView bagTxt,  TotalWeightInQuintal;
-//    LinearLayout bagsLinearLayout, llh;
-    Button addBagBtn, submit;
+    private static TextView bagTxt, TotalWeightInQuintal;
+    //    LinearLayout bagsLinearLayout, llh;
+    Button addBagBtn, submit, addMultipleBagsBtn;
     ConnectionDetector cd;
     private String userActualName;
     Boolean isInternetPresent = false;
@@ -71,6 +73,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     RecyclerView bagRecyclerView;
 
     TextView liveFeedTV;
+    EditText manualBagsToAdd;
     public String liveFeedString = "";
 
     //=========Single Bag Layout Variables================
@@ -132,8 +135,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         bluetooth_devices = (Spinner) findViewById(R.id.bluetoothDevices);
         onlyBagWeight = (TextView) findViewById(R.id.onlyBagWeight);
         NumofBags = (TextView) findViewById(R.id.numBag);
+        manualBagsToAdd = (EditText) findViewById(R.id.how_many_bags_edit_text);
         TotalWeightInQuintal = (TextView) findViewById(R.id.totalWeight);
         addBagBtn = (Button) findViewById(R.id.add_bag_btn);
+        addMultipleBagsBtn = (Button) findViewById(R.id.add_multiple_bags_btn);
         final Intent intent = getIntent();
         loginid = intent.getStringExtra("u_name");
         userActualName = intent.getStringExtra("username");
@@ -159,7 +164,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
          * Bag Recycler View code from Here
          */
 
-        bagViewAdapter = new BagViewAdapter(getApplicationContext(),bagArrayList);
+        bagViewAdapter = new BagViewAdapter(getApplicationContext(), bagArrayList);
 
         bagRecyclerView.setHasFixedSize(true);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getApplicationContext(), LinearLayoutManager.VERTICAL, false);
@@ -177,10 +182,9 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
         Display("Connecting...");
         this.blueToothWeightDevice.connectToDevice(blueToothWeightDevice.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
-        Log.d("Harish",bluetooth_devices.getSelectedItemPosition()+" pos");
+        Log.d("Harish", bluetooth_devices.getSelectedItemPosition() + " pos");
         registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
         this.registered = true;
-
 
 
         /**
@@ -195,7 +199,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     BluetoothActivity.this.registered = false;
                 }
 
-                Log.e("Harish","Clicked Position"+position);
+                Log.e("Harish", "Clicked Position" + position);
                 Display("Connecting...");
                 BluetoothActivity.this.blueToothWeightDevice.removeCommunicationCallback();
                 BluetoothActivity.this.blueToothWeightDevice.disconnect();
@@ -203,7 +207,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 BluetoothActivity.this.blueToothWeightDevice.enableBluetooth();
                 BluetoothActivity.this.blueToothWeightDevice.setCommunicationCallback(BluetoothActivity.this);
                 BluetoothActivity.this.blueToothWeightDevice.connectToDevice(BluetoothActivity.this.blueToothWeightDevice.getPairedDevices().get(position));
-
 
 
             }
@@ -215,11 +218,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         });
 
 
-
-
         addBagBtn.setOnClickListener(v -> {
             if (bluetooth_devices.getSelectedItem() != null) {
                 // emptyBagWeight shouldn't be more than 3 KG.
+
                 if (emptyBagWeight <= 3) {
                     addSingleBag();
                 } else {
@@ -231,6 +233,26 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
         });
 
+        addMultipleBagsBtn.setOnClickListener(v -> {
+            if (bluetooth_devices.getSelectedItem() != null) {
+                // emptyBagWeight shouldn't be more than 3 KG.
+                Integer manualBagsToAddVal = Integer.parseInt(manualBagsToAdd.getText().toString());
+
+                if (manualBagsToAddVal < 2) {
+                    Toast.makeText(BluetoothActivity.this, "No of bags should be more than 1", Toast.LENGTH_SHORT).show();
+                } else if (emptyBagWeight <= 3) {
+                    Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
+                } else {
+                    for (int i = 0; i < manualBagsToAddVal; i++) {
+                        addSingleBag();
+                    }
+                }
+            } else {
+                Toast.makeText(BluetoothActivity.this, "Device is not connected", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
         submit.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -238,7 +260,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 try {
                     isInternetPresent = cd.isConnectingToInternet();
                     if (isInternetPresent) {
-                        if (getBagsCount()!=0 && getTotalBagWeight() >0) {
+                        if (getBagsCount() != 0 && getTotalBagWeight() > 0) {
                             new BluetoothActivity.SendBag().execute();
                         } else {
                             Toast.makeText(BluetoothActivity.this, "Please Add Bag First", Toast.LENGTH_SHORT).show();
@@ -254,25 +276,26 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         });
 
     }
-/*
-Removes bag from bagList
- */
-    public static void decreaseBagCount(int position, Context context){
+
+    /*
+    Removes bag from bagList
+     */
+    public static void decreaseBagCount(int position, Context context) {
         //remove bag
         bagWeightList.remove(position);
         NumofBags.setText("No of Bags:  " + getBagsCount());
-        TotalWeightInQuintal.setText("Total Weight: " + roundOffTo2DecPlaces(getTotalQuintalWeight()));
+        TotalWeightInQuintal.setText("Total Weight: " + roundOffTo3DecPlaces(getTotalQuintalWeight()));
 
         Toast.makeText(context, "Bag deleted successfully", Toast.LENGTH_SHORT).show();
 
     }
 
-    public void addDevicesToList(){
+    public void addDevicesToList() {
 
         mDeviceList = blueToothWeightDevice.getPairedDevices();
         ArrayList<String> stringArrayList = new ArrayList<>();
 
-        for (BluetoothDevice device: mDeviceList) {
+        for (BluetoothDevice device : mDeviceList) {
             stringArrayList.add(device.getName());
         }
         ArrayAdapter<String> adapter = new ArrayAdapter(this, R.layout.simple_spinner_item, stringArrayList);
@@ -351,32 +374,29 @@ Removes bag from bagList
     }
 
 
-    public static int getBagsCount(){
+    public static int getBagsCount() {
         return bagWeightList.size();
     }
 
-    public static double getTotalBagWeight()
-    {
+    public static double getTotalBagWeight() {
         double totalWeight = 0;
 
-        for(double sw: bagWeightList) {
+        for (double sw : bagWeightList) {
             totalWeight += sw;
         }
         return totalWeight;
     }
 
-    public static double getTotalQuintalWeight()
-    {
-        return getTotalBagWeight()/100;
+    public static double getTotalQuintalWeight() {
+        return getTotalBagWeight() / 100;
     }
 
-    public double getTotalNetWeight()
-    {
+    public double getTotalNetWeight() {
         return getTotalBagWeight() - getTotalEmptyBagWeight();
     }
 
-    public double getTotalEmptyBagWeight(){
-        return getBagsCount()*Double.parseDouble(onlyBagWeight.getText().toString());
+    public double getTotalEmptyBagWeight() {
+        return getBagsCount() * Double.parseDouble(onlyBagWeight.getText().toString());
     }
 
     // formatstring to two decimal places
@@ -402,7 +422,7 @@ Removes bag from bagList
     @Override
     protected void onDestroy() {
 
-        Log.d("HarishDestroy","Destory called");
+        Log.d("HarishDestroy", "Destory called");
         super.onDestroy();
         if (this.registered) {
             unregisterReceiver(this.mReceiver);
@@ -415,16 +435,16 @@ Removes bag from bagList
 
     private void addSingleBag() {
         String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
-        String bagLabel = "Bag " + getBagsCount()+1;
+        String bagLabel = "Bag " + getBagsCount() + 1;
         String fetchWeightString = " " + WeightOfBag + " KG";
         bagArrayList.add(new Bag(bagLabel, fetchWeightString));
         bagViewAdapter.notifyDataSetChanged();
         bagWeightList.add(Double.parseDouble(WeightOfBag));
-        TotalWeightInQuintal.setText("Total Weight: " + getTotalQuintalWeight());
+        TotalWeightInQuintal.setText("Total Weight: " + roundOffTo3DecPlaces(getTotalQuintalWeight()));
         NumofBags.setText("No of Bags:  " + getBagsCount());
     }
 
-    public void addSingleBagCalculations(){
+    public void addSingleBagCalculations() {
 
     }
 
@@ -441,7 +461,7 @@ Removes bag from bagList
                 bagWeight = "{\n" +
                         "\"bagTypeId\": \"" + bagTypeId + "\",\n" +
                         "\"sequence\": \"" + Sequence + "\",\n" +
-                        "\"netWeight\": \"" + (bagWeightList.get(k) - emptyBagWeight )+ "\",\n" +
+                        "\"netWeight\": \"" + (bagWeightList.get(k) - emptyBagWeight) + "\",\n" +
                         "\"grossWeight\": \"" + bagWeightList.get(k) + "\",\n" +
                         "\"tareWeigh\": \"" + emptyBagWeight + "\"\n" +
                         "}\n";
