@@ -63,6 +63,7 @@
                     android:textSize="@dimen/textsize_20sp" />
 
                 <AutoCompleteTextView
+                    android:inputType="number"
                     android:id="@+id/searchLotDetails"
                     android:layout_width="@dimen/margin_220dp"
                     android:layout_height="wrap_content"
