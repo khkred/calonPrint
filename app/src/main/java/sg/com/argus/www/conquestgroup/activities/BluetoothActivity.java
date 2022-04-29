@@ -336,7 +336,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         });
 
     }
-
     @Override
     public void onDisconnect(BluetoothDevice bluetoothDevice, String str) {
         Display("Disconnected!");
@@ -359,6 +358,14 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     //==========================================================================================================
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        bagWeightList.clear();
+        bagArrayList.clear();
+
+    }
 
     @Override
     protected void onPause() {
