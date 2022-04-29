@@ -10,6 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
+
         <ImageView
             android:layout_width="@dimen/margin_90dp"
             android:layout_height="@dimen/margin_50dp"
@@ -20,12 +21,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_10dp"
             android:layout_weight="0.40">
+
             <Spinner
                 android:id="@+id/bluetoothDevices"
                 android:layout_width="match_parent"
+                android:layout_height="@dimen/margin_40dp"
                 android:layout_marginRight="@dimen/margin_10dp"
-                android:background="@drawable/gradient_spinner"
-                android:layout_height="@dimen/margin_40dp"/>
+                android:background="@drawable/gradient_spinner" />
         </LinearLayout>
         <!--<TextView
             android:layout_width="wrap_content"
@@ -46,47 +48,83 @@
              android:textSize="@dimen/textsize_14sp" />-->
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Live Feed: " />
+
+        <TextView
+            android:id="@+id/live_weight_textView"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/margin_40dp"
+            android:layout_weight=".5"
+            android:background="@drawable/digi_screen"
+            android:gravity="center"
+            android:text="Waiting .."
+            android:textColor="@color/black_000" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_marginLeft="@dimen/margin_10dp"
+            android:text="No of Bags: "
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin_10dp"/>
+
+        <EditText
+            android:id="@+id/how_many_bags_edit_text"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:inputType="number"
+            android:text="1"/>
+
+        <Button
+            android:id="@+id/add_multiple_bags_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/custom_lightgreen_cloud_button"
+            android:text="Add"
+            android:textAllCaps="false"
+            android:textSize="18sp" />
+
+    </LinearLayout>
+
     <ScrollView
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="@dimen/margin_220dp"
         android:layout_marginLeft="@dimen/margin_10dp"
-        android:layout_marginRight="@dimen/margin_10dp"
         android:layout_marginTop="@dimen/margin_10dp"
+        android:layout_marginRight="@dimen/margin_10dp"
         android:background="@drawable/digi_screen">
 
+
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <TextView
-                    android:text="Current Weight: "
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-                <TextView
-                    android:id="@+id/live_weight_textView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/margin_40dp"
-                    android:layout_weight=".5"
-                    android:gravity="center"
-                    android:text="Current Weight"
-                    android:textColor="@color/black_000"
-                    android:background="@drawable/digi_screen" />
-            </LinearLayout>
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recycler_view"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-            <LinearLayout
-                android:id="@+id/bags_list_linear_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"/>
+                android:layout_height="wrap_content" />
+
+<!--            <LinearLayout-->
+<!--                android:id="@+id/bags_list_linear_layout"-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="vertical" />-->
 
 
         </LinearLayout>
@@ -97,60 +135,61 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:weightSum="1"
-        android:layout_marginTop="@dimen/margin_10dp"
         android:layout_marginLeft="@dimen/margin_10dp"
-        android:layout_marginRight="@dimen/margin_10dp">
+        android:layout_marginTop="@dimen/margin_10dp"
+        android:layout_marginRight="@dimen/margin_10dp"
+        android:weightSum="1">
 
         <TextView
             android:id="@+id/numBag"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/margin_40dp"
             android:layout_weight=".5"
+            android:background="@drawable/digi_screen"
             android:gravity="center"
             android:text="@string/no_of_bags"
-            android:textColor="@color/black_000"
-            android:background="@drawable/digi_screen" />
+            android:textColor="@color/black_000" />
 
         <TextView
+            android:id="@+id/totalWeight"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/margin_40dp"
-            android:gravity="center"
-            android:layout_weight=".5"
-            android:textColor="@color/black_000"
-            android:id="@+id/totalWeight"
-            android:text="@string/total_weight_in_quintal"
             android:layout_marginLeft="@dimen/margin_10dp"
-            android:background="@drawable/digi_screen" />
+            android:layout_weight=".5"
+            android:background="@drawable/digi_screen"
+            android:gravity="center"
+            android:text="@string/total_weight_in_quintal"
+            android:textColor="@color/black_000" />
     </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_10dp"
-        android:weightSum="1"
+        android:layout_marginLeft="@dimen/margin_10dp"
         android:layout_marginTop="@dimen/margin_10dp"
-        android:layout_marginLeft="@dimen/margin_10dp">
+        android:layout_marginRight="@dimen/margin_10dp"
+        android:weightSum="1">
 
         <Button
             android:id="@+id/add_bag_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
             android:layout_marginLeft="@dimen/margin_10dp"
             android:layout_marginTop="@dimen/margin_10dp"
+            android:layout_weight=".5"
             android:background="@drawable/custom_lightgreen_cloud_button"
             android:text="@string/add_bag"
             android:textAllCaps="false"
             android:textColor="@color/black_000"
             android:textSize="@dimen/textsize_20sp" />
+
         <Button
             android:id="@+id/removebag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
             android:layout_marginLeft="@dimen/margin_50dp"
             android:layout_marginTop="@dimen/margin_10dp"
+            android:layout_weight=".5"
             android:background="@drawable/custom_lightgreen_cloud_button"
             android:text="@string/delete_bag"
             android:textAllCaps="false"
@@ -174,9 +213,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_10dp"
+        android:layout_marginLeft="@dimen/margin_10dp"
         android:layout_marginTop="@dimen/margin_10dp"
-        android:layout_marginLeft="@dimen/margin_10dp">
+        android:layout_marginRight="@dimen/margin_10dp">
 
         <!--<Button
             android:id="@+id/btnOnOff"
@@ -202,35 +241,38 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:textColor="@color/black_000"
             android:layout_marginLeft="@dimen/margin_10dp"
-            android:text="@string/bag_weight"/>
+            android:text="@string/bag_weight"
+            android:textColor="@color/black_000" />
+
         <EditText
             android:id="@+id/onlyBagWeight"
             android:layout_width="@dimen/margin_80dp"
             android:layout_height="@dimen/margin_30dp"
-            android:gravity="center"
-            android:maxLines="1"
-            android:inputType="numberDecimal"
-            android:scrollHorizontally="true"
-            android:ellipsize="end"
             android:layout_gravity="center"
-            android:layout_marginRight="@dimen/margin_5dp"
-            android:text="@string/_1"
-            android:textColor="@color/black_000"
             android:layout_marginLeft="@dimen/margin_10dp"
-            android:background="@drawable/digi_screen" />
+            android:layout_marginRight="@dimen/margin_5dp"
+            android:background="@drawable/digi_screen"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:inputType="numberDecimal"
+            android:maxLines="1"
+            android:scrollHorizontally="true"
+            android:text="@string/_1"
+            android:textColor="@color/black_000" />
+
         <TextView
             android:layout_width="wrap_content"
-            android:gravity="center"
             android:layout_height="match_parent"
-            android:text="Kg"/>
+            android:gravity="center"
+            android:text="Kg" />
+
         <Button
             android:id="@+id/submit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight=".5"
             android:layout_marginLeft="@dimen/margin_20dp"
+            android:layout_weight=".5"
             android:background="@drawable/custom_lightgreen_cloud_button"
             android:text="@string/submit"
             android:textAllCaps="false"
@@ -238,21 +280,23 @@
             android:textSize="@dimen/textsize_20sp" />
 
     </LinearLayout>
+
     <LinearLayout
-        android:layout_width="match_parent"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
         android:id="@+id/blueDisable"
-        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:background="@color/colorPrimary"
         android:orientation="vertical"
-        android:layout_height="50dp">
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp"
+        android:visibility="gone">
+
         <Button
+            android:id="@+id/enableBlutooth"
             android:layout_width="178.0dip"
             android:layout_height="wrap_content"
-            android:id="@+id/enableBlutooth"
             android:background="@color/colorAccent"
-            android:textStyle="italic"
-            android:text="Enable Bluetooth"/>
+            android:text="Enable Bluetooth"
+            android:textStyle="italic" />
     </LinearLayout>
 </LinearLayout>
