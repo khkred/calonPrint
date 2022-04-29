@@ -188,10 +188,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         f30b = new Bluetooth(this);
         f30b.enableBluetooth();
         f30b.setCommunicationCallback(this);
-
         addDevicesToList();
+
         Display("Connecting...");
-        this.f30b.connectToDevice(this.f30b.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
+        this.f30b.connectToDevice(f30b.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
         Log.d("Harish",bluetooth_devices.getSelectedItemPosition()+" pos");
         registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
         this.registered = true;
@@ -434,11 +434,15 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     @Override
     protected void onDestroy() {
+
+        Log.d("HarishDestroy","Destory called");
         super.onDestroy();
         if (this.registered) {
             unregisterReceiver(this.mReceiver);
             this.registered = false;
         }
+        this.f30b.removeCommunicationCallback();
+        this.f30b.disconnect();
 
     }
 
