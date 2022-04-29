@@ -12,6 +12,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import sg.com.argus.www.conquestgroup.R;
+import sg.com.argus.www.conquestgroup.activities.BluetoothActivity;
 import sg.com.argus.www.conquestgroup.models.Bag;
 
 public class BagViewAdapter extends RecyclerView.Adapter<BagViewAdapter.BagViewHolder> {
@@ -50,6 +51,8 @@ public class BagViewAdapter extends RecyclerView.Adapter<BagViewAdapter.BagViewH
             holder.bagWeightTV.setText(bag.getBagWeight());
         }
         holder.removeBtn.setOnClickListener(view1 -> {
+
+            BluetoothActivity.decreaseBagCount(bagArrayList.get(position).getBagWeight());
             bagArrayList.remove(position);
             notifyDataSetChanged();
         });
