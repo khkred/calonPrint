@@ -18,23 +18,17 @@
             android:src="@drawable/conquest1" />
 
         <TextView
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginLeft="@dimen/margin_5dp"
+            android:layout_marginLeft="50dp"
             android:gravity="center"
             android:text="@string/weighing_slip"
-            android:textStyle="bold"
             android:textColor="@color/black_000"
-            android:textSize="@dimen/textsize_16sp" />
+            android:textSize="@dimen/textsize_16sp"
+            android:textStyle="bold" />
 
-        <Spinner
-            android:id="@+id/deviceSpinner"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/margin_40dp"
-            android:layout_marginLeft="@dimen/margin_5dp"
-            android:background="@drawable/gradient_spinner"
-            android:gravity="center" />
     </LinearLayout>
     <ScrollView
         android:layout_width="match_parent"
