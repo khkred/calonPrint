@@ -37,6 +37,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -182,7 +183,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
         Display("Connecting...");
         this.blueToothWeightDevice.connectToDevice(blueToothWeightDevice.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
-        Log.d("Harish", bluetooth_devices.getSelectedItemPosition() + " pos");
         registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
         this.registered = true;
 
@@ -199,7 +199,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     BluetoothActivity.this.registered = false;
                 }
 
-                Log.e("Harish", "Clicked Position" + position);
                 Display("Connecting...");
                 BluetoothActivity.this.blueToothWeightDevice.removeCommunicationCallback();
                 BluetoothActivity.this.blueToothWeightDevice.disconnect();
@@ -425,7 +424,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     @Override
     protected void onDestroy() {
 
-        Log.d("HarishDestroy", "Destory called");
         super.onDestroy();
         if (this.registered) {
             unregisterReceiver(this.mReceiver);
@@ -600,6 +598,15 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     intent.putExtra("lotRate", lotRate.toString());
                     intent.putExtra("actualBags", actualBags.toString());
                     intent.putExtra("traderName", traderName.toString());
+                    intent.putExtra("username",userActualName);
+
+                    /**
+                     * Serialisable Extra
+                     */
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("bagWeightList",bagWeightList);
+                    intent.putExtra("bundle",bundle);
+
                     startActivity(intent);
                     finish();
                 } else {

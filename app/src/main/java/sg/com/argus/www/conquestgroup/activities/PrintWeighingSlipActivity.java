@@ -61,13 +61,10 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private String SName, Com, tName, cName, lRate, noOfBag, bagType, TotalWeight, bagTypeId, loginid, password, userid, orgid, lotId, QuintalWeight, NetWeight, BagsWeight, actualBags, netAmt;
     private TextView sellerNAme, commodity, TraderName, CaName, bidPrice, PbagType, PnumBag, lotid, actual_no_of_bag, gross_weight, net_weight, net_amt, bag_weight;
     private Button printBtn, saveBtn,closebtn;
-    private String bagweigh;
     LinearLayout ll, llh;
     private TextView bagTxt, weightTxt;
-    String result = "";
     int j = 0, k = 0;
     private double NetWeightValue, BagsWeightValue, ActualNoofBags;
-    String[] dr;
     String oprId;
     int permissionCheck, permissionCheckWrite;
     public static final int MY_PERMISSIONS_REQUEST_STORAGE = 99;
@@ -84,6 +81,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private ArrayAdapter<String> arrayAdapter;
     private static final int REQUEST_CONNECT_DEVICE = 1;
     List<BluetoothDevice> devices = new ArrayList<>();
+    private String userActualName;
+    private ArrayList<Double> bagWeightList;
 
 
 
@@ -130,7 +129,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         orgid = intent.getStringExtra("u_orgid");
         userid = intent.getStringExtra("u_id");
         oprId = intent.getStringExtra("opr_id");
-        bagweigh = getIntent().getStringExtra("BagWeight");
         lotId = getIntent().getStringExtra("lotId");
         bagTypeId = intent.getStringExtra("bagTypeId");
         bagType = getIntent().getStringExtra("BagTypeDesc");
@@ -140,14 +138,20 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         NetWeight = getIntent().getStringExtra("NetWeight");
         actualBags = getIntent().getStringExtra("actualBags");
         BagsWeight = getIntent().getStringExtra("BagsWeight");
+        userActualName = intent.getStringExtra("username");
+
+        /**
+         * Get Serialisable
+         */
+        Bundle bundle = intent.getBundleExtra("bundle");
+        bagWeightList = (ArrayList<Double>)bundle.getSerializable("bagWeightList");
+
 
 
         NetWeightValue = Double.parseDouble(NetWeight);
         BagsWeightValue = Double.parseDouble(BagsWeight);
         ActualNoofBags = Double.parseDouble(actualBags);
 
-        result = bagweigh.toString();
-        dr = result.split("\\s+");
         AddBag();
         findBluetooth();
         SName = intent.getStringExtra("farmerName");
@@ -459,9 +463,9 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             printString.append("TOTAL NO OF BAGS   :").append(noOfBag).append("\n");
             printString.append("-----------------------------").append("\n");
             printString.append("SERIAL NO" + "        QUANTITY(Kg)").append("\n");
-            for (int i = 0; i < dr.length; i++) {
+            for (int i = 0; i < bagWeightList.size(); i++) {
                 k++;
-                printString.append("    ").append(k).append("              ").append(dr[i]).append("\n");
+                printString.append("    ").append(k).append("              ").append(bagWeightList.get(i)).append("\n");
             }
 
             printString.append("-----------------------------").append("\n");
@@ -512,7 +516,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             print(translator.toMiniLeft("-------------------------------"));
             print(translator.toMiniLeft("\n"));*/
         } catch (Exception excep) {
-            Log.d("HARISHEX",excep.toString());
             Toast.makeText(PrintWeighingSlipActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
         }
     }
@@ -561,7 +564,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     private void AddBag() {
 
-        for (int i = 0; i < dr.length; i++) {
+        for (int i = 0; i < bagWeightList.size(); i++) {
             j++;
             llh = new LinearLayout(PrintWeighingSlipActivity.this);
             llh.setOrientation(LinearLayout.HORIZONTAL);
@@ -582,7 +585,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             weightTxt.setTextColor(Color.parseColor("#000000"));
             weightTxt.setWidth(400);
             weightTxt.setHeight(50);
-            weightTxt.setText(" " + dr[i] + " Kg");
+            weightTxt.setText(" " + bagWeightList.get(i) + " Kg");
 
             llh.addView(weightTxt);
             ll.addView(llh);
@@ -640,9 +643,9 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             doc.add(new Paragraph("TOTAL NO OF BAGS     : " + noOfBag));
             doc.add(new Paragraph("--------------------------------------------------------------------"));
             doc.add(new Paragraph("SERIAL NO   " + "              QUANTITY(Kg)", boldFont));
-            for (int i = 0; i < dr.length; i++) {
+            for (int i = 0; i < bagWeightList.size(); i++) {
                 k++;
-                doc.add(new Paragraph("     " + k + "                                         " + dr[i], boldFont));
+                doc.add(new Paragraph("     " + k + "                                         " + bagWeightList.get(i), boldFont));
             }
             doc.add(new Paragraph("--------------------------------------------------------------------"));
             doc.add(new Paragraph("GROSS(QT)  :                       " + QuintalWeight, boldFont));
@@ -720,6 +723,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         intent.putExtra("actualBags", actualBags.toString());
         intent.putExtra("bagTypeId", bagTypeId.toString());
         intent.putExtra("TotalWeight", TotalWeight.toString());
+        intent.putExtra("username",userActualName);
         startActivity(intent);
         finish();
     }
