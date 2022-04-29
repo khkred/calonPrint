@@ -5,6 +5,9 @@
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CalonScaleApp.iml" filepath="$PROJECT_DIR$/.idea/modules/CalonScaleApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/billing-release/CalonScaleApp.billing-release.iml" filepath="$PROJECT_DIR$/.idea/modules/billing-release/CalonScaleApp.billing-release.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/calonPrint.iml" filepath="$PROJECT_DIR$/.idea/modules/calonPrint.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/calonPrint.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/calonPrint.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/billing-release/calonPrint.billing-release.iml" filepath="$PROJECT_DIR$/.idea/modules/billing-release/calonPrint.billing-release.iml" />
     </modules>
   </component>
 </project>

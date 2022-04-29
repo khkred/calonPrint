@@ -55,15 +55,12 @@ import sg.com.argus.www.conquestgroup.models.Bag;
 public class BluetoothActivity extends AppCompatActivity implements Bluetooth.CommunicationCallback {
 
 
-    static StringBuilder stringbuilder;
     Spinner bluetooth_devices;
     List<BluetoothDevice> mDeviceList;
-    private final String TAG = BluetoothActivity.class.getSimpleName();
     private TextView onlyBagWeight;
     private static TextView NumofBags;
     LinearLayout blueDisable;
-    LinearLayout blueEnable;
-    private static TextView bagTxt, TotalWeightInQuintal;
+    private static TextView TotalWeightInQuintal;
     //    LinearLayout bagsLinearLayout, llh;
     Button addBagBtn, submit, addMultipleBagsBtn;
     ConnectionDetector cd;
@@ -123,7 +120,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         setSupportActionBar(mToolbar);
         final Activity activity = this;
         cd = new ConnectionDetector(this);
-        stringbuilder = new StringBuilder();
         submit = (Button) findViewById(R.id.submit);
 
 //        bagsLinearLayout = findViewById(R.id.bags_list_linear_layout);
@@ -220,11 +216,16 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         addBagBtn.setOnClickListener(v -> {
             if (bluetooth_devices.getSelectedItem() != null) {
                 // emptyBagWeight shouldn't be more than 3 KG.
-
-                if (emptyBagWeight <= 3) {
-                    addSingleBag();
+                String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
+                Double weightOfBagVal = Double.parseDouble(WeightOfBag);
+                if (weightOfBagVal <= emptyBagWeight) {
+                    Toast.makeText(BluetoothActivity.this, "Weight of the bag should be more than empty bag", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
+                    if (emptyBagWeight <= 3) {
+                        addSingleBag(weightOfBagVal);
+                    } else {
+                        Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
+                    }
                 }
             } else {
                 Toast.makeText(BluetoothActivity.this, "Device is not connected", Toast.LENGTH_SHORT).show();
@@ -236,14 +237,19 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
             if (bluetooth_devices.getSelectedItem() != null) {
                 // emptyBagWeight shouldn't be more than 3 KG.
                 Integer manualBagsToAddVal = Integer.parseInt(manualBagsToAdd.getText().toString());
-
+                String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
+                Double weightOfBagVal = Double.parseDouble(WeightOfBag);
                 if (manualBagsToAddVal < 2) {
                     Toast.makeText(BluetoothActivity.this, "No of bags should be more than 1", Toast.LENGTH_SHORT).show();
                 } else if (emptyBagWeight >= 3) {
                     Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
-                } else {
+                }
+                else if(weightOfBagVal <= emptyBagWeight){
+                    Toast.makeText(BluetoothActivity.this, "Weight of the bag should be more than empty bag", Toast.LENGTH_SHORT).show();
+                }
+                else {
                     for (int i = 0; i < manualBagsToAddVal; i++) {
-                        addSingleBag();
+                        addSingleBag(weightOfBagVal);
                     }
                 }
             } else {
@@ -335,6 +341,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         });
 
     }
+
     @Override
     public void onDisconnect(BluetoothDevice bluetoothDevice, String str) {
         Display("Disconnected!");
@@ -434,13 +441,12 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     }
 
-    private void addSingleBag() {
-        String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
+    private void addSingleBag(Double weightOfBagVal) {
         String bagLabel = "Bag " + (getBagsCount() + 1);
-        String fetchWeightString = " " + WeightOfBag + " KG";
+        String fetchWeightString = " " + weightOfBagVal + " KG";
         bagArrayList.add(new Bag(bagLabel, fetchWeightString));
         bagViewAdapter.notifyDataSetChanged();
-        bagWeightList.add(Double.parseDouble(WeightOfBag));
+        bagWeightList.add(weightOfBagVal);
         TotalWeightInQuintal.setText("Total Weight: " + roundOffTo3DecPlaces(getTotalQuintalWeight()));
         NumofBags.setText("No of Bags:  " + getBagsCount());
     }
@@ -484,15 +490,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
             e.printStackTrace();
         }
         return updateBagWeight;
-    }
-
-    public static void StoreBagWeight(String saveWeight) {
-        try {
-            saveWeight = saveWeight.replace(" ", "");
-            stringbuilder.append(saveWeight + " ");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
 
@@ -584,7 +581,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     intent.putExtra("u_id", userid.toString());
                     intent.putExtra("opr_id", oprId);
                     intent.putExtra("bagTypeId", bagTypeId.toString());
-                    intent.putExtra("BagWeight", stringbuilder.toString());
                     intent.putExtra("lotId", lotId.toString());
                     intent.putExtra("BagTypeDesc", BagTypeDesc.toString());
                     intent.putExtra("NoOfbag", String.valueOf(getBagsCount()));
@@ -598,14 +594,14 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     intent.putExtra("lotRate", lotRate.toString());
                     intent.putExtra("actualBags", actualBags.toString());
                     intent.putExtra("traderName", traderName.toString());
-                    intent.putExtra("username",userActualName);
+                    intent.putExtra("username", userActualName);
 
                     /**
                      * Serialisable Extra
                      */
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable("bagWeightList",bagWeightList);
-                    intent.putExtra("bundle",bundle);
+                    bundle.putSerializable("bagWeightList", bagWeightList);
+                    intent.putExtra("bundle", bundle);
 
                     startActivity(intent);
                     finish();
