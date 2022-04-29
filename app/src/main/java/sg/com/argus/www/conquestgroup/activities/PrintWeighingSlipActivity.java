@@ -60,7 +60,7 @@ import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 public class PrintWeighingSlipActivity extends AppCompatActivity {
     private String SName, Com, tName, cName, lRate, noOfBag, bagType, TotalWeight, bagTypeId, loginid, password, userid, orgid, lotId, QuintalWeight, NetWeight, BagsWeight, actualBags, netAmt;
     private TextView sellerNAme, commodity, TraderName, CaName, bidPrice, PbagType, PnumBag, lotid, actual_no_of_bag, gross_weight, net_weight, net_amt, bag_weight;
-    private Button printBtn, saveBtn,closebtn;
+    private Button printBtn, saveBtn;
     LinearLayout ll, llh;
     private TextView bagTxt, weightTxt;
     int j = 0, k = 0;
@@ -68,19 +68,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     String oprId;
     int permissionCheck, permissionCheckWrite;
     public static final int MY_PERMISSIONS_REQUEST_STORAGE = 99;
-    private BluetoothAdapter bluetoothAdapter;
-    private BluetoothSocket bluetoothSocket;
-    private BluetoothDevice bluetoothDevice;
-    private OutputStream outputStream;
-    private InputStream inputStream;
-    private Thread thread;
-    private byte[] readBuffer;
-    private int readBufferPos;
-    private boolean stopWorker;
-    private Spinner deviceSpinner;
-    private ArrayAdapter<String> arrayAdapter;
-    private static final int REQUEST_CONNECT_DEVICE = 1;
-    List<BluetoothDevice> devices = new ArrayList<>();
     private String userActualName;
     private ArrayList<Double> bagWeightList;
 
@@ -114,14 +101,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         net_amt = (TextView) findViewById(R.id.net_amt);
         saveBtn = (Button) findViewById(R.id.savebtn);
         printBtn = (Button) findViewById(R.id.printbtn);
-        //closebtn = (Button) findViewById(R.id.closebtn);
-        deviceSpinner = (Spinner) findViewById(R.id.deviceSpinner);
-        arrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1);
-        arrayAdapter.add("--select--");
-        deviceSpinner.setAdapter(arrayAdapter);
-
-        if (bluetoothDevice != null)
-            openBluetooth();
 
         final Intent intent = getIntent();
         loginid = intent.getStringExtra("u_name");
@@ -153,7 +132,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         ActualNoofBags = Double.parseDouble(actualBags);
 
         AddBag();
-        findBluetooth();
         SName = intent.getStringExtra("farmerName");
         Com = intent.getStringExtra("commodityName");
         cName = intent.getStringExtra("caName");
@@ -205,16 +183,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
             }
         });
-      /*  closebtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                try{
-                    closeBluetooth();
-                }catch (Exception ex){
-                    ex.printStackTrace();
-                }
-            }
-        });*/
         permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         permissionCheckWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -228,25 +196,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
 
 
-    public void findBluetooth() {
-        try {
-            bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (bluetoothAdapter == null) {
-                Toast.makeText(getApplicationContext(), "No Bluetooth Adapter Available!", Toast.LENGTH_SHORT).show();
-            }
-            if (!bluetoothAdapter.isEnabled()) {
-                Intent intent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(intent, REQUEST_CONNECT_DEVICE);
-            } else {
-
-                showScannedList();
-            }
-
-
-        } catch (Exception ex) {
-            Toast.makeText(getApplicationContext(), "Bluetooth Connection Failed!" + ex, Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public void printSampleText(String content) {
 
@@ -340,95 +289,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         return (byte) res;
     }
 
-    public void openBluetooth() {
-        try {
-            UUID uuid = UUID.fromString("00001101-0000-1000-8000-00805f9b34fb");
-            bluetoothSocket = bluetoothDevice.createRfcommSocketToServiceRecord(uuid);
-            //bluetoothSocket = bluetoothDevice.createInsecureRfcommSocketToServiceRecord(uuid);
-            bluetoothSocket.connect();
-            outputStream = bluetoothSocket.getOutputStream();
-            inputStream = bluetoothSocket.getInputStream();
-          /*  if (bluetoothSocket == null && (outputStream == null || inputStream == null)) {
-                Toast.makeText(getApplicationContext(), "Device is offline", Toast.LENGTH_SHORT).show();
-                return;
-            } else {*/
-                listenFromData();
-           // }
-        } catch (Exception ex) {
-            // Toast.makeText(getApplicationContext(), "Open Bluetooth" + ex, Toast.LENGTH_SHORT).show();
-            ex.printStackTrace();
-        }
-    }
 
-    private void listenFromData() {
-        try {
-            final Handler handler = new Handler();
-            final byte delimiter = 10;
-            stopWorker = false;
-            readBufferPos = 0;
-            readBuffer = new byte[1024];
 
-                synchronized (inputStream) {
-                    inputStream.wait(200);
-                }
-                String data = "";
-                while (inputStream.available() > 0) {
-                    final byte[] packetBytes = new byte[inputStream.available()];
-                    inputStream.read(packetBytes);
-                }
-                if (data == "" && data == null) {
-                    return;
-                }
-          /*  thread = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    while (!Thread.currentThread().isInterrupted() && !stopWorker) {
-                        try {
-                            int bytesAvailable = inputStream.available();
-                            if (bytesAvailable > 0) {
-                                byte[] packetBytes = new byte[bytesAvailable];
-                                inputStream.read(packetBytes);
-                                for (int i = 0; i < bytesAvailable; i++) {
-                                    byte b = packetBytes[i];
-                                    if (b == delimiter) {
-                                        byte[] encodedBytes = new byte[readBufferPos];
-                                        System.arraycopy(readBuffer, 0, encodedBytes, 0, encodedBytes.length);
-                                        final String data = new String(encodedBytes, "US-ASCII");
-                                        readBufferPos = 0;
-
-                                        handler.post(new Runnable() {
-                                            @Override
-                                            public void run() {
-                                                Toast.makeText(getApplicationContext(), "Data" + data, Toast.LENGTH_SHORT).show();
-                                            }
-                                        });
-                                    } else {
-                                        readBuffer[readBufferPos++] = b;
-                                    }
-                                }
-                            }
-                        } catch (IOException ex) {
-                            stopWorker = true;
-                        }
-                    }
-                }
-            });
-            thread.start();*/
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    void closeBluetooth() throws IOException {
-        try {
-            stopWorker = true;
-            outputStream.close();
-            inputStream.close();
-            bluetoothSocket.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
 
     //logo
@@ -520,29 +382,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         }
     }
 
-    private void showScannedList() {
-        Set<BluetoothDevice> deviceSet = bluetoothAdapter.getBondedDevices();
-        if (deviceSet.size() > 0) {
-            for (BluetoothDevice device : deviceSet) {
-                arrayAdapter.add(device.getName());
-            }
-            devices.addAll(deviceSet);
-            deviceSpinner.setAdapter(arrayAdapter);
-            deviceSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                @Override
-                public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                    if (position > 0)
-                        bluetoothDevice = (BluetoothDevice) devices.get(position - 1);
-                }
-
-                @Override
-                public void onNothingSelected(AdapterView<?> parentView) {
-                    // your code here
-                }
-
-            });
-        }
-    }
 
     private void print(byte[] cmd) {
         try {
