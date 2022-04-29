@@ -52,7 +52,7 @@ public class BagViewAdapter extends RecyclerView.Adapter<BagViewAdapter.BagViewH
         }
         holder.removeBtn.setOnClickListener(view1 -> {
 
-            BluetoothActivity.decreaseBagCount(bagArrayList.get(position).getBagWeight());
+            BluetoothActivity.decreaseBagCount(position, context);
             bagArrayList.remove(position);
             notifyDataSetChanged();
         });

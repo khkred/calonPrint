@@ -165,6 +165,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:layout_marginLeft="@dimen/margin_10dp"
         android:layout_marginTop="@dimen/margin_10dp"
         android:layout_marginRight="@dimen/margin_10dp"
@@ -172,7 +173,7 @@
 
         <Button
             android:id="@+id/add_bag_btn"
-            android:layout_width="wrap_content"
+            android:layout_width="115dp"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin_10dp"
             android:layout_marginTop="@dimen/margin_10dp"
@@ -183,18 +184,6 @@
             android:textColor="@color/black_000"
             android:textSize="@dimen/textsize_20sp" />
 
-        <Button
-            android:id="@+id/removebag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_50dp"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:layout_weight=".5"
-            android:background="@drawable/custom_lightgreen_cloud_button"
-            android:text="@string/delete_bag"
-            android:textAllCaps="false"
-            android:textColor="@color/black_000"
-            android:textSize="@dimen/textsize_20sp" />
 
         <!-- <Button
              android:id="@+id/fetch"
