@@ -596,7 +596,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     intent.putExtra("NoOfbag", String.valueOf(getBagsCount()));
                     intent.putExtra("TotalWeight", roundOffTo2DecPlaces(getTotalBagWeight()));
                     intent.putExtra("QuintalWeight", roundOffTo3DecPlaces(getTotalQuintalWeight()));
-                    intent.putExtra("NetWeight", String.valueOf(getTotalNetWeight()));
+                    intent.putExtra("NetWeight", roundOffTo3DecPlaces(getTotalNetWeight()));
                     intent.putExtra("BagsWeight", String.valueOf(getTotalEmptyBagWeight()));
                     intent.putExtra("commodityName", Commodity.toString());
                     intent.putExtra("farmerName", SellerName.toString());
