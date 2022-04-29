@@ -70,6 +70,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     Boolean isInternetPresent = false;
     ArrayList<String> bagNetWeight = new ArrayList<String>();
     ArrayList<String> bagGrossWeight = new ArrayList<String>();
+    private static String BagTypeDesc;
 
     RecyclerView bagRecyclerView;
 
@@ -155,6 +156,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         traderName = intent.getStringExtra("traderName");
         newBagTypeValue = intent.getStringExtra("newBagTypeValue");
         feeCategoryId = intent.getStringExtra("feeCategoryId");
+        BagTypeDesc = intent.getStringExtra("BagTypeDesc");
 
         try {
             GotBags = Double.parseDouble(actualBags);
