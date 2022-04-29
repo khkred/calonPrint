@@ -313,7 +313,6 @@ Removes bag from bagList
         });
 
     }
-
     @Override
     public void onDisconnect(BluetoothDevice bluetoothDevice, String str) {
         Display("Disconnected!");
@@ -336,6 +335,14 @@ Removes bag from bagList
 
     //==========================================================================================================
 
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        bagWeightList.clear();
+        bagArrayList.clear();
+
+    }
 
     @Override
     protected void onPause() {
