@@ -240,7 +240,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
                 if (manualBagsToAddVal < 2) {
                     Toast.makeText(BluetoothActivity.this, "No of bags should be more than 1", Toast.LENGTH_SHORT).show();
-                } else if (emptyBagWeight <= 3) {
+                } else if (emptyBagWeight >= 3) {
                     Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
                 } else {
                     for (int i = 0; i < manualBagsToAddVal; i++) {
@@ -442,7 +442,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     private void addSingleBag() {
         String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
-        String bagLabel = "Bag " + getBagsCount() + 1;
+        String bagLabel = "Bag " + (getBagsCount() + 1);
         String fetchWeightString = " " + WeightOfBag + " KG";
         bagArrayList.add(new Bag(bagLabel, fetchWeightString));
         bagViewAdapter.notifyDataSetChanged();
