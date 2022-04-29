@@ -406,10 +406,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         return getBagsCount() * Double.parseDouble(onlyBagWeight.getText().toString());
     }
 
-    // formatstring to two decimal places
-    static String roundOffTo2DecPlaces(double val) {
-        return String.format("%.2f", val);
-    }
 
     // formatstring to three decimal places
     static String roundOffTo3DecPlaces(double val) {
@@ -528,7 +524,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                         "\"loginId\": \"" + loginid + "\",\n" +
                         "\"password\": \"" + password + "\",\n" +
                         "\"lotId\": \"" + lotId + "\",\n" +
-                        "\"grossWeight\": \"" + roundOffTo2DecPlaces(getTotalQuintalWeight()) + "\",\n" +
+                        "\"grossWeight\": \"" + roundOffTo3DecPlaces(getTotalQuintalWeight()) + "\",\n" +
                         "\"netWeight\": \"" + getTotalNetWeight() + "\",\n" +
                         "\"noOfBags\": \"" + getBagsCount() + "\",\n" +
                         "\"bagTypeId\": \"" + bagTypeId + "\",\n" +
@@ -594,7 +590,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     intent.putExtra("lotId", lotId.toString());
                     intent.putExtra("BagTypeDesc", BagTypeDesc.toString());
                     intent.putExtra("NoOfbag", String.valueOf(getBagsCount()));
-                    intent.putExtra("TotalWeight", roundOffTo2DecPlaces(getTotalBagWeight()));
+                    intent.putExtra("TotalWeight", roundOffTo3DecPlaces(getTotalBagWeight()));
                     intent.putExtra("QuintalWeight", roundOffTo3DecPlaces(getTotalQuintalWeight()));
                     intent.putExtra("NetWeight", roundOffTo3DecPlaces(getTotalNetWeight()));
                     intent.putExtra("BagsWeight", String.valueOf(getTotalEmptyBagWeight()));

@@ -171,9 +171,9 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         actual_no_of_bag.setText("" + roundOffTo0DecPlaces(ActualNoofBags));
 
         gross_weight.setText("" + QuintalWeight);
-        bag_weight.setText("" + roundOffTo2DecPlaces(BagsWeightValue / 100));
+        bag_weight.setText("" + roundOffTo3DecPlaces(BagsWeightValue / 100));
 
-        net_weight.setText("" + roundOffTo2DecPlaces(NetWeightValue / 100));
+        net_weight.setText("" + roundOffTo3DecPlaces(NetWeightValue / 100));
         bidPrice.setText("" + lRate);
         net_amt.setText("" + netAmt);
 
@@ -499,9 +499,9 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             }
             print(translator.toMiniLeft("-------------------------------"));
             print(translator.toMiniLeft("Gross Wt (Qt):     " + QuintalWeight));
-            print(translator.toMiniLeft("Bag Wt (Qt)  :     " + roundOffTo2DecPlaces(BagsWeightValue / 100)));
+            print(translator.toMiniLeft("Bag Wt (Qt)  :     " + roundOffTo3DecPlaces(BagsWeightValue / 100)));
             print(translator.toMiniLeft("-------------------------------"));
-            print(translator.toMiniLeft("Net Wt (Qt)  :     " + roundOffTo2DecPlaces(NetWeightValue / 100)));
+            print(translator.toMiniLeft("Net Wt (Qt)  :     " + roundOffTo3DecPlaces(NetWeightValue / 100)));
             print(translator.toMiniLeft("Lot Amt (Rs) :     " + lRate));
             print(translator.toMiniLeft("Net Amt (Rs) :     " + netAmt));
             print(translator.toMiniLeft("-------------------------------"));
@@ -646,9 +646,9 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             }
             doc.add(new Paragraph("--------------------------------------------------------------------"));
             doc.add(new Paragraph("GROSS(QT)  :                       " + QuintalWeight, boldFont));
-            doc.add(new Paragraph("BAG(QT)  :                            " + roundOffTo2DecPlaces(BagsWeightValue / 100), boldFont));
+            doc.add(new Paragraph("BAG(QT)  :                            " + roundOffTo3DecPlaces(BagsWeightValue / 100), boldFont));
             doc.add(new Paragraph("--------------------------------------------------------------------"));
-            doc.add(new Paragraph("Net (QT) :                               " + roundOffTo2DecPlaces(NetWeightValue / 100), boldFont));
+            doc.add(new Paragraph("Net (QT) :                               " + roundOffTo3DecPlaces(NetWeightValue / 100), boldFont));
             doc.add(new Paragraph("Lot Amt (RS) :                       " + lRate, boldFont));
             doc.add(new Paragraph("Net Amt (RS) :                       " + netAmt, boldFont));
             doc.add(new Paragraph("--------------------------------------------------------------------"));
