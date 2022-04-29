@@ -414,11 +414,12 @@ Removes bag from bagList
     }
 
     private void addSingleBag() {
+        String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
         String bagLabel = "Bag " + getBagsCount()+1;
-        String fetchWeightString = " " + liveFeedString + " KG";
+        String fetchWeightString = " " + WeightOfBag + " KG";
         bagArrayList.add(new Bag(bagLabel, fetchWeightString));
         bagViewAdapter.notifyDataSetChanged();
-        bagWeightList.add(Double.parseDouble(liveFeedString));
+        bagWeightList.add(Double.parseDouble(WeightOfBag));
         TotalWeightInQuintal.setText("Total Weight: " + getTotalQuintalWeight());
         NumofBags.setText("No of Bags:  " + getBagsCount());
     }
