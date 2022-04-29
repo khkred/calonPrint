@@ -476,7 +476,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         bagArrayList.add(new Bag(bagLabel, fetchWeightString));
         bagViewAdapter.notifyDataSetChanged();
 
-        NumofBags.setText("No of Bags:  " + bagArrayList.size());
+        NumofBags.setText("No of Bags:  " + bagRecyclerView.getAdapter().getItemCount());
 
         QuintalWeight = SumWeight(startWeight, liveFeedString);
         TotalWeightInQuintal.setText("Total Weight: " + QuintalWeight);
@@ -630,12 +630,13 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
             p.setMessage("Please Wait...");
             p.setCancelable(false);
             p.show();
+
         }
 
         protected String doInBackground(String... params) {
 
             try {
-                IndividualBagWeight = sendIndividualBagWeight();
+//                IndividualBagWeight = sendIndividualBagWeight();
                 String urlParameters = "SendBagWeight={\n" +
                         "\"SendBagWeight\": {\n" +
                         "\"orgId\": \"" + orgid + "\",\n" +
@@ -647,8 +648,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                         "\"netWeight\": \"" + netWeightProduct + "\",\n" +
                         "\"noOfBags\": \"" + numbag + "\",\n" +
                         "\"bagTypeId\": \"" + bagTypeId + "\",\n" +
-                        "\"bags\": " + IndividualBagWeight +
-                        ",\n" +
+//                        "\"bags\": " + IndividualBagWeight + ",\n" +
                         "\"feeCategoryId\": \"" + feeCategoryId +
                         "\"}\n" +
                         "}";

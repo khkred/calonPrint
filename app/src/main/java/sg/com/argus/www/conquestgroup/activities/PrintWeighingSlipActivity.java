@@ -98,7 +98,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         final Activity activity = this;
-        ll = (LinearLayout) findViewById(R.id.bags_list_linear_layout);
+//        ll = (LinearLayout) findViewById(R.id.bags_list_linear_layout);
 
         sellerNAme = (TextView) findViewById(R.id.sellName);
         commodity = (TextView) findViewById(R.id.commod);
