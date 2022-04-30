@@ -50,6 +50,7 @@ import sg.com.argus.www.conquestgroup.adapters.BagViewAdapter;
 import sg.com.argus.www.conquestgroup.adapters.Bluetooth;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
 import sg.com.argus.www.conquestgroup.models.Bag;
+import sg.com.argus.www.conquestgroup.utils.Constants;
 
 
 public class BluetoothActivity extends AppCompatActivity implements Bluetooth.CommunicationCallback {
@@ -533,7 +534,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 
                 //URL url = new URL("");
-                URL url = new URL("https://train.enam.gov.in/NamWebSrv/rest/SendBagWeightAuto");
+                URL url = new URL(Constants.SEND_BAG_WEIGHT_URL);
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
                 connection.setRequestMethod("POST");

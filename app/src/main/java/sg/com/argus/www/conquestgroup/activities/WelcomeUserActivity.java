@@ -56,6 +56,7 @@ import sg.com.argus.www.conquestgroup.adapters.Stateadapter1;
 import sg.com.argus.www.conquestgroup.models.AppController;
 import sg.com.argus.www.conquestgroup.models.MenuCategories;
 import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
+import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.ESCUtil;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
@@ -360,7 +361,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
                 postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 
-                URL url = new URL("https://train.enam.gov.in/NamWebSrv/rest/FeeCategory/getFeeCategoryListAutoSaleAgreement");
+                URL url = new URL(Constants.GET_FEE_CATEGORY_URL);
                 //URL url = new URL("http://www.Train.enam.gov.in/NamWebSrv/rest/verifyUser");
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
@@ -464,8 +465,8 @@ public class WelcomeUserActivity extends AppCompatActivity {
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
                 byte[] postData1 = urlParameters.getBytes(StandardCharsets.UTF_8);
 
-                URL url = new URL("https://train.enam.gov.in/NamWebSrv/rest/GetLotDetails");
-                URL url1 = new URL("https://train.enam.gov.in/NamWebSrv/rest/MastersUpdate/getBagTypes");
+                URL url = new URL(Constants.GET_LOT_DETAILS_URL);
+                URL url1 = new URL(Constants.GET_BAG_TYPES_URL);
 
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 HttpURLConnection connection1 = (HttpURLConnection) url1.openConnection();
