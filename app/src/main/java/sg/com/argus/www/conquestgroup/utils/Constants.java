@@ -13,7 +13,7 @@ public class Constants {
     public static final String GET_BAG_TYPES_URL = BASE_URL + "MastersUpdate/getBagTypes";
 
     //PrintWeighingSlipActivity
-    public static final String SUMMARY_PRINT_URL = "http://www.enam.gov.in/NamWebSrv/rest/"+ "getPosWeighmentInfo";
+    public static final String SUMMARY_PRINT_URL = "https://www.enam.gov.in/NamWebSrv/rest/getPosWeighmentInfo";
     public static final float DEFAULT_PRINT_SIZE = 24;
     public static final float HEADING_SIZE = 26;
     public static final boolean BOLD_OFF = false;

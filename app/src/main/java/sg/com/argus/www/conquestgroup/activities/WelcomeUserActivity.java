@@ -516,6 +516,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                 }
 
                 connection.disconnect();
+                connection1.disconnect();
 
             } catch (Exception exc) {
                 String excep = exc.getMessage();

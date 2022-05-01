@@ -84,6 +84,7 @@
         <Button
             android:id="@+id/pick_date_btn"
             android:text="Pick Date"
+            android:textAllCaps="false"
             android:layout_marginLeft="@dimen/margin_30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,17 +92,23 @@
 
         <TextView
             android:id="@+id/date_text_view"
+            android:textSize="20sp"
+            android:textColor="@color/black_000"
+            android:textStyle="bold"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <Button
         android:layout_marginTop="40dp"
+        android:textAllCaps="false"
         android:layout_gravity="center_horizontal"
         android:text="Get Summary"
         android:id="@+id/submit_summary_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
+
+
 
 
 
