@@ -210,8 +210,6 @@ public class SummaryActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonObject = new JSONObject(result);
                     summaryPrint(jsonObject);
-                    dateView.setVisibility(View.GONE);
-                    getSummaryBtn.setVisibility(View.VISIBLE);
                 } catch (JSONException e) {
                     e.printStackTrace();
                     Log.d("HarishData"," "+e.toString());
@@ -295,7 +293,6 @@ public class SummaryActivity extends AppCompatActivity {
 
 
     public void printSlip(String content, float size, boolean isBold) {
-
 
         sunmiPrintHelper.printText(content, size, false, false, null);
         sunmiPrintHelper.feedPaper();
