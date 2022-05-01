@@ -1,7 +1,7 @@
 package sg.com.argus.www.conquestgroup.utils;
 
 public class Constants {
-    public static final String  BASE_URL = "http://www.train.enam.gov.in/NamWebSrv/rest/";
+    public static final String  BASE_URL = "https://www.enam.gov.in/NamWebSrv/rest/";
 
     public static final String GET_STATES_URL = BASE_URL + "MastersUpdate/getStates";
     public static final String VERIFY_USER_URL =  BASE_URL + "verifyUser";
