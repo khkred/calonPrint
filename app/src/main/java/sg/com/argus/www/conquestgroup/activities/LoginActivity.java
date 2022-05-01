@@ -69,8 +69,8 @@ public class LoginActivity extends AppCompatActivity {
 
         cd = new ConnectionDetector(this);
 
-        loginid = (EditText) findViewById(R.id.loginId);
-        userpassword = (EditText) findViewById(R.id.passwordLogin);
+        loginid = (EditText) findViewById(R.id.login_id_edit_text);
+        userpassword = (EditText) findViewById(R.id.password_edit_text);
         saveLoginCheckBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
         login = (Button) findViewById(R.id.LogIn);
         Cancel = (Button) findViewById(R.id.Cancel);

@@ -30,6 +30,10 @@ import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,6 +45,7 @@ import java.util.Date;
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
+import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.ESCUtil;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
@@ -63,6 +68,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     private TextView transactionNoTv, invoiceNoTv;
 
+    SunmiPrintHelper sunmiPrintHelper;
+
 
     //From Sunmi
     private String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "Windows-1252", "CP866", "CP852", "CP858", "CP874",  "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "utf-8"};
@@ -76,6 +83,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         setSupportActionBar(mToolbar);
         final Activity activity = this;
         ll = (LinearLayout) findViewById(R.id.linearLayout);
+
+        sunmiPrintHelper = SunmiPrintHelper.getInstance();
 
         sellerNAme = (TextView) findViewById(R.id.sellName);
         commodity = (TextView) findViewById(R.id.commod);
@@ -189,14 +198,12 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
 
 
-    public void printSlip(String content) {
+    public void printSlip(String content, float size, boolean isBold) {
 
-        float size = 24;
-            SunmiPrintHelper.getInstance().printText(content, size, false, false, null);
-            SunmiPrintHelper.getInstance().feedPaper();
+      sunmiPrintHelper.printText(content, size, false, false, null);
+        sunmiPrintHelper.feedPaper();
 
     }
-
 
 
     private byte codeParse(int value) {
@@ -307,7 +314,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             printString.append("-----------------------------").append("\n");
              printString.append("\n\n");
 
-            printSlip(printString.toString());
+            printSlip(printString.toString(),Constants.DEFAULT_PRINT_SIZE,Constants.BOLD_OFF);
 
 
             /*print(translator.toMiniLeft("Date       :" + formatted_Date));
@@ -342,14 +349,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         } catch (Exception excep) {
             Toast.makeText(PrintWeighingSlipActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
         }
-    }
-
-    private void summaryPrint() {
-
-        StringBuilder printString = new StringBuilder();
-
-
-
     }
 
     private void AddBag() {

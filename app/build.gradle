@@ -44,6 +44,5 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.itextpdf:itextpdf:5.0.6'
-    implementation files('libs/ngx_nix_sdk_1.0.1.jar')
     implementation 'com.intuit.sdp:sdp-android:1.0.3'
 }
