@@ -59,6 +59,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private String userActualName;
     private ArrayList<Double> bagWeightList;
 
+    private String transactionNo,invoiceDocNo;
 
 
     //From Sunmi
@@ -107,6 +108,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         BagsWeight = getIntent().getStringExtra("BagsWeight");
         userActualName = intent.getStringExtra("username");
 
+        transactionNo = intent.getStringExtra("transactionNo");
+        invoiceDocNo = intent.getStringExtra("invoiceDocNo");
         /**
          * Get Serialisable
          */
@@ -325,6 +328,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             printString.append("Net Wt (Qt)  :     ").append(roundOffTo5DecPlaces(NetWeightValue / 100)).append("\n");
            printString.append("Lot Amt (Rs) :     ").append(lRate).append("\n");
             printString.append("Net Amt (Rs) :     ").append(netAmt).append("\n");
+            printString.append("Transaction No:     ").append(transactionNo).append("\n");
+            printString.append("Invoice No:     ").append(invoiceDocNo).append("\n");
             printString.append("-----------------------------").append("\n");
             printString.append("\n\n");
             printString.append("Sign of Farmer").append("\n");

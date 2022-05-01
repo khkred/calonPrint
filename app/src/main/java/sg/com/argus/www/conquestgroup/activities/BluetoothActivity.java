@@ -572,6 +572,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 p.dismiss();
                 JSONObject object = new JSONObject(result);
                 String StatusMsg = object.getString("statusMsg");
+                String transactionNo = object.getString("transactionNo");
+                String invoiceDocNo = object.getString("invoiceDocNo");
                 Log.e("TAG", "StatusMsg" + StatusMsg);
                 if (StatusMsg.equals("S")) {
                     Toast.makeText(BluetoothActivity.this, "Weight Sent Successfully", Toast.LENGTH_SHORT).show();
@@ -596,6 +598,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     intent.putExtra("actualBags", actualBags.toString());
                     intent.putExtra("traderName", traderName.toString());
                     intent.putExtra("username", userActualName);
+                    intent.putExtra("transactionNo",transactionNo);
+                    intent.putExtra("invoiceDocNo",invoiceDocNo);
 
                     /**
                      * Serialisable Extra
@@ -603,7 +607,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     Bundle bundle = new Bundle();
                     bundle.putSerializable("bagWeightList", bagWeightList);
                     intent.putExtra("bundle", bundle);
-
                     startActivity(intent);
                     finish();
                 } else {
@@ -622,16 +625,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         builder.setMessage("You don't have Internet Connection.")
                 .setCancelable(false)
                 .setPositiveButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                finish();
-                            }
-                        }).setNegativeButton("Retry",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                        startActivity(getIntent());
-                    }
+                        (dialog, id) -> finish()).setNegativeButton("Retry",
+                (dialog, id) -> {
+                    finish();
+                    startActivity(getIntent());
                 });
 
         // Creating dialog box
