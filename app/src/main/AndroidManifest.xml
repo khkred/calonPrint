@@ -65,6 +65,11 @@
             android:name="sg.com.argus.www.conquestgroup.activities.BluetoothActivity"
             android:label="@string/app_name"
             android:screenOrientation="portrait" />
+        <activity
+            android:name="sg.com.argus.www.conquestgroup.activities.SummaryActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" />
+
     </application>
 
 </manifest>
