@@ -13,17 +13,30 @@ import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.StatusLine;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.utils.Constants;
@@ -67,7 +80,15 @@ public class SummaryActivity extends AppCompatActivity {
         getSummaryBtn.setOnClickListener(view -> {
             loginId = loginIdEditText.getText().toString();
             password = passwordEditText.getText().toString();
-            new GetSummary().execute();
+            //new GetSummary().execute();
+            HashMap<String, String> postData = new HashMap<String, String>();
+            postData.put("orgId", "1");
+            postData.put("oprId", "72");
+            postData.put("loginId", loginId);
+            postData.put("password", password);
+            postData.put("wbTrnDate", dateString);
+            new SummaryDemo(postData).execute();
+
         });
 
     }
@@ -179,6 +200,72 @@ public class SummaryActivity extends AppCompatActivity {
                 Log.d("HarishData", "Error in Async Task " + excep);
             }
             return text;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+
+            try {
+                p.dismiss();
+                JSONObject object = new JSONObject(result);
+                summaryPrint(object);
+
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private class SummaryDemo extends AsyncTask<String, String, String>{
+
+        private HashMap<String, String> postData = null;
+        public SummaryDemo(HashMap<String, String> data) {
+            postData = data;
+        }
+
+        String text = "";
+        ProgressDialog p = new ProgressDialog(SummaryActivity.this);
+
+        @Override
+        protected void onPreExecute() {
+
+            p.setMessage("Please Wait...");
+            p.setCancelable(false);
+            p.show();
+
+        }
+
+        @Override
+        protected String doInBackground(String... strings) {
+            byte[] result = null;
+            String str = "";
+            HttpClient client = new DefaultHttpClient();
+            HttpPost post = new HttpPost(Constants.SUMMARY_PRINT_URL);// in this case, params[0] is URL
+            try {
+                // set up post data
+                ArrayList<NameValuePair> nameValuePair = new ArrayList<NameValuePair>();
+                Iterator<String> it = postData.keySet().iterator();
+                while (it.hasNext()) {
+                    String key = it.next();
+                    nameValuePair.add(new BasicNameValuePair(key, postData.get(key)));
+                }
+
+                post.setEntity(new UrlEncodedFormEntity(nameValuePair, "UTF-8"));
+                HttpResponse response = client.execute(post);
+                StatusLine statusLine = response.getStatusLine();
+                if(statusLine.getStatusCode() == HttpURLConnection.HTTP_OK){
+                    result = EntityUtils.toByteArray(response.getEntity());
+                    str = new String(result, "UTF-8");
+                }
+            }
+            catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            catch (Exception e) {
+            }
+            return str;
         }
 
         @Override
