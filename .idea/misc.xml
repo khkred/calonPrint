@@ -4,11 +4,13 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="app/src/main/res/drawable/toolbar_style.xml" value="0.1975" />
+        <entry key="app/src/main/res/layout/acitivity_summary.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_bluetooth.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_gateentry.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_print_weighing_slip.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/activity_summary.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_welcome_user.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/alert_exit.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/bag_list_item.xml" value="0.36041666666666666" />

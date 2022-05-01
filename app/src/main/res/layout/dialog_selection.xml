@@ -40,13 +40,12 @@
         <RadioButton
             android:id="@+id/radioButton2"
             android:layout_width="0dp"
-            android:layout_weight="0.5"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.5"
             android:checked="false"
-            android:text="Gate Entry"
-            />
+            android:text="Summary Print" />
     </RadioGroup>
 
 
