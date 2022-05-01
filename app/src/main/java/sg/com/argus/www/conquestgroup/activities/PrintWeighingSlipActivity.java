@@ -48,7 +48,7 @@ import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 public class PrintWeighingSlipActivity extends AppCompatActivity {
     private String SName, Com, tName, cName, lRate, noOfBag, bagType, TotalWeight, bagTypeId, loginid, password, userid, orgid, lotId, QuintalWeight, NetWeight, BagsWeight, actualBags, netAmt;
     private TextView sellerNAme, commodity, TraderName, CaName, bidPrice, PbagType, PnumBag, lotid, actual_no_of_bag, gross_weight, net_weight, net_amt, bag_weight;
-    private Button printBtn, saveBtn;
+    private Button printBtn, summaryBtn;
     LinearLayout ll, llh;
     private TextView bagTxt, weightTxt;
     int j = 0, k = 0;
@@ -60,6 +60,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private ArrayList<Double> bagWeightList;
 
     private String transactionNo,invoiceDocNo;
+
+    private TextView transactionNoTv, invoiceNoTv;
 
 
     //From Sunmi
@@ -88,8 +90,11 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         bag_weight = (TextView) findViewById(R.id.bag_weight);
         net_weight = (TextView) findViewById(R.id.net_weight);
         net_amt = (TextView) findViewById(R.id.net_amt);
-        saveBtn = (Button) findViewById(R.id.savebtn);
         printBtn = (Button) findViewById(R.id.printbtn);
+        summaryBtn = findViewById(R.id.summary_print_btn);
+        transactionNoTv = findViewById(R.id.transaction_no_text_view);
+        invoiceNoTv = findViewById(R.id.invoice_no_text_view);
+
 
         final Intent intent = getIntent();
         loginid = intent.getStringExtra("u_name");
@@ -149,17 +154,13 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         net_weight.setText("" + roundOffTo3DecPlaces(NetWeightValue / 100));
         bidPrice.setText("" + lRate);
         net_amt.setText("" + netAmt);
+        transactionNoTv.setText(transactionNo);
+        invoiceNoTv.setText(invoiceDocNo);
 
         Date TodayDate = getInstance().getTime();
         SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy        HH:mm:ss a");
         final String formattedDate = df.format(TodayDate);
 
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                createandDisplayPdf(formattedDate);
-            }
-        });
 
         printBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,46 +189,14 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
 
 
-    public void printSampleText(String content) {
+    public void printSlip(String content) {
 
         float size = 24;
-        if (!BluetoothUtil.isBlueToothPrinter) {
-            SunmiPrintHelper.getInstance().printText(content, size, true, false, null);
+            SunmiPrintHelper.getInstance().printText(content, size, false, false, null);
             SunmiPrintHelper.getInstance().feedPaper();
-        } else {
-            printByBluTooth(content);
-        }
+
     }
 
-    private void printByBluTooth(String content) {
-        try {
-            if (true) {
-                BluetoothUtil.sendData(ESCUtil.boldOn());
-            } else {
-                BluetoothUtil.sendData(ESCUtil.boldOff());
-            }
-
-            if (true) {
-                BluetoothUtil.sendData(ESCUtil.underlineWithOneDotWidthOn());
-            } else {
-                BluetoothUtil.sendData(ESCUtil.underlineOff());
-            }
-            int record =17;
-
-            if (record < 17) {
-                BluetoothUtil.sendData(ESCUtil.singleByte());
-                BluetoothUtil.sendData(ESCUtil.setCodeSystemSingle(codeParse(record)));
-            } else {
-                BluetoothUtil.sendData(ESCUtil.singleByteOff());
-                BluetoothUtil.sendData(ESCUtil.setCodeSystem(codeParse(record)));
-            }
-
-            BluetoothUtil.sendData(content.getBytes(mStrings[record]));
-            BluetoothUtil.sendData(ESCUtil.nextLine(3));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
 
     private byte codeParse(int value) {
@@ -328,7 +297,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             printString.append("Net Wt (Qt)  :     ").append(roundOffTo5DecPlaces(NetWeightValue / 100)).append("\n");
            printString.append("Lot Amt (Rs) :     ").append(lRate).append("\n");
             printString.append("Net Amt (Rs) :     ").append(netAmt).append("\n");
-            printString.append("Transaction No:     ").append(transactionNo).append("\n");
+            printString.append("Transaction No:").append("\n\t").append(transactionNo).append("\n");
             printString.append("Invoice No:     ").append(invoiceDocNo).append("\n");
             printString.append("-----------------------------").append("\n");
             printString.append("\n\n");
@@ -338,7 +307,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             printString.append("-----------------------------").append("\n");
              printString.append("\n\n");
 
-            printSampleText(printString.toString());
+            printSlip(printString.toString());
 
 
             /*print(translator.toMiniLeft("Date       :" + formatted_Date));
@@ -375,7 +344,13 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         }
     }
 
+    private void summaryPrint() {
 
+        StringBuilder printString = new StringBuilder();
+
+
+
+    }
 
     private void AddBag() {
 
