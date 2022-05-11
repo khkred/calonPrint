@@ -16,6 +16,7 @@
         <entry key="app/src/main/res/layout/bag_list_item.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/delete_bag.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/dialog_exit_summary.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_logout.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_selection.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_states.xml" value="0.36041666666666666" />

@@ -19,20 +19,23 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.LinkedList;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
+import sg.com.argus.www.conquestgroup.models.TableItem;
 import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
 public class SummaryActivity extends AppCompatActivity {
 
-    Button pickDateBtn ;
+    Button pickDateBtn;
     private int day, month, year;
 
     TextView dateView, loginIdEditText, passwordEditText;
@@ -55,7 +58,6 @@ public class SummaryActivity extends AppCompatActivity {
 
         sunmiPrintHelper = SunmiPrintHelper.getInstance();
         sunmiPrintHelper.initSunmiPrinterService(getApplicationContext());
-
         pickDateBtn = findViewById(R.id.pick_date_btn);
 
         dateView = findViewById(R.id.date_text_view);
@@ -69,15 +71,14 @@ public class SummaryActivity extends AppCompatActivity {
         day = calendar.get(Calendar.DAY_OF_MONTH);
 
 
-         getSummaryBtn = findViewById(R.id.submit_summary_btn);
+        getSummaryBtn = findViewById(R.id.submit_summary_btn);
         getSummaryBtn.setOnClickListener(view -> {
-            
+
             loginId = loginIdEditText.getText().toString();
             password = passwordEditText.getText().toString();
             isInternetPresent = connectionDetector.isConnectingToInternet();
-            
-            if (loginId.isEmpty())
-            {
+
+            if (loginId.isEmpty()) {
                 Toast.makeText(this, "Login Id is empty", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -87,14 +88,13 @@ public class SummaryActivity extends AppCompatActivity {
                 return;
             }
 
-            if (dateString.isEmpty()){
+            if (dateString.isEmpty()) {
                 Toast.makeText(this, "Please select a date", Toast.LENGTH_SHORT).show();
             }
 
             if (isInternetPresent) {
                 new GetSummary().execute();
-            }
-            else {
+            } else {
                 Toast.makeText(this, "No Internet Present", Toast.LENGTH_SHORT).show();
             }
 
@@ -142,7 +142,7 @@ public class SummaryActivity extends AppCompatActivity {
         dateView.setText(dateString);
         pickDateBtn.setVisibility(View.GONE);
     }
-    
+
     private class GetSummary extends AsyncTask<String, Void, String> {
 
         ProgressDialog p = new ProgressDialog(SummaryActivity.this);
@@ -157,18 +157,17 @@ public class SummaryActivity extends AppCompatActivity {
 
             if (dateString.isEmpty()) {
                 Toast.makeText(SummaryActivity.this, "Empty Date String", Toast.LENGTH_SHORT).show();
-            }
-            else {
+            } else {
                 Toast.makeText(SummaryActivity.this, dateString, Toast.LENGTH_SHORT).show();
             }
         }
 
         @Override
-        protected   String doInBackground(String... strings) {
+        protected String doInBackground(String... strings) {
             String text = "";
 
 
-            String urlParameters = "orgId=" + orgId + "&oprId=" + oprId + "&loginId=" + loginId + "&password=" + password + "&wbTrnDate=" +dateString+"";
+            String urlParameters = "orgId=" + orgId + "&oprId=" + oprId + "&loginId=" + loginId + "&password=" + password + "&wbTrnDate=" + dateString + "";
 
             try {
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
@@ -207,13 +206,13 @@ public class SummaryActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(String result) {
             p.dismiss();
-                try {
-                    JSONObject jsonObject = new JSONObject(result);
-                    summaryPrint(jsonObject);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                    Log.d("HarishData"," "+e.toString());
-                }
+            try {
+                JSONObject jsonObject = new JSONObject(result);
+                summaryPrint(jsonObject);
+            } catch (JSONException e) {
+                e.printStackTrace();
+                Log.d("HarishData", " " + e.toString());
+            }
 
 
         }
@@ -239,37 +238,68 @@ public class SummaryActivity extends AppCompatActivity {
             StringBuilder bodyString = new StringBuilder();
 
             //AMC SURYAPET
-            headingStringBuilder.append("        AMC SURYAPET").append("\n\n\n");
-            headingStringBuilder.append("   Weighment Summary");
-            printSlip(headingStringBuilder.toString(), Constants.HEADING_SIZE, Constants.BOLD_ON);
-
+            headingStringBuilder.append("        AMC SURYAPET").append("\n\n");
+            headingStringBuilder.append("      Weighment Summary").append("\n");
+            sunmiPrintHelper.printText(headingStringBuilder.toString(), Constants.HEADING_SIZE, Constants.BOLD_ON, false, null);
+            sunmiPrintHelper.print1Line();
+            sunmiPrintHelper.print1Line();
             bodyString.append("Business Day :  ").append(dateString).append("\n");
             bodyString.append("Machine No : ").append(72).append("\n");
             bodyString.append("-----------------------------").append("\n");
+
             bodyString.append("LotNo     TotalBags  TotalWeight").append("\n");
             bodyString.append("-----------------------------").append("\n");
-            bodyString.append(userName).append("\n");
+            bodyString.append(userName).append("\n\n");
+            sunmiPrintHelper.printText(bodyString.toString(), Constants.DEFAULT_PRINT_SIZE, Constants.BOLD_OFF, false, null);
 
+            LinkedList<TableItem> tableItems = new LinkedList<>();
+            //Clearing the Body String
+            bodyString.setLength(0);
             for (int i = 0; i < lotArrays.length(); i++) {
-
+                TableItem ti = new TableItem();
                 JSONObject lot = lotArrays.getJSONObject(i);
-                bodyString.append(lot.getString("lotId") + "   " + lot.getString("noOfBags") + "    " + lot.getString("netWeightQtl")).append("\n");
-
+                String[] lots = new String[]{lot.getString("lotId"), lot.getString("noOfBags"), lot.getString("netWeightQtl")};
+                ti.setText(lots);
+                ti.setWidth(new int[]{13, 3, 6});
+                ti.setAlign(new int[]{0, 0, 2});
+                tableItems.add(ti);
                 int singleLotBags = Integer.parseInt(lot.getString("noOfBags"));
                 totalBags += singleLotBags;
                 double lotWeightInQt = Double.parseDouble(lot.getString("netWeightQtl"));
                 netWeightInQt += lotWeightInQt;
             }
+            printAllTables(tableItems);
+            sunmiPrintHelper.print1Line();
 
-            bodyString.append("\n").append("TOTAL LOTS :            ").append(lotArrays.length()).append("\n");
-            bodyString.append("TOTAL BAGS :             ").append(totalBags).append("\n");
-            bodyString.append("TOTAL NET(Kgs) :        ").append(netWeightInQt*100).append("\n");
-            bodyString.append("TOTAL Net(QT) :       ").append(netWeightInQt).append("\n");
-            bodyString.append("Printed On   ").append(completeTime).append("\n");
-            bodyString.append("\n\n");
+            LinkedList<TableItem> tableItems1 = new LinkedList<>();
+            TableItem lotTableItem = new TableItem(new String[]{"TOTAL LOTS :", String.valueOf(lotArrays.length())});
+            lotTableItem.setWidth(new int[]{11, 4});
+            tableItems1.add(lotTableItem);
+
+            TableItem bagsTableItem = new TableItem(new String[]{"TOTAL BAGS :", String.valueOf(totalBags)});
+            bagsTableItem.setWidth(new int[]{11, 4});
+            tableItems1.add(bagsTableItem);
+
+            TableItem kgsTableItem = new TableItem(new String[]{"TOTAL NET(Kgs) :", String.valueOf(netWeightInQt * 100)});
+            kgsTableItem.setWidth(new int[]{16, 9});
+            tableItems1.add(kgsTableItem);
+
+            TableItem qtTableItem = new TableItem(new String[]{"TOTAL Net(QT) :", String.valueOf(netWeightInQt)});
+            qtTableItem.setWidth(new int[]{15, 7});
+            tableItems1.add(qtTableItem);
+
+            TableItem printedOnTableItem = new TableItem(new String[]{"Printed On", completeTime});
+            printedOnTableItem.setWidth(new int[]{10, 19});
+            printedOnTableItem.setAlign(new int[]{0, 0});
+            tableItems1.add(printedOnTableItem);
+
+            printAllTables(tableItems1);
+            sunmiPrintHelper.print1Line();
             bodyString.append("Sign of Dadwal").append("\n");
 
             printSlip(bodyString.toString(), Constants.DEFAULT_PRINT_SIZE, Constants.BOLD_OFF);
+            sunmiPrintHelper.print1Line();
+
         } catch (JSONException e) {
             e.printStackTrace();
 
@@ -278,19 +308,24 @@ public class SummaryActivity extends AppCompatActivity {
             printSlip(jsonError, Constants.HEADING_SIZE, Constants.BOLD_ON);
 
         }
-
-
     }
 
-    public void sampleTable()
-    {
-        String[] txtArray = new String[]{"72202204252","14","8.6100"};
-        int[] widths = new int[] {2};
-        int[] aligns  = new int[] {1};
+    void printAllTables(LinkedList<TableItem> dataItems) {
 
-        sunmiPrintHelper.printTable(txtArray,widths,aligns);
+        if (dataItems.isEmpty()) {
+            Toast.makeText(this, "No Tables to Print", Toast.LENGTH_SHORT).show();
+        } else {
+            for (TableItem item : dataItems) {
+                sunmiPrintHelper.printTable(item.getText(), item.getWidth(), item.getAlign());
+            }
+        }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+    }
 
     public void printSlip(String content, float size, boolean isBold) {
 

@@ -8,8 +8,14 @@ public class TableItem {
     public TableItem() {
         text = new String[]{"test","test"};
         width = new int[]{1,1};
-        align = new int[]{0,1};
+        align = new int[]{0,2};
     }
+
+    public TableItem(String[] text){
+        this.text = text;
+        align = new int[]{0,2};
+    }
+
 
     public String[] getText() {
         return text;
@@ -34,4 +40,5 @@ public class TableItem {
     public void setAlign(int[] align) {
         this.align = align;
     }
+
 }

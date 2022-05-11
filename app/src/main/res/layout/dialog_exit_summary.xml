@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <ImageView
+        android:id="@+id/iv_exit_logo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:padding="15dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_below="@id/iv_exit_logo"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="0dp"
+            android:layout_weight="0.5"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:checked="true"
+            android:text="Weighing Scale"
+            />
+
+        <RadioButton
+            android:id="@+id/radioButton2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginLeft="5dp"
+            android:layout_weight="0.5"
+            android:checked="false"
+            android:text="Exit App" />
+    </RadioGroup>
+
+
+    <RelativeLayout
+        android:layout_below="@id/radioGroup"
+        android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="@color/colorPrimary" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/radioGroup"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
+        android:weightSum="1"
+        android:orientation="horizontal">
+
+
+        <Button
+            android:id="@+id/exit_no_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@android:color/transparent"
+            android:text="@string/no"
+            android:layout_weight="0.5"
+            android:textSize="@dimen/textsize_14sp"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimaryDark" />
+
+
+        <RelativeLayout
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:background="@color/colorPrimary" />
+
+
+        <Button
+            android:id="@+id/exit_yes_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:textSize="@dimen/textsize_14sp"
+            android:background="@android:color/transparent"
+            android:text="Ok"
+            android:layout_weight="0.5"
+            android:textAllCaps="false"
+            android:textColor="@color/color_FF0000" />
+    </LinearLayout>
+
+</RelativeLayout>

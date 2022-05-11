@@ -184,6 +184,23 @@ public class SunmiPrintHelper {
     }
 
     /**
+     * print one line
+     */
+    public void print1Line(){
+        if(sunmiPrinterService == null){
+            //TODO Service disconnection processing
+            return;
+        }
+
+        try {
+            sunmiPrinterService.lineWrap(1, null);
+        } catch (RemoteException e) {
+            handleRemoteException(e);
+        }
+    }
+
+
+    /**
      * Get printer serial number
      */
     public String getPrinterSerialNo(){
