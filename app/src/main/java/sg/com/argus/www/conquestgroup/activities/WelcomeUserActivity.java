@@ -86,23 +86,23 @@ public class WelcomeUserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_welcome_user);
         init_printer();
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
 
         savedata = getSharedPreferences("weighing_scale", MODE_PRIVATE);
 
-        searchbtn = (ImageView) findViewById(R.id.searchbtn);
-        Button next = (Button) findViewById(R.id.next);
-        sellerName = (TextView) findViewById(R.id.sellerName);
-        commodity = (TextView) findViewById(R.id.commodity);
-        bagType = (Spinner) findViewById(R.id.bagType);
-        fee_category = (Spinner) findViewById(R.id.fee_category);
-        lotPrice = (TextView) findViewById(R.id.lotPrice);
-        tradderName = (TextView) findViewById(R.id.tradderName);
-        welcomeuser = (TextView) findViewById(R.id.welcomeuser);
-        logout = (TextView) findViewById(R.id.logout);
-        searchLotDetails = (AutoCompleteTextView) findViewById(R.id.searchLotDetails);
+        searchbtn = findViewById(R.id.searchbtn);
+        Button next = findViewById(R.id.next);
+        sellerName = findViewById(R.id.sellerName);
+        commodity = findViewById(R.id.commodity);
+        bagType = findViewById(R.id.bagType);
+        fee_category = findViewById(R.id.fee_category);
+        lotPrice = findViewById(R.id.lotPrice);
+        tradderName = findViewById(R.id.tradderName);
+        welcomeuser = findViewById(R.id.welcomeuser);
+        logout = findViewById(R.id.logout);
+        searchLotDetails = findViewById(R.id.searchLotDetails);
 
         final Intent intent = getIntent(); //Get the Intent that launched this activity
         if (intent != null) {
@@ -148,23 +148,23 @@ public class WelcomeUserActivity extends AppCompatActivity {
                 } else {
                     BagTypeRelation();
                     Intent i = new Intent(WelcomeUserActivity.this, BluetoothActivity.class);
-                    i.putExtra("u_name", loginid.toString());
-                    i.putExtra("username",username.toString());
-                    i.putExtra("u_pass", password.toString());
-                    i.putExtra("u_orgid", orgid.toString());
-                    i.putExtra("u_id", userid.toString());
+                    i.putExtra("u_name", loginid);
+                    i.putExtra("username", username);
+                    i.putExtra("u_pass", password);
+                    i.putExtra("u_orgid", orgid);
+                    i.putExtra("u_id", userid);
                     i.putExtra("opr_id", oprId);
-                    i.putExtra("lotId", lotId.toString());
-                    i.putExtra("bagTypeId", bagTypeId.toString());
+                    i.putExtra("lotId", lotId);
+                    i.putExtra("bagTypeId", bagTypeId);
                     i.putExtra("commodityName", commodity.getText().toString());
                     i.putExtra("farmerName", sellerName.getText().toString());
-                    i.putExtra("caName", caName.toString());
-                    i.putExtra("lotRate", lotRate.toString());
-                    i.putExtra("traderName", traderName.toString());
-                    i.putExtra("actualBags", actualBags.toString());
+                    i.putExtra("caName", caName);
+                    i.putExtra("lotRate", lotRate);
+                    i.putExtra("traderName", traderName);
+                    i.putExtra("actualBags", actualBags);
                     i.putExtra("newBagTypeValue", Double.toString(newbagTypeValue));
                     i.putExtra("BagTypeDesc", bagType.getSelectedItem().toString());
-                    i.putExtra("feeCategoryId", feeCategoryId.toString());
+                    i.putExtra("feeCategoryId", feeCategoryId);
                     startActivity(i);
                     finish();
                 }
@@ -262,59 +262,50 @@ public class WelcomeUserActivity extends AppCompatActivity {
         postParameters.put("orgId", orgid);
         postParameters.put("oprId", oprId);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(postParameters),
-                new Response.Listener<JSONObject>() {
+                jsonObject -> {
+                    // TODO Auto-generated method stub
+                    Log.e("jsonObject123", "jsonObject" + jsonObject);
 
-                    @Override
-                    public void onResponse(JSONObject jsonObject) {
-                        // TODO Auto-generated method stub
-                        Log.e("jsonObject123", "jsonObject" + jsonObject);
+                    try {
 
-                        try {
+                        String result = jsonObject.getString("statusMsg");
+                        if (result.equals("S")) {
+                            JSONArray array = jsonObject.getJSONArray("listFeeCategoryForAutoSaleModel");
+                            if (array.length() != 0) {
+                                for (int i = 0; i < array.length(); i++) {
+                                    JSONObject job = array.getJSONObject(i);
+                                    final String feeCategoryId = job.getString("feeCategoryId");
+                                    String feeCategoryName = job.getString("feeCategoryName");
 
-                            String result = jsonObject.getString("statusMsg");
-                            if (result.equals("S")) {
-                                JSONArray array = jsonObject.getJSONArray("listFeeCategoryForAutoSaleModel");
-                                if (array.length() != 0) {
-                                    for (int i = 0; i < array.length(); i++) {
-                                        JSONObject job = array.getJSONObject(i);
-                                        final String feeCategoryId = job.getString("feeCategoryId");
-                                        String feeCategoryName = job.getString("feeCategoryName");
-
-                                        MenuCategories offersCnsts = new MenuCategories(feeCategoryId, feeCategoryName);
-                                        offersCnsts.setFeeCategoryId(feeCategoryId);
-                                        offersCnsts.setFeeCategoryName(feeCategoryName);
-                                        hotelCnstsesList.add(offersCnsts);
-                                    }
-                                    fee_category.setAdapter(new Stateadapter1(WelcomeUserActivity.this, hotelCnstsesList));
-                                    fee_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                                        @Override
-                                        public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                            MenuCategories constants = (MenuCategories) hotelCnstsesList.get(position);
-                                            feeCategoryId = constants.getFeeCategoryId();
-                                            Log.e("feeCategoryId", "feeCategoryId" + feeCategoryId);
-
-                                        }
-
-                                        @Override
-                                        public void onNothingSelected(AdapterView<?> parent) {
-                                        }
-                                    });
+                                    MenuCategories offersCnsts = new MenuCategories(feeCategoryId, feeCategoryName);
+                                    offersCnsts.setFeeCategoryId(feeCategoryId);
+                                    offersCnsts.setFeeCategoryName(feeCategoryName);
+                                    hotelCnstsesList.add(offersCnsts);
                                 }
-                            } else {
-                                Toast.makeText(WelcomeUserActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
-                            }
-                        } catch (Exception e) {
+                                fee_category.setAdapter(new Stateadapter1(WelcomeUserActivity.this, hotelCnstsesList));
+                                fee_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                                    @Override
+                                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                                        MenuCategories constants = hotelCnstsesList.get(position);
+                                        feeCategoryId = constants.getFeeCategoryId();
+                                        Log.e("feeCategoryId", "feeCategoryId" + feeCategoryId);
 
+                                    }
+
+                                    @Override
+                                    public void onNothingSelected(AdapterView<?> parent) {
+                                    }
+                                });
+                            }
+                        } else {
+                            Toast.makeText(WelcomeUserActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
                         }
+                    } catch (Exception e) {
 
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            }
 
-
-        }) {
+                }, error -> {
+                }) {
 
             @Override
             public String getBodyContentType() {
@@ -418,7 +409,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     fee_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            MenuCategories constants = (MenuCategories) hotelCnstsesList.get(position);
+                            MenuCategories constants = hotelCnstsesList.get(position);
                             feeCategoryId = constants.getFeeCategoryId();
                             Log.e("feeCategoryId", "feeCategoryId" + feeCategoryId);
 
@@ -525,7 +516,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
             return text;
         }
 
-        protected void onPostExecute(String result[]) {
+        protected void onPostExecute(String[] result) {
             p.dismiss();
             try {
                 if (result[0].contains("statusMsg\":\"S\"") && result[1].contains("statusMsg\":\"S\"")) {
