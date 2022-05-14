@@ -127,7 +127,7 @@ public class SummaryActivity extends AppCompatActivity {
         return null;
     }
 
-    private DatePickerDialog.OnDateSetListener myDateListener = new
+    private final DatePickerDialog.OnDateSetListener myDateListener = new
             DatePickerDialog.OnDateSetListener() {
                 @Override
                 public void onDateSet(DatePicker arg0,
@@ -218,7 +218,7 @@ public class SummaryActivity extends AppCompatActivity {
                 pickDateBtn.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
-                Log.d("HarishData", " " + e.toString());
+                Log.d("HarishData", " " + e);
             }
 
 
@@ -333,13 +333,13 @@ public class SummaryActivity extends AppCompatActivity {
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
                 SummaryActivity.this);
 
-        final Button no = (Button) promptView
+        final Button no = promptView
                 .findViewById(R.id.exit_no_btn);
 
-        final Button yes = (Button) promptView
+        final Button yes = promptView
                 .findViewById(R.id.exit_yes_btn);
 
-        final RadioGroup group=(RadioGroup)promptView.findViewById(R.id.radioGroup);
+        final RadioGroup group= promptView.findViewById(R.id.radioGroup);
 
         alertDialogBuilder.setView(promptView).setCancelable(true);
 
@@ -354,7 +354,7 @@ public class SummaryActivity extends AppCompatActivity {
 
         yes.setOnClickListener(v -> {
             int selectedId=group.getCheckedRadioButtonId();
-            final RadioButton radioButton=(RadioButton)promptView.findViewById(selectedId);
+            final RadioButton radioButton= promptView.findViewById(selectedId);
             if (radioButton.getText().equals("Weighing Scale")){
                 runWelcomeUserActivity();
                 alert.cancel();

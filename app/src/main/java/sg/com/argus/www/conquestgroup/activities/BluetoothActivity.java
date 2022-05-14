@@ -81,7 +81,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     static ArrayList<Double> bagWeightList = new ArrayList<>();
     double emptyBagWeight;
 
-    private String loginid, password, orgid, actualBags, userid, bagTypeId, lotId, caName, lotRate, SellerName, Commodity, traderName, feeCategoryId, newBagTypeValue;
+    private String loginid, password, orgid, actualBags, userid, bagTypeId, lotId, caName, lotRate, SellerName, Commodity, traderName, feeCategoryId;
 
     String oprId, Sequence = "1";
     ScrollView scrollView;
@@ -121,7 +121,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         setSupportActionBar(mToolbar);
         final Activity activity = this;
         cd = new ConnectionDetector(this);
-        submit = (Button) findViewById(R.id.submit);
+        submit = findViewById(R.id.submit);
 
 //        bagsLinearLayout = findViewById(R.id.bags_list_linear_layout);
         scrollView = findViewById(R.id.scrollView);
@@ -129,13 +129,13 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         liveFeedTV = findViewById(R.id.live_weight_textView);
         //Single Bag Layout
         bagRecyclerView = findViewById(R.id.recycler_view);
-        blueDisable = (LinearLayout) findViewById(R.id.blueDisable);
-        bluetooth_devices = (Spinner) findViewById(R.id.bluetoothDevices);
-        onlyBagWeight = (TextView) findViewById(R.id.onlyBagWeight);
-        NumofBags = (TextView) findViewById(R.id.numBag);
-        manualBagsToAdd = (EditText) findViewById(R.id.how_many_bags_edit_text);
-        TotalWeightInQuintal = (TextView) findViewById(R.id.totalWeight);
-        addMultipleBagsBtn = (Button) findViewById(R.id.add_multiple_bags_btn);
+        blueDisable = findViewById(R.id.blueDisable);
+        bluetooth_devices = findViewById(R.id.bluetoothDevices);
+        onlyBagWeight = findViewById(R.id.onlyBagWeight);
+        NumofBags = findViewById(R.id.numBag);
+        manualBagsToAdd = findViewById(R.id.how_many_bags_edit_text);
+        TotalWeightInQuintal = findViewById(R.id.totalWeight);
+        addMultipleBagsBtn = findViewById(R.id.add_multiple_bags_btn);
         final Intent intent = getIntent();
         loginid = intent.getStringExtra("u_name");
         userActualName = intent.getStringExtra("username");
@@ -151,7 +151,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         lotRate = intent.getStringExtra("lotRate");
         actualBags = intent.getStringExtra("actualBags");
         traderName = intent.getStringExtra("traderName");
-        newBagTypeValue = intent.getStringExtra("newBagTypeValue");
+        String newBagTypeValue = intent.getStringExtra("newBagTypeValue");
         feeCategoryId = intent.getStringExtra("feeCategoryId");
         BagTypeDesc = intent.getStringExtra("BagTypeDesc");
 
@@ -460,8 +460,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 arr.put(map.get("json" + k));
 
             }
-            Log.e("The json string is ", "" + arr.toString());
-            updateBagWeight = updateBagWeight + arr.toString();
+            Log.e("The json string is ", "" + arr);
+            updateBagWeight = updateBagWeight + arr;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -554,25 +554,25 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 if (StatusMsg.equals("S")) {
                     Toast.makeText(BluetoothActivity.this, "Weight Sent Successfully", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(BluetoothActivity.this, PrintWeighingSlipActivity.class);
-                    intent.putExtra("u_name", loginid.toString());
-                    intent.putExtra("u_pass", password.toString());
-                    intent.putExtra("u_orgid", orgid.toString());
-                    intent.putExtra("u_id", userid.toString());
+                    intent.putExtra("u_name", loginid);
+                    intent.putExtra("u_pass", password);
+                    intent.putExtra("u_orgid", orgid);
+                    intent.putExtra("u_id", userid);
                     intent.putExtra("opr_id", oprId);
-                    intent.putExtra("bagTypeId", bagTypeId.toString());
-                    intent.putExtra("lotId", lotId.toString());
-                    intent.putExtra("BagTypeDesc", BagTypeDesc.toString());
+                    intent.putExtra("bagTypeId", bagTypeId);
+                    intent.putExtra("lotId", lotId);
+                    intent.putExtra("BagTypeDesc", BagTypeDesc);
                     intent.putExtra("NoOfbag", String.valueOf(getBagsCount()));
                     intent.putExtra("TotalWeight", roundOffTo3DecPlaces(getTotalBagWeight()));
                     intent.putExtra("QuintalWeight", roundOffTo3DecPlaces(getTotalQuintalWeight()));
                     intent.putExtra("NetWeight", roundOffTo3DecPlaces(getTotalNetWeight()));
                     intent.putExtra("BagsWeight", String.valueOf(getTotalEmptyBagWeight()));
-                    intent.putExtra("commodityName", Commodity.toString());
-                    intent.putExtra("farmerName", SellerName.toString());
-                    intent.putExtra("caName", caName.toString());
-                    intent.putExtra("lotRate", lotRate.toString());
-                    intent.putExtra("actualBags", actualBags.toString());
-                    intent.putExtra("traderName", traderName.toString());
+                    intent.putExtra("commodityName", Commodity);
+                    intent.putExtra("farmerName", SellerName);
+                    intent.putExtra("caName", caName);
+                    intent.putExtra("lotRate", lotRate);
+                    intent.putExtra("actualBags", actualBags);
+                    intent.putExtra("traderName", traderName);
                     intent.putExtra("username", userActualName);
                     intent.putExtra("transactionNo",transactionNo);
                     intent.putExtra("invoiceDocNo",invoiceDocNo);
@@ -590,7 +590,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 }
             } catch (Exception e) {
                 p.dismiss();
-                Log.e("TAG", "e" + e.toString());
+                Log.e("TAG", "e" + e);
             }
 
         }
@@ -619,12 +619,12 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     @Override
     public void onBackPressed() {
         Intent intent = new Intent(BluetoothActivity.this, WelcomeUserActivity.class);
-        intent.putExtra("u_name", loginid.toString());
-        intent.putExtra("u_pass", password.toString());
-        intent.putExtra("username", userActualName.toString());
-        intent.putExtra("u_orgid", orgid.toString());
-        intent.putExtra("u_id", userid.toString());
-        intent.putExtra("opr_id", oprId.toString());
+        intent.putExtra("u_name", loginid);
+        intent.putExtra("u_pass", password);
+        intent.putExtra("username", userActualName);
+        intent.putExtra("u_orgid", orgid);
+        intent.putExtra("u_id", userid);
+        intent.putExtra("opr_id", oprId);
         startActivity(intent);
         BluetoothActivity.this.finish();
 
