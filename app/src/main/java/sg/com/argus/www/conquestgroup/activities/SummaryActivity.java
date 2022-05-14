@@ -1,15 +1,21 @@
 package sg.com.argus.www.conquestgroup.activities;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -209,6 +215,7 @@ public class SummaryActivity extends AppCompatActivity {
             try {
                 JSONObject jsonObject = new JSONObject(result);
                 summaryPrint(jsonObject);
+                pickDateBtn.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
                 Log.d("HarishData", " " + e.toString());
@@ -320,10 +327,55 @@ public class SummaryActivity extends AppCompatActivity {
             }
         }
     }
+    void show_selection() {
+        LayoutInflater layoutInflater = LayoutInflater.from(SummaryActivity.this);
+        final View promptView = layoutInflater.inflate(R.layout.dialog_exit_summary, null);
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                SummaryActivity.this);
+
+        final Button no = (Button) promptView
+                .findViewById(R.id.exit_no_btn);
+
+        final Button yes = (Button) promptView
+                .findViewById(R.id.exit_yes_btn);
+
+        final RadioGroup group=(RadioGroup)promptView.findViewById(R.id.radioGroup);
+
+        alertDialogBuilder.setView(promptView).setCancelable(true);
+
+        final AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
+
+
+        no.setOnClickListener(v -> {
+            // cancel dialog
+            alert.cancel();
+        });
+
+        yes.setOnClickListener(v -> {
+            int selectedId=group.getCheckedRadioButtonId();
+            final RadioButton radioButton=(RadioButton)promptView.findViewById(selectedId);
+            if (radioButton.getText().equals("Weighing Scale")){
+                runWelcomeUserActivity();
+                alert.cancel();
+            }
+            if(radioButton.getText().equals("Exit App")){
+                finish();
+                System.exit(0);
+            }
+        });
+    }
+
+    void runWelcomeUserActivity(){
+        Intent i = new Intent(SummaryActivity.this, LoginActivity.class);
+        i.putExtra("screen","1");
+        startActivity(i);
+        finish();
+    }
 
     @Override
     public void onBackPressed() {
-        super.onBackPressed();
+        show_selection();
 
     }
 
