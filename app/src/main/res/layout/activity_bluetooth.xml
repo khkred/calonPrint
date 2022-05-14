@@ -29,23 +29,7 @@
                 android:layout_marginRight="@dimen/margin_10dp"
                 android:background="@drawable/gradient_spinner" />
         </LinearLayout>
-        <!--<TextView
-            android:layout_width="wrap_content"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:gravity="bottom"
-            android:layout_height="match_parent"
-            android:text="Kg"/>-->
 
-        <!-- <Button
-             android:id="@+id/add"
-             android:layout_width="@dimen/margin_60dp"
-             android:layout_height="match_parent"
-             android:layout_marginTop="@dimen/margin_10dp"
-             android:background="@drawable/custom_lightgreen_cloud_button"
-             android:text="@string/add"
-             android:textAllCaps="false"
-             android:textColor="@color/black_000"
-             android:textSize="@dimen/textsize_14sp" />-->
     </LinearLayout>
 
     <LinearLayout
@@ -170,26 +154,6 @@
         android:layout_marginTop="@dimen/margin_10dp"
         android:layout_marginRight="@dimen/margin_10dp">
 
-        <!--<Button
-            android:id="@+id/btnOnOff"
-            android:layout_marginLeft="@dimen/margin_30dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/custom_blue_on_button"
-            android:text="ON"
-            android:textColor="#fff" />-->
-
-        <!--<Button
-            android:id="@+id/bag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_70dp"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:background="@drawable/custom_lightgreen_cloud_button"
-            android:text="@string/bag"
-            android:textAllCaps="false"
-            android:textColor="@color/black_000"
-            android:textSize="@dimen/textsize_20sp" />-->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
