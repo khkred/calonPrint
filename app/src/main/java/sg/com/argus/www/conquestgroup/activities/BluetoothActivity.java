@@ -63,7 +63,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     LinearLayout blueDisable;
     private static TextView TotalWeightInQuintal;
     //    LinearLayout bagsLinearLayout, llh;
-    Button addBagBtn, submit, addMultipleBagsBtn;
+    Button  submit, addMultipleBagsBtn;
     ConnectionDetector cd;
     private String userActualName;
     Boolean isInternetPresent = false;
@@ -135,7 +135,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         NumofBags = (TextView) findViewById(R.id.numBag);
         manualBagsToAdd = (EditText) findViewById(R.id.how_many_bags_edit_text);
         TotalWeightInQuintal = (TextView) findViewById(R.id.totalWeight);
-        addBagBtn = (Button) findViewById(R.id.add_bag_btn);
         addMultipleBagsBtn = (Button) findViewById(R.id.add_multiple_bags_btn);
         final Intent intent = getIntent();
         loginid = intent.getStringExtra("u_name");
@@ -214,25 +213,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         });
 
 
-        addBagBtn.setOnClickListener(v -> {
-            if (bluetooth_devices.getSelectedItem() != null) {
-                // emptyBagWeight shouldn't be more than 3 KG.
-                String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
-                Double weightOfBagVal = Double.parseDouble(WeightOfBag);
-                if (weightOfBagVal <= emptyBagWeight) {
-                    Toast.makeText(BluetoothActivity.this, "Weight of the bag should be more than empty bag", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (emptyBagWeight <= 3) {
-                        addSingleBag(weightOfBagVal);
-                    } else {
-                        Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            } else {
-                Toast.makeText(BluetoothActivity.this, "Device is not connected", Toast.LENGTH_SHORT).show();
-            }
-
-        });
 
         addMultipleBagsBtn.setOnClickListener(v -> {
             if (bluetooth_devices.getSelectedItem() != null) {
@@ -240,8 +220,12 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 Integer manualBagsToAddVal = Integer.parseInt(manualBagsToAdd.getText().toString());
                 String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
                 Double weightOfBagVal = Double.parseDouble(WeightOfBag);
-                if (manualBagsToAddVal < 2) {
-                    Toast.makeText(BluetoothActivity.this, "No of bags should be more than 1", Toast.LENGTH_SHORT).show();
+
+                if(manualBagsToAddVal == 1) {
+                    addSingleBag(weightOfBagVal);
+                }
+                else if (manualBagsToAddVal < 2) {
+                    Toast.makeText(BluetoothActivity.this, "No of bags should be more than 0", Toast.LENGTH_SHORT).show();
                 } else if (emptyBagWeight >= 3) {
                     Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
                 }
@@ -259,25 +243,21 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         });
 
 
-        submit.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    isInternetPresent = cd.isConnectingToInternet();
-                    if (isInternetPresent) {
-                        if (getBagsCount() != 0 && getTotalBagWeight() > 0) {
-                            new BluetoothActivity.SendBag().execute();
-                        } else {
-                            Toast.makeText(BluetoothActivity.this, "Please Add Bag First", Toast.LENGTH_SHORT).show();
-                        }
-
+        submit.setOnClickListener(v -> {
+            try {
+                isInternetPresent = cd.isConnectingToInternet();
+                if (isInternetPresent) {
+                    if (getBagsCount() != 0 && getTotalBagWeight() > 0) {
+                        new SendBag().execute();
                     } else {
-                        showInternetAlert();
+                        Toast.makeText(BluetoothActivity.this, "Please Add Bag First", Toast.LENGTH_SHORT).show();
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
+
+                } else {
+                    showInternetAlert();
                 }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
 
@@ -450,10 +430,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         bagWeightList.add(weightOfBagVal);
         TotalWeightInQuintal.setText("Total Weight: " + roundOffTo3DecPlaces(getTotalQuintalWeight()));
         NumofBags.setText("No of Bags:  " + getBagsCount());
-    }
-
-    public void addSingleBagCalculations() {
-
     }
 
 

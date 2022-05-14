@@ -162,42 +162,6 @@
             android:textColor="@color/black_000" />
     </LinearLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:layout_marginLeft="@dimen/margin_10dp"
-        android:layout_marginTop="@dimen/margin_10dp"
-        android:layout_marginRight="@dimen/margin_10dp"
-        android:weightSum="1">
-
-        <Button
-            android:id="@+id/add_bag_btn"
-            android:layout_width="115dp"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/margin_10dp"
-            android:layout_marginTop="@dimen/margin_10dp"
-            android:layout_weight=".5"
-            android:background="@drawable/custom_lightgreen_cloud_button"
-            android:text="@string/add_bag"
-            android:textAllCaps="false"
-            android:textColor="@color/black_000"
-            android:textSize="@dimen/textsize_20sp" />
-
-
-        <!-- <Button
-             android:id="@+id/fetch"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content"
-             android:layout_marginLeft="@dimen/margin_60dp"
-             android:layout_marginTop="@dimen/margin_10dp"
-             android:background="@drawable/custom_lightgreen_cloud_button"
-             android:text="@string/fetch_weight"
-             android:textAllCaps="false"
-             android:textColor="@color/black_000"
-             android:textSize="@dimen/textsize_20sp" />-->
-
-    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

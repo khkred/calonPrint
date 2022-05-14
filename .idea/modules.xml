@@ -4,6 +4,9 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/CalonScaleApp.iml" filepath="$PROJECT_DIR$/.idea/modules/CalonScaleApp.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.androidTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.androidTest.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.main.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.unitTest.iml" filepath="$PROJECT_DIR$/.idea/modules/app/CalonScaleApp.app.unitTest.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/modules/billing-release/CalonScaleApp.billing-release.iml" filepath="$PROJECT_DIR$/.idea/modules/billing-release/CalonScaleApp.billing-release.iml" />
     </modules>
   </component>
