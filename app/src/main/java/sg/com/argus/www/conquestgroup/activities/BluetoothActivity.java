@@ -236,6 +236,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     for (int i = 0; i < manualBagsToAddVal; i++) {
                         addSingleBag(weightOfBagVal);
                     }
+                    manualBagsToAdd.setText("1");
                 }
             } else {
                 Toast.makeText(BluetoothActivity.this, "Device is not connected", Toast.LENGTH_SHORT).show();
