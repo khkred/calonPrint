@@ -75,7 +75,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
     private double bagtypecal, newbagTypeValue;
     private String bagtypeRel;
     String oprId;
-    ArrayList<String> stringLotArray = new ArrayList<String>();
+    ArrayList<String> stringLotArray = new ArrayList<>();
     private ArrayList<MenuCategories> hotelCnstsesList;
     String feeCategoryId;
     Handler handler;
@@ -236,17 +236,11 @@ public class WelcomeUserActivity extends AppCompatActivity {
         builder.setMessage("You don't have Internet Connection.")
                 .setCancelable(false)
                 .setPositiveButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                finish();
-                            }
-                        }).setNegativeButton("Retry",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                        startActivity(getIntent());
-                    }
-                });
+                        (dialog, id) -> finish()).setNegativeButton("Retry",
+                        (dialog, id) -> {
+                            finish();
+                            startActivity(getIntent());
+                        });
 
         // Creating dialog box
         AlertDialog alert = builder.create();
