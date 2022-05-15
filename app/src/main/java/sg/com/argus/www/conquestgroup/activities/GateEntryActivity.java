@@ -11,8 +11,6 @@ import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.ngx.mp100sdk.Intefaces.INGXCallback;
-import com.ngx.mp100sdk.NGXPrinter;
 
 import java.util.ArrayList;
 
@@ -26,8 +24,6 @@ public class GateEntryActivity extends AppCompatActivity {
 
     private Button next;
     private final static String TAG = WelcomeUserActivity.class.getSimpleName();
-    public static NGXPrinter ngxPrinter = NGXPrinter.getNgxPrinterInstance();
-    private INGXCallback ingxCallback;
 
     private boolean mConnected = false;
     ConnectionDetector cd;

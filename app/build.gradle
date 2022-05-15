@@ -14,7 +14,7 @@ android {
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.argus.www.conquestgroup"
-        minSdkVersion 19
+        minSdkVersion 22
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -45,6 +45,7 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.itextpdf:itextpdf:5.0.6'
     implementation 'com.intuit.sdp:sdp-android:1.0.3'
+    implementation("com.android.support:multidex:1.0.3")
 
     implementation (name:'MswipeWseriesUniversalDRDSDKVer1.0.40v4.0.3', ext:'aar')
 

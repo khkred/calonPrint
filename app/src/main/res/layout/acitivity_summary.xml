@@ -109,6 +109,16 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
+    <Button
+        android:layout_marginTop="40dp"
+        android:textAllCaps="false"
+        android:layout_gravity="center_horizontal"
+        android:text="Test Print"
+        android:id="@+id/test_print"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
 
 
 
