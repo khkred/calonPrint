@@ -19,6 +19,10 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.mswipetech.wisepad.sdk.Print;
+import com.socsi.smartposapi.printer.Align;
+import com.socsi.smartposapi.printer.FontLattice;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,6 +48,11 @@ public class SummaryActivity extends AppCompatActivity {
     Button pickDateBtn;
     private int day, month, year;
 
+    /**
+     * Test Print
+     */
+    Button testPrintBtn;
+
     TextView dateView, loginIdEditText, passwordEditText;
     String loginId, password;
 
@@ -54,18 +63,26 @@ public class SummaryActivity extends AppCompatActivity {
     Boolean isInternetPresent = false;
     Button getSummaryBtn;
 
+    Print mPrint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.acitivity_summary);
 
         connectionDetector = new ConnectionDetector(this);
 
+        testPrintBtn = findViewById(R.id.test_print);
+
         sunmiPrintHelper = SunmiPrintHelper.getInstance();
         sunmiPrintHelper.initSunmiPrinterService(getApplicationContext());
-        pickDateBtn = findViewById(R.id.pick_date_btn);
 
+        Print.init(SummaryActivity.this);
+
+
+        pickDateBtn = findViewById(R.id.pick_date_btn);
         dateView = findViewById(R.id.date_text_view);
 
         loginIdEditText = findViewById(R.id.login_id_edit_text);
@@ -75,6 +92,25 @@ public class SummaryActivity extends AppCompatActivity {
         year = calendar.get(Calendar.YEAR);
         month = calendar.get(Calendar.MONTH);
         day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        testPrintBtn.setOnClickListener(view -> {
+            Print.init(SummaryActivity.this);
+            Print.StartPrinting("TITLE", FontLattice.FORTY_EIGHT, true, Align.CENTER, false);
+            Print.StartPrinting("LAST NAME" ,FontLattice.TWENTY_FOUR, true, Align.RIGHT, false);
+//            Print.StartPrinting("ENTRY TIME<br>" ,FontLattice.TWENTY_FOUR, true, Align.RIGHT, true);
+//            Print.StartPrinting("TICKET NO<br>" ,FontLattice.TWENTY_FOUR, true, Align.BOTTOM, true);
+//            Print.StartPrinting("TITLE");
+//            Print.StartPrinting("LAST NAME");
+//            Print.StartPrinting("ENTRY TIME");
+//            Print.StartPrinting();
+//            Print.StartPrinting("Harish");
+//            Print.StartPrinting();
+//            Print.StartPrinting();
+
+
+        });
+
+
 
 
         getSummaryBtn = findViewById(R.id.submit_summary_btn);
@@ -106,6 +142,22 @@ public class SummaryActivity extends AppCompatActivity {
 
         });
 
+    }
+
+
+    void defaultPrint(String content){
+
+        Print.StartPrinting(content ,FontLattice.TWENTY_FOUR, true, Align.LEFT, true);
+    }
+
+    /**
+     * Overloading
+     * @param content
+     * @param align
+     */
+    void defaultPrint(String content, Align align, boolean lineBreak){
+
+        Print.StartPrinting(content ,FontLattice.TWENTY_FOUR, true, align, lineBreak);
     }
 
 
@@ -214,7 +266,7 @@ public class SummaryActivity extends AppCompatActivity {
             p.dismiss();
             try {
                 JSONObject jsonObject = new JSONObject(result);
-                summaryPrint(jsonObject);
+                summarySwipePrint(jsonObject);
                 pickDateBtn.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -223,6 +275,85 @@ public class SummaryActivity extends AppCompatActivity {
 
 
         }
+    }
+
+    private void summarySwipePrint(JSONObject object) {
+
+        try {
+
+            Calendar calendar = Calendar.getInstance();
+            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            String completeTime = df.format(calendar.getTime());
+
+            int totalBags = 0;
+            double netWeightInQt = 0;
+
+            String userName = object.getString("userName");
+            String userType = object.getString("userType");
+            JSONArray lotArrays = object.getJSONArray("lotInfo");
+
+            Print.StartPrinting("AMC SURYAPET",FontLattice.THIRTY_SIX,true,Align.CENTER,true);
+            Print.StartPrinting();
+            Print.StartPrinting("Weighment Summary",FontLattice.THIRTY_SIX,true,Align.CENTER,true);
+           //Print two empty lines
+            Print.StartPrinting();
+            Print.StartPrinting();
+            defaultPrint("Business Day :  "+dateString);
+
+            //TODO: Change MACHINE NO. ASK ADIL
+            defaultPrint("Machine No : "+72);
+            defaultPrint("-----------------------------");
+            defaultPrint("LotNo     TotalBags  TotalWeight");
+            defaultPrint("-----------------------------");
+            defaultPrint(userName);
+            for (int i = 0; i < lotArrays.length(); i++) {
+                JSONObject lot = lotArrays.getJSONObject(i);
+                String[] lots = new String[]{lot.getString("lotId"), lot.getString("noOfBags"), lot.getString("netWeightQtl")};
+                defaultPrint(lots[0],Align.LEFT,false);
+                defaultPrint(lots[1],Align.CENTER,false);
+                defaultPrint(lots[2],Align.RIGHT,true);
+
+                int singleLotBags = Integer.parseInt(lot.getString("noOfBags"));
+                totalBags += singleLotBags;
+                double lotWeightInQt = Double.parseDouble(lot.getString("netWeightQtl"));
+                netWeightInQt += lotWeightInQt;
+            }
+            Print.StartPrinting();
+
+            defaultPrint("TOTAL LOTS :",Align.LEFT,false);
+            defaultPrint(String.valueOf(lotArrays.length()),Align.RIGHT,true);
+
+            defaultPrint("TOTAL BAGS :",Align.LEFT,false);
+            defaultPrint(String.valueOf(totalBags),Align.RIGHT,true);
+
+            defaultPrint("TOTAL NET(Kgs) :",Align.LEFT,false);
+            defaultPrint(String.valueOf(netWeightInQt * 100),Align.RIGHT,true);
+
+            defaultPrint("TOTAL Net(QT) :",Align.LEFT,false);
+            defaultPrint(String.valueOf(netWeightInQt),Align.RIGHT,true);
+
+            defaultPrint("Printed On",Align.LEFT,false);
+            defaultPrint(completeTime,Align.RIGHT,true);
+
+            Print.StartPrinting();
+
+            defaultPrint("Sign of Dadwal");
+
+
+            Print.StartPrinting();
+            Print.StartPrinting();
+
+        }
+        catch (JSONException e) {
+            e.printStackTrace();
+
+            String jsonError = "Json Error";
+
+            printSlip(jsonError, Constants.HEADING_SIZE, Constants.BOLD_ON);
+
+        }
+
+
     }
 
 
