@@ -45,4 +45,13 @@ dependencies {
     testImplementation 'junit:junit:4.13.2'
     implementation 'com.itextpdf:itextpdf:5.0.6'
     implementation 'com.intuit.sdp:sdp-android:1.0.3'
+
+    implementation (name:'MswipeWseriesUniversalDRDSDKVer1.0.40v4.0.3', ext:'aar')
+
+}
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
 }
