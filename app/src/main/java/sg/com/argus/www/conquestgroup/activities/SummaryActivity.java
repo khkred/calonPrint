@@ -22,6 +22,8 @@ import android.widget.Toast;
 import com.mswipetech.wisepad.sdk.Print;
 import com.socsi.smartposapi.printer.Align;
 import com.socsi.smartposapi.printer.FontLattice;
+import com.socsi.smartposapi.printer.Printer2;
+import com.socsi.smartposapi.printer.TextEntity;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -64,6 +66,7 @@ public class SummaryActivity extends AppCompatActivity {
     Button getSummaryBtn;
 
     Print mPrint;
+    private static Printer2 a;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +84,10 @@ public class SummaryActivity extends AppCompatActivity {
 
         Print.init(SummaryActivity.this);
 
+        /**
+         * Setting up Printer 2
+         */
+        a = Printer2.getInstance(SummaryActivity.this);
 
         pickDateBtn = findViewById(R.id.pick_date_btn);
         dateView = findViewById(R.id.date_text_view);
@@ -146,8 +153,7 @@ public class SummaryActivity extends AppCompatActivity {
 
 
     void defaultPrint(String content){
-
-        Print.StartPrinting(content ,FontLattice.TWENTY_FOUR, true, Align.LEFT, true);
+        a.appendTextEntity2(new TextEntity(content ,FontLattice.TWENTY_FOUR, true, Align.LEFT, true));
     }
 
     /**
@@ -156,8 +162,7 @@ public class SummaryActivity extends AppCompatActivity {
      * @param align
      */
     void defaultPrint(String content, Align align, boolean lineBreak){
-
-        Print.StartPrinting(content ,FontLattice.TWENTY_FOUR, true, align, lineBreak);
+        a.appendTextEntity2(new TextEntity(content ,FontLattice.TWENTY_FOUR, true, align, lineBreak));
     }
 
 
@@ -266,7 +271,7 @@ public class SummaryActivity extends AppCompatActivity {
             p.dismiss();
             try {
                 JSONObject jsonObject = new JSONObject(result);
-                summarySwipePrint(jsonObject);
+                summarySwipePrint2(jsonObject);
                 pickDateBtn.setVisibility(View.VISIBLE);
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -277,10 +282,9 @@ public class SummaryActivity extends AppCompatActivity {
         }
     }
 
-    private void summarySwipePrint(JSONObject object) {
 
+    private void summarySwipePrint2(JSONObject object) {
         try {
-
             Calendar calendar = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String completeTime = df.format(calendar.getTime());
@@ -292,11 +296,12 @@ public class SummaryActivity extends AppCompatActivity {
             String userType = object.getString("userType");
             JSONArray lotArrays = object.getJSONArray("lotInfo");
 
-            Print.StartPrinting("AMC SURYAPET",FontLattice.THIRTY_SIX,true,Align.CENTER,true);
+            a.appendTextEntity2(new TextEntity("AMC SURYAPET",FontLattice.THIRTY_SIX,true,Align.CENTER,true));
+            a.startPrint();
             Print.StartPrinting();
-            Print.StartPrinting("Weighment Summary",FontLattice.THIRTY_SIX,true,Align.CENTER,true);
-           //Print two empty lines
-            Print.StartPrinting();
+
+            a.appendTextEntity2(new TextEntity("Weighment Summary",FontLattice.THIRTY_SIX,true,Align.CENTER,true));
+            a.startPrint();
             Print.StartPrinting();
             defaultPrint("Business Day :  "+dateString);
 
@@ -318,6 +323,7 @@ public class SummaryActivity extends AppCompatActivity {
                 double lotWeightInQt = Double.parseDouble(lot.getString("netWeightQtl"));
                 netWeightInQt += lotWeightInQt;
             }
+            a.startPrint();
             Print.StartPrinting();
 
             defaultPrint("TOTAL LOTS :",Align.LEFT,false);
@@ -343,17 +349,12 @@ public class SummaryActivity extends AppCompatActivity {
             Print.StartPrinting();
             Print.StartPrinting();
 
-        }
-        catch (JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
-
             String jsonError = "Json Error";
-
-            printSlip(jsonError, Constants.HEADING_SIZE, Constants.BOLD_ON);
+            Print.StartPrinting(jsonError,FontLattice.THIRTY_SIX,true,Align.CENTER,true);
 
         }
-
-
     }
 
 
