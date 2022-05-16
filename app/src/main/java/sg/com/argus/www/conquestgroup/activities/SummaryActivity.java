@@ -251,7 +251,10 @@ public class SummaryActivity extends AppCompatActivity {
             sunmiPrintHelper.print1Line();
             sunmiPrintHelper.print1Line();
             bodyString.append("Business Day :  ").append(dateString).append("\n");
-            bodyString.append("Machine No : ").append(72).append("\n");
+            /**
+             * TODO: This is the APM ID, It is supposed to change for every device
+             */
+            bodyString.append("Machine No : ").append(76).append("\n");
             bodyString.append("-----------------------------").append("\n");
 
             bodyString.append("LotNo     TotalBags  TotalWeight").append("\n");

@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences.Editor loginPrefsEditor;
     private Boolean saveLogin;
     //String apmcId = "49";
-    String apmcId = "72";
+    String apmcId = "76";
 
     private Spinner spin_states;
     private ArrayList<Client> hotelCnstsesList;
