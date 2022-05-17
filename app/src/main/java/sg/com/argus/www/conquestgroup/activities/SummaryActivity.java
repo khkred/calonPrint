@@ -306,7 +306,7 @@ public class SummaryActivity extends AppCompatActivity {
             defaultPrint("Business Day :  "+dateString);
 
             //TODO: Change MACHINE NO. ASK ADIL
-            defaultPrint("Machine No : "+72);
+            defaultPrint("Machine No : "+76);
             defaultPrint("-----------------------------");
             defaultPrint("LotNo     TotalBags  TotalWeight");
             defaultPrint("-----------------------------");
