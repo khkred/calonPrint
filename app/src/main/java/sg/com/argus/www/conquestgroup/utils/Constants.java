@@ -1,7 +1,7 @@
 package sg.com.argus.www.conquestgroup.utils;
 
 public class Constants {
-    public static final String  BASE_URL = "http://train.www.enam.gov.in/NamWebSrv/rest/";
+    public static final String  BASE_URL = "https://train.enam.gov.in/NamWebSrv/rest/";
 
     public static final String GET_STATES_URL = BASE_URL + "MastersUpdate/getStates";
     public static final String VERIFY_USER_URL =  BASE_URL + "verifyUser";
@@ -18,5 +18,11 @@ public class Constants {
     public static final float HEADING_SIZE = 26;
     public static final boolean BOLD_OFF = false;
     public static final boolean BOLD_ON = true;
+
+
+    //APMC OPR
+
+    public static final String APMC_OPR_ID = "72";
+    public static final String CONQUEST_GROUP = "Conquest Group";
 }
 
