@@ -57,9 +57,9 @@ public class LoginActivity extends AppCompatActivity {
     private Boolean saveLogin;
     //String apmcId = "49";
     /**
-     * Changing ampcId for Swipe to 76
+     * Changing ampcId
      */
-    String apmcId = "76";
+    String apmcId = Constants.APMC_OPR_ID;
 
     private Spinner spin_states;
     private ArrayList<Client> hotelCnstsesList;
