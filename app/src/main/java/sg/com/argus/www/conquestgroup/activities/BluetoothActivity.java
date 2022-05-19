@@ -100,6 +100,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                         BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
                     }
                     //TODO implement bluetooth state 10 dialog
+
                 } else if (intExtra == 13) {
                     if (BluetoothActivity.this.registered) {
                         BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
@@ -107,6 +108,9 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     }
                     //TODO implement bluetooth state 13 dialog
                 }
+
+                //TODO: Implement Bluetooth no device paired TOAST
+                //TODO: ON ACTIVITY DESTROYED, data is getting removed.
             }
         }
     };
