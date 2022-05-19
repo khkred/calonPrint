@@ -65,7 +65,6 @@ public class SummaryActivity extends AppCompatActivity {
     Boolean isInternetPresent = false;
     Button getSummaryBtn;
 
-    Print mPrint;
     private static Printer2 a;
 
     @Override
@@ -102,8 +101,8 @@ public class SummaryActivity extends AppCompatActivity {
 
         testPrintBtn.setOnClickListener(view -> {
             Print.init(SummaryActivity.this);
-            Print.StartPrinting("TITLE", FontLattice.FORTY_EIGHT, true, Align.CENTER, false);
-            Print.StartPrinting("LAST NAME" ,FontLattice.TWENTY_FOUR, true, Align.RIGHT, false);
+            Print.StartPrinting("TEST PRINT", FontLattice.FORTY_EIGHT, true, Align.CENTER, false);
+//            Print.StartPrinting("LAST NAME" ,FontLattice.TWENTY_FOUR, true, Align.RIGHT, false);
 //            Print.StartPrinting("ENTRY TIME<br>" ,FontLattice.TWENTY_FOUR, true, Align.RIGHT, true);
 //            Print.StartPrinting("TICKET NO<br>" ,FontLattice.TWENTY_FOUR, true, Align.BOTTOM, true);
 //            Print.StartPrinting("TITLE");
@@ -149,6 +148,10 @@ public class SummaryActivity extends AppCompatActivity {
 
         });
 
+    }
+
+    void defaultPrint() {
+        a.appendTextEntity2(new TextEntity("" ,FontLattice.TWENTY_FOUR, true, Align.LEFT, true));
     }
 
 
@@ -210,7 +213,7 @@ public class SummaryActivity extends AppCompatActivity {
 
         ProgressDialog p = new ProgressDialog(SummaryActivity.this);
         String orgId = "1";
-        String oprId = "72";
+        String oprId = Constants.APMC_OPR_ID;
 
         @Override
         protected void onPreExecute() {
@@ -296,7 +299,7 @@ public class SummaryActivity extends AppCompatActivity {
             String userType = object.getString("userType");
             JSONArray lotArrays = object.getJSONArray("lotInfo");
 
-            a.appendTextEntity2(new TextEntity("AMC SURYAPET",FontLattice.THIRTY_SIX,true,Align.CENTER,true));
+            a.appendTextEntity2(new TextEntity(Constants.CONQUEST_GROUP,FontLattice.THIRTY_SIX,true,Align.CENTER,true));
             a.startPrint();
             Print.StartPrinting();
 
@@ -306,7 +309,7 @@ public class SummaryActivity extends AppCompatActivity {
             defaultPrint("Business Day :  "+dateString);
 
             //TODO: Change MACHINE NO. ASK ADIL
-            defaultPrint("Machine No : "+76);
+            defaultPrint("Machine No : "+Constants.APMC_OPR_ID);
             defaultPrint("-----------------------------");
             defaultPrint("LotNo     TotalBags  TotalWeight");
             defaultPrint("-----------------------------");
@@ -316,7 +319,8 @@ public class SummaryActivity extends AppCompatActivity {
                 String[] lots = new String[]{lot.getString("lotId"), lot.getString("noOfBags"), lot.getString("netWeightQtl")};
                 defaultPrint(lots[0],Align.LEFT,false);
                 defaultPrint(lots[1],Align.CENTER,false);
-                defaultPrint(lots[2],Align.RIGHT,true);
+                defaultPrint(lots[2],Align.RIGHT,false);
+                defaultPrint();
 
                 int singleLotBags = Integer.parseInt(lot.getString("noOfBags"));
                 totalBags += singleLotBags;
@@ -324,28 +328,33 @@ public class SummaryActivity extends AppCompatActivity {
                 netWeightInQt += lotWeightInQt;
             }
             a.startPrint();
-            Print.StartPrinting();
 
             defaultPrint("TOTAL LOTS :",Align.LEFT,false);
-            defaultPrint(String.valueOf(lotArrays.length()),Align.RIGHT,true);
+            defaultPrint(String.valueOf(lotArrays.length()),Align.RIGHT,false);
+            defaultPrint();
 
             defaultPrint("TOTAL BAGS :",Align.LEFT,false);
-            defaultPrint(String.valueOf(totalBags),Align.RIGHT,true);
+            defaultPrint(String.valueOf(totalBags),Align.RIGHT,false);
+            defaultPrint();
 
             defaultPrint("TOTAL NET(Kgs) :",Align.LEFT,false);
-            defaultPrint(String.valueOf(netWeightInQt * 100),Align.RIGHT,true);
+            defaultPrint(String.valueOf(netWeightInQt * 100),Align.RIGHT,false);
+            defaultPrint();
 
             defaultPrint("TOTAL Net(QT) :",Align.LEFT,false);
-            defaultPrint(String.valueOf(netWeightInQt),Align.RIGHT,true);
+            defaultPrint(String.valueOf(netWeightInQt),Align.RIGHT,false);
+            defaultPrint();
 
             defaultPrint("Printed On",Align.LEFT,false);
-            defaultPrint(completeTime,Align.RIGHT,true);
+            defaultPrint(completeTime,Align.RIGHT,false);
+            defaultPrint();
 
             Print.StartPrinting();
 
             defaultPrint("Sign of Dadwal");
 
-
+            Print.StartPrinting();
+            Print.StartPrinting();
             Print.StartPrinting();
             Print.StartPrinting();
 
@@ -353,6 +362,8 @@ public class SummaryActivity extends AppCompatActivity {
             e.printStackTrace();
             String jsonError = "Json Error";
             Print.StartPrinting(jsonError,FontLattice.THIRTY_SIX,true,Align.CENTER,true);
+            Print.StartPrinting();
+            Print.StartPrinting();
 
         }
     }

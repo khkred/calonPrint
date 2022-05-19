@@ -282,22 +282,27 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
           //  printString.append("Date    :").append(formatted_Date).append("\n");
             defaultPrint("Date:",Align.LEFT,false);
-            defaultPrint(formatted_Date,Align.CENTER,true);
+            defaultPrint(formatted_Date,Align.CENTER,false);
+            defaultPrint();
+
 
        //  printString.append("Lot Id  :").append(lotId).append("\n");
          defaultPrint("Lot Id:",Align.LEFT,false);
-         defaultPrint(lotId,Align.CENTER,true);
+         defaultPrint(lotId,Align.CENTER,false);
+         defaultPrint();
 
 
           //  printString.append("CA Name :").append(cName).append("\n");
             defaultPrint("CA Name:",Align.LEFT,false);
-            defaultPrint(cName,Align.CENTER,true);
+            defaultPrint(cName,Align.CENTER,false);
+            defaultPrint();
 
             //printString.append("FARMER NAME     :").append("\n");
             defaultPrint("FARMER NAME:",Align.LEFT,false);
 
            // printString.append( SName).append("\n");
-            defaultPrint(SName,Align.RIGHT,true);
+            defaultPrint(SName,Align.RIGHT,false);
+            defaultPrint();
 
           //  printString.append("COMMODITY:").append(Com).append("\n");
             defaultPrint("COMMODITY: "+Com);
@@ -316,12 +321,14 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
        //     printString.append("SERIAL NO" + "        QUANTITY(Kg)").append("\n");
             defaultPrint("SERIAL NO",Align.LEFT,false);
-            defaultPrint("QUANTITY(Kg)",Align.RIGHT,true);
+            defaultPrint("QUANTITY(Kg)",Align.RIGHT,false);
+            defaultPrint();
 
             for (int i = 0; i < bagWeightList.size(); i++) {
                 k++;
                 defaultPrint(String.valueOf(k),Align.LEFT,false);
-                defaultPrint(String.valueOf(bagWeightList.get(i)),Align.RIGHT,true);
+                defaultPrint(String.valueOf(bagWeightList.get(i)),Align.RIGHT,false);
+                defaultPrint();
             }
             a.startPrint();
 
@@ -330,26 +337,31 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
            // printString.append("Gross Wt (Qt):     ").append(QuintalWeight).append("\n");
             defaultPrint("Gross Wt (Qt):",Align.LEFT,false);
-            defaultPrint(String.valueOf(QuintalWeight),Align.RIGHT,true);
+            defaultPrint(String.valueOf(QuintalWeight),Align.RIGHT,false);
+            defaultPrint();
 
            // printString.append("Bag Wt (Qt):     ").append(roundOffTo3DecPlaces(BagsWeightValue / 100)).append("\n");
             defaultPrint("Bag Wt (Qt):",Align.LEFT,false);
-            defaultPrint(String.valueOf(roundOffTo3DecPlaces(BagsWeightValue / 100)),Align.RIGHT,true);
+            defaultPrint(String.valueOf(roundOffTo3DecPlaces(BagsWeightValue / 100)),Align.RIGHT,false);
+            defaultPrint();
 
        //     printString.append("-----------------------------").append("\n");
             defaultPrint("-----------------------------");
 
            // printString.append("Net Wt (Qt):     ").append(roundOffTo5DecPlaces(NetWeightValue / 100)).append("\n");
             defaultPrint("Net Wt (Qt):",Align.LEFT,false);
-            defaultPrint(String.valueOf(roundOffTo5DecPlaces(NetWeightValue / 100)),Align.RIGHT,true);
+            defaultPrint(String.valueOf(roundOffTo5DecPlaces(NetWeightValue / 100)),Align.RIGHT,false);
+            defaultPrint();
 
          //   printString.append("Lot Amt(Rs):     ").append(lRate).append("\n");
             defaultPrint("Lot Amt(Rs):",Align.LEFT,false);
-            defaultPrint(lRate,Align.RIGHT,true);
+            defaultPrint(lRate,Align.RIGHT,false);
+            defaultPrint();
 
           //  printString.append("Net Amt(Rs):     ").append(netAmt).append("\n");
             defaultPrint("Net Amt(Rs):",Align.LEFT,false);
-            defaultPrint(netAmt,Align.RIGHT,true);
+            defaultPrint(netAmt,Align.RIGHT,false);
+            defaultPrint();
 
           //  printString.append("Transaction No:").append("\n\t").append(transactionNo).append("\n");
             defaultPrint("Transaction No:");
@@ -357,7 +369,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
            // printString.append("Invoice No:     ").append(invoiceDocNo).append("\n");
             defaultPrint("Invoice No:",Align.LEFT,false);
-            defaultPrint(invoiceDocNo,Align.RIGHT,true);
+            defaultPrint(invoiceDocNo,Align.RIGHT,false);
+            defaultPrint();
 
           //  printString.append("-----------------------------").append("\n");
             defaultPrint("-----------------------------");
@@ -373,7 +386,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
            // printString.append("Sign of Dadwal").append("\n");
             defaultPrint("Sign of Dadwal");
 
-            printString.append("-----------------------------").append("\n");
+         //   printString.append("-----------------------------").append("\n");
             defaultPrint("-----------------------------");
              Print.StartPrinting();
              Print.StartPrinting();
@@ -415,6 +428,10 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     void defaultPrint(String content){
         a.appendTextEntity2(new TextEntity(content , FontLattice.TWENTY_FOUR, true, Align.LEFT, true));
+    }
+
+    void defaultPrint() {
+        a.appendTextEntity2(new TextEntity("" ,FontLattice.TWENTY_FOUR, true, Align.LEFT, true));
     }
 
     /**
