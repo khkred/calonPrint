@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.app.DatePickerDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -31,19 +30,15 @@ import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.LinkedList;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
-import sg.com.argus.www.conquestgroup.models.TableItem;
 import sg.com.argus.www.conquestgroup.utils.Constants;
-import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
 public class SummaryActivity extends AppCompatActivity {
 
@@ -55,8 +50,8 @@ public class SummaryActivity extends AppCompatActivity {
      */
     Button testPrintBtn;
 
-    TextView dateView, loginIdEditText, passwordEditText;
-    String loginId, password;
+    TextView dateView, loginIdEditText;
+    String loginId;
 
     String dateString = "";
 
@@ -89,7 +84,6 @@ public class SummaryActivity extends AppCompatActivity {
         dateView = findViewById(R.id.date_text_view);
 
         loginIdEditText = findViewById(R.id.login_id_edit_text);
-        passwordEditText = findViewById(R.id.password_edit_text);
 
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -99,17 +93,6 @@ public class SummaryActivity extends AppCompatActivity {
         testPrintBtn.setOnClickListener(view -> {
             Print.init(SummaryActivity.this);
             Print.StartPrinting("TEST PRINT", FontLattice.FORTY_EIGHT, true, Align.CENTER, false);
-//            Print.StartPrinting("LAST NAME" ,FontLattice.TWENTY_FOUR, true, Align.RIGHT, false);
-//            Print.StartPrinting("ENTRY TIME<br>" ,FontLattice.TWENTY_FOUR, true, Align.RIGHT, true);
-//            Print.StartPrinting("TICKET NO<br>" ,FontLattice.TWENTY_FOUR, true, Align.BOTTOM, true);
-//            Print.StartPrinting("TITLE");
-//            Print.StartPrinting("LAST NAME");
-//            Print.StartPrinting("ENTRY TIME");
-//            Print.StartPrinting();
-//            Print.StartPrinting("Harish");
-//            Print.StartPrinting();
-//            Print.StartPrinting();
-
 
         });
 
@@ -120,16 +103,10 @@ public class SummaryActivity extends AppCompatActivity {
         getSummaryBtn.setOnClickListener(view -> {
 
             loginId = loginIdEditText.getText().toString();
-            password = passwordEditText.getText().toString();
             isInternetPresent = connectionDetector.isConnectingToInternet();
 
             if (loginId.isEmpty()) {
                 Toast.makeText(this, "Login Id is empty", Toast.LENGTH_SHORT).show();
-                return;
-            }
-
-            if (password.isEmpty()) {
-                Toast.makeText(this, "Password field is empty", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -230,7 +207,7 @@ public class SummaryActivity extends AppCompatActivity {
             String text = "";
 
 
-            String urlParameters = "orgId=" + orgId + "&oprId=" + oprId + "&loginId=" + loginId + "&password=" + password + "&wbTrnDate=" + dateString + "";
+            String urlParameters = "orgId=" + orgId + "&oprId=" + oprId + "&loginId=" + loginId + "&wbTrnDate=" + dateString + "";
 
             try {
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
@@ -294,7 +271,8 @@ public class SummaryActivity extends AppCompatActivity {
 
             String userName = object.getString("userName");
             String userType = object.getString("userType");
-            JSONArray lotArrays = object.getJSONArray("lotInfo");
+            String dataAvailable = object.getString("dataAvailable");
+
 
             a.appendTextEntity2(new TextEntity(Constants.CONQUEST_GROUP,FontLattice.THIRTY_SIX,true,Align.CENTER,true));
             a.startPrint();
@@ -307,40 +285,56 @@ public class SummaryActivity extends AppCompatActivity {
 
             //TODO: Change MACHINE NO. ASK ADIL
             defaultPrint("Machine No : "+Constants.APMC_OPR_ID);
+
+            if (dataAvailable.equals("true")) {
+
             defaultPrint("-----------------------------");
             defaultPrint("LotNo     TotalBags  TotalWeight");
             defaultPrint("-----------------------------");
             defaultPrint(userName);
-            for (int i = 0; i < lotArrays.length(); i++) {
-                JSONObject lot = lotArrays.getJSONObject(i);
-                String[] lots = new String[]{lot.getString("lotId"), lot.getString("noOfBags"), lot.getString("netWeightQtl")};
-                defaultPrint(lots[0],Align.LEFT,false);
-                defaultPrint(lots[1],Align.CENTER,false);
-                defaultPrint(lots[2],Align.RIGHT,false);
-                defaultPrint();
-
-                int singleLotBags = Integer.parseInt(lot.getString("noOfBags"));
-                totalBags += singleLotBags;
-                double lotWeightInQt = Double.parseDouble(lot.getString("netWeightQtl"));
-                netWeightInQt += lotWeightInQt;
-            }
             a.startPrint();
 
-            defaultPrint("TOTAL LOTS :",Align.LEFT,false);
-            defaultPrint(String.valueOf(lotArrays.length()),Align.RIGHT,false);
-            defaultPrint();
+                JSONArray lotArrays = object.getJSONArray("lotInfo");
 
-            defaultPrint("TOTAL BAGS :",Align.LEFT,false);
-            defaultPrint(String.valueOf(totalBags),Align.RIGHT,false);
-            defaultPrint();
+                for (int i = 0; i < lotArrays.length(); i++) {
+                    JSONObject lot = lotArrays.getJSONObject(i);
+                    String[] lots = new String[]{lot.getString("lotId"), lot.getString("noOfBags"), lot.getString("netWeightQtl")};
+                    defaultPrint(lots[0], Align.LEFT, false);
+                    defaultPrint(lots[1], Align.CENTER, false);
+                    defaultPrint(lots[2], Align.RIGHT, false);
+                    defaultPrint();
 
-            defaultPrint("TOTAL NET(Kgs) :",Align.LEFT,false);
-            defaultPrint(String.valueOf(netWeightInQt * 100),Align.RIGHT,false);
-            defaultPrint();
+                    int singleLotBags = Integer.parseInt(lot.getString("noOfBags"));
+                    totalBags += singleLotBags;
+                    double lotWeightInQt = Double.parseDouble(lot.getString("netWeightQtl"));
+                    netWeightInQt += lotWeightInQt;
+                }
 
-            defaultPrint("TOTAL Net(QT) :",Align.LEFT,false);
-            defaultPrint(String.valueOf(netWeightInQt),Align.RIGHT,false);
-            defaultPrint();
+
+                defaultPrint("TOTAL LOTS :", Align.LEFT, false);
+                defaultPrint(String.valueOf(lotArrays.length()), Align.RIGHT, false);
+                defaultPrint();
+
+                defaultPrint("TOTAL BAGS :", Align.LEFT, false);
+                defaultPrint(String.valueOf(totalBags), Align.RIGHT, false);
+                defaultPrint();
+
+                defaultPrint("TOTAL NET(Kgs) :", Align.LEFT, false);
+                defaultPrint(String.valueOf(netWeightInQt * 100), Align.RIGHT, false);
+                defaultPrint();
+
+                defaultPrint("TOTAL Net(QT) :", Align.LEFT, false);
+                defaultPrint(String.valueOf(netWeightInQt), Align.RIGHT, false);
+                defaultPrint();
+                a.startPrint();
+            }
+            else {
+                defaultPrint(userName);
+                defaultPrint("No Lots added on "+dateString);
+                a.startPrint();
+
+            }
+
 
             defaultPrint("Printed On",Align.LEFT,false);
             defaultPrint(completeTime,Align.RIGHT,false);

@@ -35,10 +35,6 @@ import com.socsi.smartposapi.printer.FontLattice;
 import com.socsi.smartposapi.printer.Printer2;
 import com.socsi.smartposapi.printer.TextEntity;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,10 +45,6 @@ import java.util.Date;
 
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
-import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
-import sg.com.argus.www.conquestgroup.utils.Constants;
-import sg.com.argus.www.conquestgroup.utils.ESCUtil;
-import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
 
 public class PrintWeighingSlipActivity extends AppCompatActivity {
@@ -62,7 +54,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     LinearLayout ll, llh;
     private TextView bagTxt, weightTxt;
     int j = 0, k = 0;
-    private double NetWeightValue, BagsWeightValue, ActualNoofBags;
+    private double NetWeightValue, BagsWeightValue, ActualNoOfBags;
     String oprId;
     int permissionCheck, permissionCheckWrite;
     public static final int MY_PERMISSIONS_REQUEST_STORAGE = 99;
@@ -138,7 +130,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
         NetWeightValue = Double.parseDouble(NetWeight);
         BagsWeightValue = Double.parseDouble(BagsWeight);
-        ActualNoofBags = Double.parseDouble(actualBags);
+        ActualNoOfBags = Double.parseDouble(actualBags);
 
         AddBag();
         SName = intent.getStringExtra("farmerName");
@@ -159,7 +151,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         TraderName.setText("" + tName);
         PbagType.setText("" + bagType);
         PnumBag.setText("" + noOfBag);
-        actual_no_of_bag.setText("" + roundOffTo0DecPlaces(ActualNoofBags));
+        actual_no_of_bag.setText("" + roundOffTo0DecPlaces(ActualNoOfBags));
 
         gross_weight.setText("" + QuintalWeight);
         bag_weight.setText("" + roundOffTo3DecPlaces(BagsWeightValue / 100));
@@ -249,7 +241,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             defaultPrint("TRADER: "+tName);
 
           //  printString.append("ACTUAL NO OF BAGS  :").append(roundOffTo0DecPlaces(ActualNoofBags)).append("\n");
-            defaultPrint("ACTUAL NO OF BAGS: "+roundOffTo0DecPlaces(ActualNoofBags));
+            defaultPrint("ACTUAL NO OF BAGS: "+roundOffTo0DecPlaces(ActualNoOfBags));
 
             //printString.append("TOTAL NO OF BAGS   :").append(noOfBag).append("\n");
             defaultPrint("TOTAL NO OF BAGS: "+noOfBag);
@@ -428,7 +420,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             doc.add(new Paragraph("FARMER NAME             : " + SName));
             doc.add(new Paragraph("COMMODITY                 : " + Com));
             doc.add(new Paragraph("TRADER                         : " + tName));
-            doc.add(new Paragraph("ACTUAL NO OF BAGS  : " + roundOffTo0DecPlaces(ActualNoofBags)));
+            doc.add(new Paragraph("ACTUAL NO OF BAGS  : " + roundOffTo0DecPlaces(ActualNoOfBags)));
             doc.add(new Paragraph("TOTAL NO OF BAGS     : " + noOfBag));
             doc.add(new Paragraph("--------------------------------------------------------------------"));
             doc.add(new Paragraph("SERIAL NO   " + "              QUANTITY(Kg)", boldFont));
