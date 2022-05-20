@@ -73,7 +73,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     private TextView transactionNoTv, invoiceNoTv;
 
-    SunmiPrintHelper sunmiPrintHelper;
 
     private static Printer2 a;
 
@@ -90,7 +89,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         final Activity activity = this;
         ll = findViewById(R.id.linearLayout);
 
-        sunmiPrintHelper = SunmiPrintHelper.getInstance();
         a = Printer2.getInstance(PrintWeighingSlipActivity.this);
         Print.init(PrintWeighingSlipActivity.this);
 
@@ -206,63 +204,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
 
 
-    public void printSlip(String content, float size, boolean isBold) {
-
-      sunmiPrintHelper.printText(content, size, false, false, null);
-        sunmiPrintHelper.feedPaper();
-
-    }
-
-
-    private byte codeParse(int value) {
-        byte res = 0x00;
-        switch (value) {
-            case 0:
-                res = 0x00;
-                break;
-            case 1:
-            case 2:
-            case 3:
-            case 4:
-                res = (byte) (value + 1);
-                break;
-            case 5:
-            case 6:
-            case 7:
-            case 8:
-            case 9:
-            case 10:
-            case 11:
-                res = (byte) (value + 8);
-                break;
-            case 12:
-                res = 21;
-                break;
-            case 13:
-                res = 33;
-                break;
-            case 14:
-                res = 34;
-                break;
-            case 15:
-                res = 36;
-                break;
-            case 16:
-                res = 37;
-                break;
-            case 17:
-            case 18:
-            case 19:
-                res = (byte) (value - 17);
-                break;
-            case 20:
-                res = (byte) 0xff;
-                break;
-            default:
-                break;
-        }
-        return res;
-    }
 
 
 
@@ -278,7 +219,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String formatted_Date = df.format(c.getTime());
 
-            StringBuilder printString = new StringBuilder();
 
           //  printString.append("Date    :").append(formatted_Date).append("\n");
             defaultPrint("Date:",Align.LEFT,false);
