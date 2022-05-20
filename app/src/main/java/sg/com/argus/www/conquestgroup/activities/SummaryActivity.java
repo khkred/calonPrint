@@ -330,7 +330,11 @@ public class SummaryActivity extends AppCompatActivity {
             }
             else {
                 defaultPrint(userName);
-                defaultPrint("No Lots added on "+dateString);
+                defaultPrint("-----------------------------");
+
+                a.appendTextEntity2(new TextEntity("No Lots added on "+dateString,FontLattice.TWENTY_EIGHT,true,Align.CENTER,true));
+                defaultPrint("-----------------------------");
+
                 a.startPrint();
 
             }
