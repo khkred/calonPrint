@@ -76,8 +76,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     private static Printer2 a;
 
-    //From Sunmi
-    private final String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "Windows-1252", "CP866", "CP852", "CP858", "CP874",  "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "utf-8"};
 
 
     protected void onCreate(Bundle savedInstanceState) {
