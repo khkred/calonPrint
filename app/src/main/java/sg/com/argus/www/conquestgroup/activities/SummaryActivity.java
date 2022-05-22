@@ -239,13 +239,15 @@ public class SummaryActivity extends AppCompatActivity {
 
             String userName = object.getString("userName");
             String userType = object.getString("userType");
+            String dataAvailable = object.getString("dataAvailable");
+
             JSONArray lotArrays = object.getJSONArray("lotInfo");
 
 
             StringBuilder bodyString = new StringBuilder();
 
             //AMC SURYAPET
-            headingStringBuilder.append("        AMC SURYAPET").append("\n\n");
+            headingStringBuilder.append("        CONQUEST GROUP").append("\n\n");
             headingStringBuilder.append("      Weighment Summary").append("\n");
             sunmiPrintHelper.printText(headingStringBuilder.toString(), Constants.HEADING_SIZE, Constants.BOLD_ON, false, null);
             sunmiPrintHelper.print1Line();
@@ -254,57 +256,66 @@ public class SummaryActivity extends AppCompatActivity {
             /**
              * TODO: This is the APM ID, It is supposed to change for every device
              */
-            bodyString.append("Machine No : ").append(76).append("\n");
-            bodyString.append("-----------------------------").append("\n");
+            bodyString.append("Machine No : ").append(Constants.APMC_OPR_ID).append("\n");
 
-            bodyString.append("LotNo     TotalBags  TotalWeight").append("\n");
-            bodyString.append("-----------------------------").append("\n");
-            bodyString.append(userName).append("\n\n");
-            sunmiPrintHelper.printText(bodyString.toString(), Constants.DEFAULT_PRINT_SIZE, Constants.BOLD_OFF, false, null);
+            if (dataAvailable.equals("true")) {
+                bodyString.append("-----------------------------").append("\n");
+                bodyString.append("LotNo     TotalBags  TotalWeight").append("\n");
+                bodyString.append("-----------------------------").append("\n");
+                bodyString.append(userName).append("\n\n");
+                sunmiPrintHelper.printText(bodyString.toString(), Constants.DEFAULT_PRINT_SIZE, Constants.BOLD_OFF, false, null);
 
-            LinkedList<TableItem> tableItems = new LinkedList<>();
-            //Clearing the Body String
-            bodyString.setLength(0);
-            for (int i = 0; i < lotArrays.length(); i++) {
-                TableItem ti = new TableItem();
-                JSONObject lot = lotArrays.getJSONObject(i);
-                String[] lots = new String[]{lot.getString("lotId"), lot.getString("noOfBags"), lot.getString("netWeightQtl")};
-                ti.setText(lots);
-                ti.setWidth(new int[]{13, 3, 6});
-                ti.setAlign(new int[]{0, 0, 2});
-                tableItems.add(ti);
-                int singleLotBags = Integer.parseInt(lot.getString("noOfBags"));
-                totalBags += singleLotBags;
-                double lotWeightInQt = Double.parseDouble(lot.getString("netWeightQtl"));
-                netWeightInQt += lotWeightInQt;
+                LinkedList<TableItem> tableItems = new LinkedList<>();
+                //Clearing the Body String
+                bodyString.setLength(0);
+                for (int i = 0; i < lotArrays.length(); i++) {
+                    TableItem ti = new TableItem();
+                    JSONObject lot = lotArrays.getJSONObject(i);
+                    String[] lots = new String[]{lot.getString("lotId"), lot.getString("noOfBags"), lot.getString("netWeightQtl")};
+                    ti.setText(lots);
+                    ti.setWidth(new int[]{13, 3, 6});
+                    ti.setAlign(new int[]{0, 0, 2});
+                    tableItems.add(ti);
+                    int singleLotBags = Integer.parseInt(lot.getString("noOfBags"));
+                    totalBags += singleLotBags;
+                    double lotWeightInQt = Double.parseDouble(lot.getString("netWeightQtl"));
+                    netWeightInQt += lotWeightInQt;
+                }
+                printAllTables(tableItems);
+                sunmiPrintHelper.print1Line();
+
+                LinkedList<TableItem> tableItems1 = new LinkedList<>();
+                TableItem lotTableItem = new TableItem(new String[]{"TOTAL LOTS :", String.valueOf(lotArrays.length())});
+                lotTableItem.setWidth(new int[]{11, 4});
+                tableItems1.add(lotTableItem);
+
+                TableItem bagsTableItem = new TableItem(new String[]{"TOTAL BAGS :", String.valueOf(totalBags)});
+                bagsTableItem.setWidth(new int[]{11, 4});
+                tableItems1.add(bagsTableItem);
+
+                TableItem kgsTableItem = new TableItem(new String[]{"TOTAL NET(Kgs) :", String.valueOf(netWeightInQt * 100)});
+                kgsTableItem.setWidth(new int[]{16, 9});
+                tableItems1.add(kgsTableItem);
+
+                TableItem qtTableItem = new TableItem(new String[]{"TOTAL Net(QT) :", String.valueOf(netWeightInQt)});
+                qtTableItem.setWidth(new int[]{15, 7});
+                tableItems1.add(qtTableItem);
+
+
+                TableItem printedOnTableItem = new TableItem(new String[]{"Printed On", completeTime});
+                printedOnTableItem.setWidth(new int[]{10, 19});
+                printedOnTableItem.setAlign(new int[]{0, 0});
+                tableItems1.add(printedOnTableItem);
+
+                printAllTables(tableItems1);
+                sunmiPrintHelper.print1Line();
+            } else {
+                bodyString.append(userName).append("\n\n");
+                bodyString.append("-----------------------------").append("\n");
+                bodyString.append("No Lots added on "+dateString).append("\n");
+                bodyString.append("-----------------------------").append("\n\n");
+
             }
-            printAllTables(tableItems);
-            sunmiPrintHelper.print1Line();
-
-            LinkedList<TableItem> tableItems1 = new LinkedList<>();
-            TableItem lotTableItem = new TableItem(new String[]{"TOTAL LOTS :", String.valueOf(lotArrays.length())});
-            lotTableItem.setWidth(new int[]{11, 4});
-            tableItems1.add(lotTableItem);
-
-            TableItem bagsTableItem = new TableItem(new String[]{"TOTAL BAGS :", String.valueOf(totalBags)});
-            bagsTableItem.setWidth(new int[]{11, 4});
-            tableItems1.add(bagsTableItem);
-
-            TableItem kgsTableItem = new TableItem(new String[]{"TOTAL NET(Kgs) :", String.valueOf(netWeightInQt * 100)});
-            kgsTableItem.setWidth(new int[]{16, 9});
-            tableItems1.add(kgsTableItem);
-
-            TableItem qtTableItem = new TableItem(new String[]{"TOTAL Net(QT) :", String.valueOf(netWeightInQt)});
-            qtTableItem.setWidth(new int[]{15, 7});
-            tableItems1.add(qtTableItem);
-
-            TableItem printedOnTableItem = new TableItem(new String[]{"Printed On", completeTime});
-            printedOnTableItem.setWidth(new int[]{10, 19});
-            printedOnTableItem.setAlign(new int[]{0, 0});
-            tableItems1.add(printedOnTableItem);
-
-            printAllTables(tableItems1);
-            sunmiPrintHelper.print1Line();
             bodyString.append("Sign of Dadwal").append("\n");
 
             printSlip(bodyString.toString(), Constants.DEFAULT_PRINT_SIZE, Constants.BOLD_OFF);
