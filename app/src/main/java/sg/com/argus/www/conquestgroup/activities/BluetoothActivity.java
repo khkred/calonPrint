@@ -95,6 +95,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         public void onReceive(Context context, Intent intent) {
             if (intent.getAction().equals("android.bluetooth.adapter.action.STATE_CHANGED")) {
                 int intExtra = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", Integer.MIN_VALUE);
+
+
                 if (intExtra == 10) {
                     if (BluetoothActivity.this.registered) {
                         BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
@@ -354,8 +356,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     @Override
     protected void onStop() {
         super.onStop();
-        bagWeightList.clear();
-        bagArrayList.clear();
+//        bagWeightList.clear();
+//        bagArrayList.clear();
 
     }
 
@@ -619,6 +621,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         alert.show();
 
     }
+
+
 
 
     @Override

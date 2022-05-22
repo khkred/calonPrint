@@ -50,7 +50,7 @@ import sg.com.argus.www.conquestgroup.R;
 public class PrintWeighingSlipActivity extends AppCompatActivity {
     private String SName, Com, tName, cName, lRate, noOfBag, bagType, TotalWeight, bagTypeId, loginid, password, userid, orgid, lotId, QuintalWeight, NetWeight, BagsWeight, actualBags, netAmt;
     private TextView sellerNAme, commodity, TraderName, CaName, bidPrice, PbagType, PnumBag, lotid, actual_no_of_bag, gross_weight, net_weight, net_amt, bag_weight;
-    private Button printBtn, summaryBtn;
+    private Button printBtn;
     LinearLayout ll, llh;
     private TextView bagTxt, weightTxt;
     int j = 0, k = 0;
@@ -96,7 +96,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         net_weight = findViewById(R.id.net_weight);
         net_amt = findViewById(R.id.net_amt);
         printBtn = findViewById(R.id.printbtn);
-        summaryBtn = findViewById(R.id.summary_print_btn);
         transactionNoTv = findViewById(R.id.transaction_no_text_view);
         invoiceNoTv = findViewById(R.id.invoice_no_text_view);
 
@@ -167,18 +166,15 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         final String formattedDate = df.format(TodayDate);
 
 
-        printBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                    createandDisplayPdf(formattedDate);
-                try {
-                    sendData();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-
+        printBtn.setOnClickListener(v -> {
+//                createandDisplayPdf(formattedDate);
+            try {
+                sendData();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
+
+
         });
         permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
         permissionCheckWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
@@ -487,6 +483,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+
+
         Intent intent = new Intent(PrintWeighingSlipActivity.this, BluetoothActivity.class);
         intent.putExtra("u_name", loginid);
         intent.putExtra("u_pass", password);
@@ -508,4 +506,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
 }
