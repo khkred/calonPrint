@@ -222,10 +222,13 @@ public class Bluetooth {
     public List<BluetoothDevice> getPairedDevices() {
 
         //TODO WHAT IF arraylist size is -1
-        ArrayList arrayList = new ArrayList();
-        for (BluetoothDevice add : this.bluetoothAdapter.getBondedDevices()) {
-            arrayList.add(add);
+
+        ArrayList<BluetoothDevice> arrayList = new ArrayList<>();
+
+        if (this.bluetoothAdapter.getBondedDevices().size()==0) {
+
         }
+        arrayList.addAll(this.bluetoothAdapter.getBondedDevices());
         return arrayList;
     }
 
