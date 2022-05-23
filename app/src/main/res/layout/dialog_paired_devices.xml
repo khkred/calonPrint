@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+
+
+    <ImageView
+        android:id="@+id/iv_exit_logo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="25dp"
+        android:padding="15dp"
+        android:src="@mipmap/ic_launcher" />
+
+    <TextView
+        android:id="@+id/no_paired_devices_prompt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/iv_exit_logo"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="10dp"
+        android:text="@string/no_paired_devices_added"
+        android:textAllCaps="false"
+        android:textColor="@color/colorPrimaryDark"
+        android:textSize="@dimen/textsize_14sp"
+        android:textStyle="normal" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/no_paired_devices_prompt"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
+        android:orientation="horizontal"
+        android:weightSum="1">
+
+
+        <Button
+            android:id="@+id/paired_retry_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="0.5"
+            android:background="@android:color/transparent"
+            android:text="@string/retry"
+            android:textAllCaps="false"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="@dimen/textsize_14sp" />
+
+
+        <RelativeLayout
+            android:layout_width="1dp"
+            android:layout_height="40dp"
+            android:background="@color/colorPrimary" />
+
+
+        <Button
+            android:id="@+id/paired_settings_btn"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_weight="0.5"
+            android:background="@android:color/transparent"
+            android:text="@string/go_to_settings"
+            android:textAllCaps="false"
+            android:textColor="@color/color_FF0000"
+            android:textSize="@dimen/textsize_14sp" />
+    </LinearLayout>
+
+</RelativeLayout>

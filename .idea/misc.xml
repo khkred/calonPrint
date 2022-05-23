@@ -18,6 +18,7 @@
         <entry key="app/src/main/res/layout/dialog_exit.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_exit_summary.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_logout.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/dialog_paired_devices.xml" value="0.359375" />
         <entry key="app/src/main/res/layout/dialog_selection.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/dialog_states.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/item_religion.xml" value="0.36041666666666666" />
