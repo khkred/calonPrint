@@ -148,14 +148,12 @@ public class WelcomeUserActivity extends AppCompatActivity {
             showLogoutAlert(WelcomeUserActivity.this);
         });
         searchbtn.setOnClickListener(v -> ShowData(searchLotDetails.getText().toString()));
-        searchLotDetails.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    ShowData(searchLotDetails.getText().toString());
-                }
-                return false;
-            }
-        });
+//        searchLotDetails.setOnEditorActionListener((v, actionId, event) -> {
+//            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+//                ShowData(searchLotDetails.getText().toString());
+//            }
+//            return false;
+//        });
         next.setOnClickListener(v -> {
 
             //Check if there are any paired devices
