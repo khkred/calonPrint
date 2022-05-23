@@ -20,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -96,7 +97,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
             if (intent.getAction().equals("android.bluetooth.adapter.action.STATE_CHANGED")) {
                 int intExtra = intent.getIntExtra("android.bluetooth.adapter.extra.STATE", Integer.MIN_VALUE);
 
-
+                //10 means bluetooth is turned off
                 if (intExtra == 10) {
                     if (BluetoothActivity.this.registered) {
                         BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
@@ -181,42 +182,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         blueToothWeightDevice = new Bluetooth(this);
         blueToothWeightDevice.enableBluetooth();
         blueToothWeightDevice.setCommunicationCallback(this);
-        addDevicesToList();
-
-        Display("Connecting...");
-        this.blueToothWeightDevice.connectToDevice(blueToothWeightDevice.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
-        registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
-        this.registered = true;
-
-
-        /**
-         * Spinner dropdown selection from here
-         */
-
-        bluetooth_devices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                if (BluetoothActivity.this.registered) {
-                    BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
-                    BluetoothActivity.this.registered = false;
-                }
-
-                Display("Connecting...");
-                BluetoothActivity.this.blueToothWeightDevice.removeCommunicationCallback();
-                BluetoothActivity.this.blueToothWeightDevice.disconnect();
-                BluetoothActivity.this.blueToothWeightDevice = new Bluetooth(BluetoothActivity.this);
-                BluetoothActivity.this.blueToothWeightDevice.enableBluetooth();
-                BluetoothActivity.this.blueToothWeightDevice.setCommunicationCallback(BluetoothActivity.this);
-                BluetoothActivity.this.blueToothWeightDevice.connectToDevice(BluetoothActivity.this.blueToothWeightDevice.getPairedDevices().get(position));
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });
 
 
 
@@ -352,6 +317,84 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     //==========================================================================================================
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        areDevicesAvailable();
+        addDevicesToList();
+
+        Display("Connecting...");
+        this.blueToothWeightDevice.connectToDevice(blueToothWeightDevice.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
+        registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
+        this.registered = true;
+
+
+        /**
+         * Spinner dropdown selection from here
+         */
+
+        bluetooth_devices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if (BluetoothActivity.this.registered) {
+                    BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
+                    BluetoothActivity.this.registered = false;
+                }
+
+                Display("Connecting...");
+                BluetoothActivity.this.blueToothWeightDevice.removeCommunicationCallback();
+                BluetoothActivity.this.blueToothWeightDevice.disconnect();
+                BluetoothActivity.this.blueToothWeightDevice = new Bluetooth(BluetoothActivity.this);
+                BluetoothActivity.this.blueToothWeightDevice.enableBluetooth();
+                BluetoothActivity.this.blueToothWeightDevice.setCommunicationCallback(BluetoothActivity.this);
+                BluetoothActivity.this.blueToothWeightDevice.connectToDevice(BluetoothActivity.this.blueToothWeightDevice.getPairedDevices().get(position));
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+    }
+
+    private void areDevicesAvailable() {
+        mDeviceList = blueToothWeightDevice.getPairedDevices();
+
+        if (mDeviceList.size()==0) {
+            LayoutInflater layoutInflater = LayoutInflater.from(BluetoothActivity.this);
+            View pairedDevicesPrompt = layoutInflater.inflate(R.layout.dialog_paired_devices,null);
+
+            final Button retryBtn = pairedDevicesPrompt.findViewById(R.id.paired_retry_btn);
+            final Button settingsBtn = pairedDevicesPrompt.findViewById(R.id.paired_settings_btn);
+
+            /**
+             * Alert Dialog Builder
+             */
+            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(BluetoothActivity.this);
+            alertDialogBuilder.setView(pairedDevicesPrompt).setCancelable(true);
+
+            final AlertDialog alert = alertDialogBuilder.create();
+            alert.show();
+
+            retryBtn.setOnClickListener(view -> {
+                Intent intent = getIntent();
+                finish();
+                startActivity(intent);
+            });
+
+            settingsBtn.setOnClickListener(view -> {
+                Intent intentOpenBluetoothSettings = new Intent();
+                intentOpenBluetoothSettings.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+                startActivity(intentOpenBluetoothSettings);
+            });
+        }
+    }
 
     @Override
     protected void onStop() {
