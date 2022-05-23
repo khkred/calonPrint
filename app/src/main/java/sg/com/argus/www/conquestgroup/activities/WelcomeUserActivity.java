@@ -2,6 +2,8 @@ package sg.com.argus.www.conquestgroup.activities;
 
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -49,6 +51,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
@@ -80,6 +83,14 @@ public class WelcomeUserActivity extends AppCompatActivity {
     String feeCategoryId;
     Handler handler;
 
+    /**
+     * Bluetooth Adapter
+     */
+    private BluetoothAdapter bluetoothAdapter;
+    private Set<BluetoothDevice> pairedDevice;
+
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,6 +100,12 @@ public class WelcomeUserActivity extends AppCompatActivity {
         Toolbar mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
+
+        /**
+         * Initialise Bluetooth Adapter
+         */
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
         savedata = getSharedPreferences("weighing_scale", MODE_PRIVATE);
 
@@ -142,6 +159,16 @@ public class WelcomeUserActivity extends AppCompatActivity {
             }
         });
         next.setOnClickListener(v -> {
+
+            //Check if there are any paired devices
+
+            pairedDevice = bluetoothAdapter.getBondedDevices();
+
+            if (pairedDevice.size()==0) {
+                Toast.makeText(this, "No Paired Devices", Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             try {
                 if (sellerName.getText().toString().equals("")) {
                     Toast.makeText(WelcomeUserActivity.this, "Please Search Lot Details First", Toast.LENGTH_SHORT).show();
