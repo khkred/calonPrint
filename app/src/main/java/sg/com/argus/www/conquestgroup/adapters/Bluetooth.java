@@ -225,9 +225,6 @@ public class Bluetooth {
 
         ArrayList<BluetoothDevice> arrayList = new ArrayList<>();
 
-        if (this.bluetoothAdapter.getBondedDevices().size()==0) {
-
-        }
         arrayList.addAll(this.bluetoothAdapter.getBondedDevices());
         return arrayList;
     }

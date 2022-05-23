@@ -104,7 +104,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     }
                     //TODO implement bluetooth state 10 dialog
 
-                } else if (intExtra == 13) {
+
+                }
+
+                else if (intExtra == 13) {
                     if (BluetoothActivity.this.registered) {
                         BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
                         BluetoothActivity.this.registered = false;
@@ -292,9 +295,9 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         mDeviceList = blueToothWeightDevice.getPairedDevices();
         ArrayList<String> stringArrayList = new ArrayList<>();
 
-        if (mDeviceList.size()==0) {
-          showPairedDevicesPrompt();
-        }
+//        if (mDeviceList.size()==0) {
+//          showPairedDevicesPrompt();
+//        }
 
         for (BluetoothDevice device : mDeviceList) {
             stringArrayList.add(device.getName());
@@ -372,6 +375,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         /**
          * Alert Dialog Builder
          */
+
+
         final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(BluetoothActivity.this);
         alertDialogBuilder.setView(pairedDevicesPrompt).setCancelable(true);
 
