@@ -184,6 +184,45 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         blueToothWeightDevice.setCommunicationCallback(this);
 
 
+        addDevicesToList();
+
+        Display("Connecting...");
+        this.blueToothWeightDevice.connectToDevice(blueToothWeightDevice.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
+        registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
+        this.registered = true;
+
+
+        /**
+         * Spinner dropdown selection from here
+         */
+
+        bluetooth_devices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
+                if (BluetoothActivity.this.registered) {
+                    BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
+                    BluetoothActivity.this.registered = false;
+                }
+
+                Display("Connecting...");
+                BluetoothActivity.this.blueToothWeightDevice.removeCommunicationCallback();
+                BluetoothActivity.this.blueToothWeightDevice.disconnect();
+                BluetoothActivity.this.blueToothWeightDevice = new Bluetooth(BluetoothActivity.this);
+                BluetoothActivity.this.blueToothWeightDevice.enableBluetooth();
+                BluetoothActivity.this.blueToothWeightDevice.setCommunicationCallback(BluetoothActivity.this);
+                BluetoothActivity.this.blueToothWeightDevice.connectToDevice(BluetoothActivity.this.blueToothWeightDevice.getPairedDevices().get(position));
+
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
 
         addMultipleBagsBtn.setOnClickListener(v -> {
             if (bluetooth_devices.getSelectedItem() != null) {
@@ -253,6 +292,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         mDeviceList = blueToothWeightDevice.getPairedDevices();
         ArrayList<String> stringArrayList = new ArrayList<>();
 
+        if (mDeviceList.size()==0) {
+          showPairedDevicesPrompt();
+        }
+
         for (BluetoothDevice device : mDeviceList) {
             stringArrayList.add(device.getName());
         }
@@ -318,83 +361,37 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     //==========================================================================================================
 
 
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-        areDevicesAvailable();
-        addDevicesToList();
+    private void showPairedDevicesPrompt() {
+        LayoutInflater layoutInflater = LayoutInflater.from(BluetoothActivity.this);
+        View pairedDevicesPrompt = layoutInflater.inflate(R.layout.dialog_paired_devices,null);
 
-        Display("Connecting...");
-        this.blueToothWeightDevice.connectToDevice(blueToothWeightDevice.getPairedDevices().get(bluetooth_devices.getSelectedItemPosition()));
-        registerReceiver(this.mReceiver, new IntentFilter("android.bluetooth.adapter.action.STATE_CHANGED"));
-        this.registered = true;
-
+        final Button retryBtn = pairedDevicesPrompt.findViewById(R.id.paired_retry_btn);
+        final Button settingsBtn = pairedDevicesPrompt.findViewById(R.id.paired_settings_btn);
 
         /**
-         * Spinner dropdown selection from here
+         * Alert Dialog Builder
          */
+        final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(BluetoothActivity.this);
+        alertDialogBuilder.setView(pairedDevicesPrompt).setCancelable(true);
 
-        bluetooth_devices.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long l) {
-                if (BluetoothActivity.this.registered) {
-                    BluetoothActivity.this.unregisterReceiver(BluetoothActivity.this.mReceiver);
-                    BluetoothActivity.this.registered = false;
-                }
+        final AlertDialog alert = alertDialogBuilder.create();
+        alert.show();
 
-                Display("Connecting...");
-                BluetoothActivity.this.blueToothWeightDevice.removeCommunicationCallback();
-                BluetoothActivity.this.blueToothWeightDevice.disconnect();
-                BluetoothActivity.this.blueToothWeightDevice = new Bluetooth(BluetoothActivity.this);
-                BluetoothActivity.this.blueToothWeightDevice.enableBluetooth();
-                BluetoothActivity.this.blueToothWeightDevice.setCommunicationCallback(BluetoothActivity.this);
-                BluetoothActivity.this.blueToothWeightDevice.connectToDevice(BluetoothActivity.this.blueToothWeightDevice.getPairedDevices().get(position));
-
-
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
+        retryBtn.setOnClickListener(view -> {
+            Intent intent = getIntent();
+            finish();
+            startActivity(intent);
         });
 
-
+        settingsBtn.setOnClickListener(view -> {
+            Intent intentOpenBluetoothSettings = new Intent();
+            intentOpenBluetoothSettings.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
+            startActivity(intentOpenBluetoothSettings);
+        });
     }
 
-    private void areDevicesAvailable() {
-        mDeviceList = blueToothWeightDevice.getPairedDevices();
 
-        if (mDeviceList.size()==0) {
-            LayoutInflater layoutInflater = LayoutInflater.from(BluetoothActivity.this);
-            View pairedDevicesPrompt = layoutInflater.inflate(R.layout.dialog_paired_devices,null);
-
-            final Button retryBtn = pairedDevicesPrompt.findViewById(R.id.paired_retry_btn);
-            final Button settingsBtn = pairedDevicesPrompt.findViewById(R.id.paired_settings_btn);
-
-            /**
-             * Alert Dialog Builder
-             */
-            final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(BluetoothActivity.this);
-            alertDialogBuilder.setView(pairedDevicesPrompt).setCancelable(true);
-
-            final AlertDialog alert = alertDialogBuilder.create();
-            alert.show();
-
-            retryBtn.setOnClickListener(view -> {
-                Intent intent = getIntent();
-                finish();
-                startActivity(intent);
-            });
-
-            settingsBtn.setOnClickListener(view -> {
-                Intent intentOpenBluetoothSettings = new Intent();
-                intentOpenBluetoothSettings.setAction(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS);
-                startActivity(intentOpenBluetoothSettings);
-            });
-        }
-    }
 
     @Override
     protected void onStop() {
