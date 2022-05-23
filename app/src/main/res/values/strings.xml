@@ -69,5 +69,8 @@
     <string name="exit_dialog_prompt">Exit App ?</string>
     <string name="logout_dialog_prompt">Do you want to Logout ?</string>
     <string name="summary_dialog_prompt">Do you want to go back?</string>
+    <string name="no_paired_devices_added">No Paired Devices added</string>
+    <string name="go_to_settings">Go to Settings</string>
+    <string name="retry">Retry</string>
 
 </resources>
