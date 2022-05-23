@@ -484,8 +484,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-
-        Intent intent = new Intent(PrintWeighingSlipActivity.this, BluetoothActivity.class);
+        Intent intent = new Intent(PrintWeighingSlipActivity.this, WelcomeUserActivity.class);
         intent.putExtra("u_name", loginid);
         intent.putExtra("u_pass", password);
         intent.putExtra("u_orgid", orgid);
