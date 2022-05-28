@@ -68,15 +68,15 @@ public class LoginActivity extends AppCompatActivity {
 
         cd = new ConnectionDetector(this);
 
-        loginid = (EditText) findViewById(R.id.login_id_edit_text);
-        userpassword = (EditText) findViewById(R.id.password_edit_text);
-        saveLoginCheckBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
-        login = (Button) findViewById(R.id.LogIn);
-        Cancel = (Button) findViewById(R.id.Cancel);
-        spin_states = (Spinner) findViewById(R.id.spin_states);
-        RelativeLayout rl_spin = (RelativeLayout) findViewById(R.id.rl_spin);
+        loginid = findViewById(R.id.login_id_edit_text);
+        userpassword = findViewById(R.id.password_edit_text);
+        saveLoginCheckBox = findViewById(R.id.saveLoginCheckBox);
+        login = findViewById(R.id.LogIn);
+        Cancel = findViewById(R.id.Cancel);
+        spin_states = findViewById(R.id.spin_states);
+        RelativeLayout rl_spin = findViewById(R.id.rl_spin);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
 
@@ -171,17 +171,11 @@ public class LoginActivity extends AppCompatActivity {
         builder.setMessage("You don't have Internet Connection.")
                 .setCancelable(false)
                 .setPositiveButton("Cancel",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                finish();
-                            }
-                        }).setNegativeButton("Retry",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        finish();
-                        startActivity(getIntent());
-                    }
-                });
+                        (dialog, id) -> finish()).setNegativeButton("Retry",
+                        (dialog, id) -> {
+                            finish();
+                            startActivity(getIntent());
+                        });
 
         // Creating dialog box
         AlertDialog alert = builder.create();
@@ -274,7 +268,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(GetLogid.equalsIgnoreCase("1")){
                         Intent intent = new Intent(LoginActivity.this, WelcomeUserActivity.class);
-                        intent.putExtra("opr_id", Constants.APMC_OPR_ID.toString());
+                        intent.putExtra("opr_id", Constants.APMC_OPR_ID);
                         intent.putExtra("u_name", loginid.getText().toString());
                         intent.putExtra("username", client.getUsername());
                         intent.putExtra("u_pass", userpassword.getText().toString());
@@ -284,7 +278,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }else if(GetLogid.equalsIgnoreCase("2")){
                         Intent intent = new Intent(LoginActivity.this, GateEntryActivity.class);
-                        intent.putExtra("opr_id", Constants.APMC_OPR_ID.toString());
+                        intent.putExtra("opr_id", Constants.APMC_OPR_ID);
                         intent.putExtra("u_name", loginid.getText().toString());
                         intent.putExtra("username", client.getUsername());
                         intent.putExtra("u_pass", userpassword.getText().toString());
