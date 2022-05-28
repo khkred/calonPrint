@@ -44,8 +44,8 @@ public class SummaryActivity extends AppCompatActivity {
     Button pickDateBtn;
     private int day, month, year;
 
-    TextView dateView, loginIdEditText, passwordEditText;
-    String loginId, password;
+    TextView dateView, loginIdEditText;
+    String loginId;
 
     SunmiPrintHelper sunmiPrintHelper;
     String dateString = "";
@@ -69,7 +69,6 @@ public class SummaryActivity extends AppCompatActivity {
         dateView = findViewById(R.id.date_text_view);
 
         loginIdEditText = findViewById(R.id.login_id_edit_text);
-        passwordEditText = findViewById(R.id.password_edit_text);
 
         Calendar calendar = Calendar.getInstance();
         year = calendar.get(Calendar.YEAR);
@@ -81,7 +80,6 @@ public class SummaryActivity extends AppCompatActivity {
         getSummaryBtn.setOnClickListener(view -> {
 
             loginId = loginIdEditText.getText().toString();
-            password = passwordEditText.getText().toString();
             isInternetPresent = connectionDetector.isConnectingToInternet();
 
             if (loginId.isEmpty()) {
@@ -89,10 +87,6 @@ public class SummaryActivity extends AppCompatActivity {
                 return;
             }
 
-            if (password.isEmpty()) {
-                Toast.makeText(this, "Password field is empty", Toast.LENGTH_SHORT).show();
-                return;
-            }
 
             if (dateString.isEmpty()) {
                 Toast.makeText(this, "Please select a date", Toast.LENGTH_SHORT).show();
@@ -173,7 +167,7 @@ public class SummaryActivity extends AppCompatActivity {
             String text = "";
 
 
-            String urlParameters = "orgId=" + orgId + "&oprId=" + oprId + "&loginId=" + loginId + "&password=" + password + "&wbTrnDate=" + dateString + "";
+            String urlParameters = "orgId=" + orgId + "&oprId=" + oprId + "&loginId=" + loginId + "&wbTrnDate=" + dateString + "";
 
             try {
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
