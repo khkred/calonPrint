@@ -56,7 +56,7 @@ public class LoginActivity extends AppCompatActivity {
     private SharedPreferences.Editor loginPrefsEditor;
     private Boolean saveLogin;
     //String apmcId = "49";
-    String apmcId = "76";
+
 
     private Spinner spin_states;
     private ArrayList<Client> hotelCnstsesList;
@@ -215,7 +215,7 @@ public class LoginActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             try {
-                String urlParameters = "loginId=" + uname + "&password=" + pass + "&apmcId=" + apmcId;
+                String urlParameters = "loginId=" + uname + "&password=" + pass + "&apmcId=" + Constants.APMC_OPR_ID;
                 Log.e("params",""+urlParameters);
                 byte[] postData = new byte[0];
 
@@ -275,7 +275,7 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(GetLogid.equalsIgnoreCase("1")){
                         Intent intent = new Intent(LoginActivity.this, WelcomeUserActivity.class);
-                        intent.putExtra("opr_id", apmcId.toString());
+                        intent.putExtra("opr_id", Constants.APMC_OPR_ID.toString());
                         intent.putExtra("u_name", loginid.getText().toString());
                         intent.putExtra("username", client.getUsername());
                         intent.putExtra("u_pass", userpassword.getText().toString());
@@ -285,7 +285,7 @@ public class LoginActivity extends AppCompatActivity {
                         finish();
                     }else if(GetLogid.equalsIgnoreCase("2")){
                         Intent intent = new Intent(LoginActivity.this, GateEntryActivity.class);
-                        intent.putExtra("opr_id", apmcId.toString());
+                        intent.putExtra("opr_id", Constants.APMC_OPR_ID.toString());
                         intent.putExtra("u_name", loginid.getText().toString());
                         intent.putExtra("username", client.getUsername());
                         intent.putExtra("u_pass", userpassword.getText().toString());
