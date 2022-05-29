@@ -5,27 +5,29 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -34,8 +36,6 @@ import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
@@ -58,9 +58,7 @@ import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
 import sg.com.argus.www.conquestgroup.adapters.Stateadapter1;
 import sg.com.argus.www.conquestgroup.models.AppController;
 import sg.com.argus.www.conquestgroup.models.MenuCategories;
-import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
 import sg.com.argus.www.conquestgroup.utils.Constants;
-import sg.com.argus.www.conquestgroup.utils.ESCUtil;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
 public class WelcomeUserActivity extends AppCompatActivity {
@@ -69,17 +67,17 @@ public class WelcomeUserActivity extends AppCompatActivity {
     private final boolean mConnected = false;
     ConnectionDetector cd;
     Boolean isInternetPresent = false;
-    ImageView searchbtn;
+    ImageView searchBtnIV;
     private AutoCompleteTextView searchLotDetails;
-    private String username, loginid, password, orgid, userid, bagTypeId, lotId, caName, lotRate, traderName, actualBags;
-    private SharedPreferences savedata;
-    private TextView sellerName, commodity, lotPrice, tradderName, welcomeuser, logout, onlyBagWeight;
+    private String username, loginID, password, orgID, userid, bagTypeId, lotId, caName, lotRate, traderName, actualBags;
+    private SharedPreferences saveDataSharedPreference;
+    private TextView sellerName, commodity, lotPrice, traderNameTV, welcomeUserTV, logout;
     private Spinner bagType, fee_category;
     private double bagtypecal, newbagTypeValue;
     private String bagtypeRel;
     String oprId;
     ArrayList<String> stringLotArray = new ArrayList<>();
-    private ArrayList<MenuCategories> hotelCnstsesList;
+    private ArrayList<MenuCategories> feeCategoryList;
     String feeCategoryId;
     Handler handler;
 
@@ -105,31 +103,31 @@ public class WelcomeUserActivity extends AppCompatActivity {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
 
-        savedata = getSharedPreferences("weighing_scale", MODE_PRIVATE);
+        saveDataSharedPreference = getSharedPreferences("weighing_scale", MODE_PRIVATE);
 
-        searchbtn = findViewById(R.id.searchbtn);
+        searchBtnIV = findViewById(R.id.searchbtn);
         Button next = findViewById(R.id.next);
         sellerName = findViewById(R.id.sellerName);
         commodity = findViewById(R.id.commodity);
         bagType = findViewById(R.id.bagType);
         fee_category = findViewById(R.id.fee_category);
         lotPrice = findViewById(R.id.lotPrice);
-        tradderName = findViewById(R.id.tradderName);
-        welcomeuser = findViewById(R.id.welcomeuser);
+        traderNameTV = findViewById(R.id.tradderName);
+        welcomeUserTV = findViewById(R.id.welcomeuser);
         logout = findViewById(R.id.logout);
         searchLotDetails = findViewById(R.id.searchLotDetails);
 
         final Intent intent = getIntent(); //Get the Intent that launched this activity
         if (intent != null) {
-            loginid = intent.getStringExtra("u_name");
+            loginID = intent.getStringExtra("u_name");
             username = intent.getStringExtra("username");
             password = intent.getStringExtra("u_pass");
-            orgid = intent.getStringExtra("u_orgid");
+            orgID = intent.getStringExtra("u_orgid");
             userid = intent.getStringExtra("u_id");
             oprId = intent.getStringExtra("opr_id");
         }
 
-        welcomeuser.setText("Welcome " + username);
+        welcomeUserTV.setText("Welcome " + username);
         cd = new ConnectionDetector(this);
         isInternetPresent = cd.isConnectingToInternet();
         if (isInternetPresent) {
@@ -147,7 +145,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         logout.setOnClickListener(v -> {
             showLogoutAlert(WelcomeUserActivity.this);
         });
-        searchbtn.setOnClickListener(v -> ShowData(searchLotDetails.getText().toString()));
+        searchBtnIV.setOnClickListener(v -> ShowData(searchLotDetails.getText().toString()));
 //        searchLotDetails.setOnEditorActionListener((v, actionId, event) -> {
 //            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
 //                ShowData(searchLotDetails.getText().toString());
@@ -160,7 +158,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
             pairedDevice = bluetoothAdapter.getBondedDevices();
 
-            if (pairedDevice.size()==0) {
+            if (pairedDevice.size() == 0) {
                 Toast.makeText(this, "No Paired Devices", Toast.LENGTH_SHORT).show();
                 return;
             }
@@ -172,10 +170,10 @@ public class WelcomeUserActivity extends AppCompatActivity {
                 } else {
                     BagTypeRelation();
                     Intent i = new Intent(WelcomeUserActivity.this, BluetoothActivity.class);
-                    i.putExtra("u_name", loginid);
+                    i.putExtra("u_name", loginID);
                     i.putExtra("username", username);
                     i.putExtra("u_pass", password);
-                    i.putExtra("u_orgid", orgid);
+                    i.putExtra("u_orgid", orgID);
                     i.putExtra("u_id", userid);
                     i.putExtra("opr_id", oprId);
                     i.putExtra("lotId", lotId);
@@ -206,7 +204,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View logoutPromptView = layoutInflater.inflate(R.layout.dialog_logout, null);
 
-        final  Button logoutNoBtn = logoutPromptView.findViewById(R.id.logout_no_btn);
+        final Button logoutNoBtn = logoutPromptView.findViewById(R.id.logout_no_btn);
         final Button logoutYesBtn = logoutPromptView.findViewById(R.id.logout_yes_btn);
         final TextView logoutTextPrompt = logoutPromptView.findViewById(R.id.logout_prompt_textview);
 
@@ -227,16 +225,13 @@ public class WelcomeUserActivity extends AppCompatActivity {
         });
 
         logoutYesBtn.setOnClickListener(v -> {
-            Intent intent = new Intent(context,LoginActivity.class);
+            Intent intent = new Intent(context, LoginActivity.class);
             intent.putExtra("screen", "1");
             startActivity(intent);
 
             finish();
 
         });
-
-
-
     }
 
 
@@ -275,9 +270,9 @@ public class WelcomeUserActivity extends AppCompatActivity {
     }
 
     public void getfeecategory(String url) {
-        hotelCnstsesList = new ArrayList<MenuCategories>();
+        feeCategoryList = new ArrayList<MenuCategories>();
         final Map<String, String> postParameters = new HashMap<String, String>();
-        postParameters.put("orgId", orgid);
+        postParameters.put("orgId", orgID);
         postParameters.put("oprId", oprId);
         JsonObjectRequest req = new JsonObjectRequest(Request.Method.POST, url, new JSONObject(postParameters),
                 jsonObject -> {
@@ -298,13 +293,13 @@ public class WelcomeUserActivity extends AppCompatActivity {
                                     MenuCategories offersCnsts = new MenuCategories(feeCategoryId, feeCategoryName);
                                     offersCnsts.setFeeCategoryId(feeCategoryId);
                                     offersCnsts.setFeeCategoryName(feeCategoryName);
-                                    hotelCnstsesList.add(offersCnsts);
+                                    feeCategoryList.add(offersCnsts);
                                 }
-                                fee_category.setAdapter(new Stateadapter1(WelcomeUserActivity.this, hotelCnstsesList));
+                                fee_category.setAdapter(new Stateadapter1(WelcomeUserActivity.this, feeCategoryList));
                                 fee_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                                     @Override
                                     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                                        MenuCategories constants = hotelCnstsesList.get(position);
+                                        MenuCategories constants = feeCategoryList.get(position);
                                         feeCategoryId = constants.getFeeCategoryId();
                                         Log.e("feeCategoryId", "feeCategoryId" + feeCategoryId);
 
@@ -323,7 +318,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     }
 
                 }, error -> {
-                }) {
+        }) {
 
             @Override
             public String getBodyContentType() {
@@ -333,7 +328,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
             @Override
             public Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> postParameters = new HashMap<String, String>();
-                postParameters.put("orgId", orgid);
+                postParameters.put("orgId", orgID);
                 postParameters.put("oprId", oprId);
                 return postParameters;
             }
@@ -364,7 +359,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         protected String doInBackground(String... params) {
 
             try {
-                String urlParameters = "orgId=" + orgid + "&oprId=" + oprId;
+                String urlParameters = "orgId=" + orgID + "&oprId=" + oprId;
                 Log.e("params", "" + urlParameters);
                 byte[] postData = new byte[0];
 
@@ -407,7 +402,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
         protected void onPostExecute(String result) {
             Log.e("result", "result" + result);
-            hotelCnstsesList = new ArrayList<MenuCategories>();
+            feeCategoryList = new ArrayList<MenuCategories>();
             p.dismiss();
             try {
                 JSONObject object = new JSONObject(result);
@@ -421,13 +416,13 @@ public class WelcomeUserActivity extends AppCompatActivity {
                         MenuCategories offersCnsts = new MenuCategories(feeCategoryId, feeCategoryName);
                         offersCnsts.setFeeCategoryId(feeCategoryId);
                         offersCnsts.setFeeCategoryName(feeCategoryName);
-                        hotelCnstsesList.add(offersCnsts);
+                        feeCategoryList.add(offersCnsts);
                     }
-                    fee_category.setAdapter(new Stateadapter1(WelcomeUserActivity.this, hotelCnstsesList));
+                    fee_category.setAdapter(new Stateadapter1(WelcomeUserActivity.this, feeCategoryList));
                     fee_category.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                         @Override
                         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                            MenuCategories constants = hotelCnstsesList.get(position);
+                            MenuCategories constants = feeCategoryList.get(position);
                             feeCategoryId = constants.getFeeCategoryId();
                             Log.e("feeCategoryId", "feeCategoryId" + feeCategoryId);
 
@@ -469,7 +464,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
             try {
                 // String urlParameters = "orgId=1&oprId=30&loginId=TS014A00001&password=Pass@123";
-                String urlParameters = "orgId=" + orgid + "&oprId=" + oprId + "&loginId=" + loginid + "&password=" + password + "";
+                String urlParameters = "orgId=" + orgID + "&oprId=" + oprId + "&loginId=" + loginID + "&password=" + password + "";
 
                 byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
                 byte[] postData1 = urlParameters.getBytes(StandardCharsets.UTF_8);
@@ -540,7 +535,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                 if (result[0].contains("statusMsg\":\"S\"") && result[1].contains("statusMsg\":\"S\"")) {
                     try {
                         JSONObject object = new JSONObject(result[0]);
-                        SharedPreferences.Editor edit = savedata.edit();
+                        SharedPreferences.Editor edit = saveDataSharedPreference.edit();
                         edit.putString("LotIdDetails", object.toString());
                         edit.commit();
                     } catch (Exception e) {
@@ -592,13 +587,14 @@ public class WelcomeUserActivity extends AppCompatActivity {
     public void AutoCompleteLotId() {
         try {
 
-            String getArray = savedata.getString("LotIdDetails", "");
+            String getArray = saveDataSharedPreference.getString("LotIdDetails", "");
             JSONObject jsonGet = new JSONObject(getArray);
             JSONArray jarrayGet = jsonGet.getJSONArray("getListofLotDtl");
             for (int j = 0; j < jarrayGet.length(); j++) {
                 JSONObject json = jarrayGet.getJSONObject(j);
                 stringLotArray.add(json.getString("lotId"));
             }
+
             ArrayAdapter<String> adapter = new ArrayAdapter<String>
                     (this, android.R.layout.select_dialog_item, stringLotArray);
             searchLotDetails.setThreshold(1);//will start working from first character
@@ -610,7 +606,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
     public void ShowData(String SearchLotId) {
 
-        String shareddata = savedata.getString("LotIdDetails", "");
+        String shareddata = saveDataSharedPreference.getString("LotIdDetails", "");
         //if (!shareddata.equals("")) {
         if (shareddata.contains(SearchLotId) && !SearchLotId.equals("")) {
             try {
@@ -625,7 +621,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                         sellerName.setText("" + json.getString("farmerName"));
                         commodity.setText("" + json.getString("commodityName"));
                         lotPrice.setText("" + json.getString("lotRate"));
-                        tradderName.setText("" + json.getString("traderName"));
+                        traderNameTV.setText("" + json.getString("traderName"));
                         bagTypeId = json.getString("typeOfBag");
                         actualBags = json.getString("noOfBags");
                         caName = json.getString("caName");
@@ -647,7 +643,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         sellerName.setText("");
         commodity.setText("");
         lotPrice.setText("");
-        tradderName.setText("");
+        traderNameTV.setText("");
     }
 
     @Override
