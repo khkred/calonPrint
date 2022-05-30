@@ -88,6 +88,47 @@
                     android:src="@drawable/search_button" />
 
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_20dp"
+                android:orientation="horizontal"
+                android:padding="@dimen/margin_10dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/lot_id"
+                    android:textColor="@color/black_000"
+                    android:textSize="@dimen/textsize_20sp" />
+
+                <AutoCompleteTextView
+                    android:inputType="number"
+                    android:id="@+id/searchLotDetails_2"
+                    android:layout_width="@dimen/margin_220dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_20dp"
+                    android:layout_marginRight="@dimen/margin_5dp"
+                    android:background="@drawable/round_border"
+                    android:hint="@string/please_enter_lot_id"
+                    android:maxLines="1"
+                    android:padding="@dimen/margin_5dp"
+                    android:singleLine="true">
+
+                    <requestFocus />
+                </AutoCompleteTextView>
+
+                <ImageView
+                    android:id="@+id/searchbtn_2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/margin_35dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/margin_10dp"
+                    android:background="@drawable/round_border"
+                    android:src="@drawable/search_button" />
+
+            </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"

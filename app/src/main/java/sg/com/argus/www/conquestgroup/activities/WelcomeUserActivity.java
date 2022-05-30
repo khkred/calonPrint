@@ -55,8 +55,10 @@ import java.util.Set;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
+import sg.com.argus.www.conquestgroup.adapters.LotCategoryAdapter;
 import sg.com.argus.www.conquestgroup.adapters.Stateadapter1;
 import sg.com.argus.www.conquestgroup.models.AppController;
+import sg.com.argus.www.conquestgroup.models.Lot;
 import sg.com.argus.www.conquestgroup.models.MenuCategories;
 import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
@@ -67,8 +69,8 @@ public class WelcomeUserActivity extends AppCompatActivity {
     private final boolean mConnected = false;
     ConnectionDetector cd;
     Boolean isInternetPresent = false;
-    ImageView searchBtnIV;
-    private AutoCompleteTextView searchLotDetails;
+    ImageView searchBtnIV,searchBtnIV2;
+    private AutoCompleteTextView searchLotDetails,searchLotDetails2;
     private String username, loginID, password, orgID, userid, bagTypeId, lotId, caName, lotRate, traderName, actualBags;
     private SharedPreferences saveDataSharedPreference;
     private TextView sellerName, commodity, lotPrice, traderNameTV, welcomeUserTV, logout;
@@ -106,6 +108,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         saveDataSharedPreference = getSharedPreferences("weighing_scale", MODE_PRIVATE);
 
         searchBtnIV = findViewById(R.id.searchbtn);
+        searchBtnIV2 = findViewById(R.id.searchbtn_2);
         Button next = findViewById(R.id.next);
         sellerName = findViewById(R.id.sellerName);
         commodity = findViewById(R.id.commodity);
@@ -116,6 +119,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         welcomeUserTV = findViewById(R.id.welcomeuser);
         logout = findViewById(R.id.logout);
         searchLotDetails = findViewById(R.id.searchLotDetails);
+        searchLotDetails2 = findViewById(R.id.searchLotDetails_2);
 
         final Intent intent = getIntent(); //Get the Intent that launched this activity
         if (intent != null) {
@@ -587,18 +591,27 @@ public class WelcomeUserActivity extends AppCompatActivity {
     public void AutoCompleteLotId() {
         try {
 
+            List<Lot> lotList = new ArrayList<>();
             String getArray = saveDataSharedPreference.getString("LotIdDetails", "");
             JSONObject jsonGet = new JSONObject(getArray);
             JSONArray jarrayGet = jsonGet.getJSONArray("getListofLotDtl");
             for (int j = 0; j < jarrayGet.length(); j++) {
                 JSONObject json = jarrayGet.getJSONObject(j);
                 stringLotArray.add(json.getString("lotId"));
+
+                lotList.add(new Lot(json.getString("lotId")));
+
             }
+
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>
                     (this, android.R.layout.select_dialog_item, stringLotArray);
             searchLotDetails.setThreshold(1);//will start working from first character
             searchLotDetails.setAdapter(adapter);
+
+            LotCategoryAdapter lotCategoryAdapter = new LotCategoryAdapter(this,lotList);
+            searchLotDetails2.setAdapter(lotCategoryAdapter);
+
         } catch (JSONException je) {
             Log.d("RECKON_ ", "error :" + je);
         }
