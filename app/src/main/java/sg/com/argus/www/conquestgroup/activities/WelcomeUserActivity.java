@@ -69,8 +69,8 @@ public class WelcomeUserActivity extends AppCompatActivity {
     private final boolean mConnected = false;
     ConnectionDetector cd;
     Boolean isInternetPresent = false;
-    ImageView searchBtnIV,searchBtnIV2;
-    private AutoCompleteTextView searchLotDetails,searchLotDetails2;
+    ImageView searchBtnIV2;
+    private AutoCompleteTextView searchLotDetails2;
     private String username, loginID, password, orgID, userid, bagTypeId, lotId, caName, lotRate, traderName, actualBags;
     private SharedPreferences saveDataSharedPreference;
     private TextView sellerName, commodity, lotPrice, traderNameTV, welcomeUserTV, logout;
@@ -107,7 +107,6 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
         saveDataSharedPreference = getSharedPreferences("weighing_scale", MODE_PRIVATE);
 
-        searchBtnIV = findViewById(R.id.searchbtn);
         searchBtnIV2 = findViewById(R.id.searchbtn_2);
         Button next = findViewById(R.id.next);
         sellerName = findViewById(R.id.sellerName);
@@ -118,7 +117,6 @@ public class WelcomeUserActivity extends AppCompatActivity {
         traderNameTV = findViewById(R.id.tradderName);
         welcomeUserTV = findViewById(R.id.welcomeuser);
         logout = findViewById(R.id.logout);
-        searchLotDetails = findViewById(R.id.searchLotDetails);
         searchLotDetails2 = findViewById(R.id.searchLotDetails_2);
 
         final Intent intent = getIntent(); //Get the Intent that launched this activity
@@ -149,13 +147,8 @@ public class WelcomeUserActivity extends AppCompatActivity {
         logout.setOnClickListener(v -> {
             showLogoutAlert(WelcomeUserActivity.this);
         });
-        searchBtnIV.setOnClickListener(v -> ShowData(searchLotDetails.getText().toString()));
-//        searchLotDetails.setOnEditorActionListener((v, actionId, event) -> {
-//            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-//                ShowData(searchLotDetails.getText().toString());
-//            }
-//            return false;
-//        });
+
+        searchBtnIV2.setOnClickListener(v->ShowData(searchLotDetails2.getText().toString()));
         next.setOnClickListener(v -> {
 
             //Check if there are any paired devices
@@ -603,13 +596,8 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
             }
 
-
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                    (this, android.R.layout.select_dialog_item, stringLotArray);
-            searchLotDetails.setThreshold(1);//will start working from first character
-            searchLotDetails.setAdapter(adapter);
-
             LotCategoryAdapter lotCategoryAdapter = new LotCategoryAdapter(this,lotList);
+            searchLotDetails2.setThreshold(1);
             searchLotDetails2.setAdapter(lotCategoryAdapter);
 
         } catch (JSONException je) {

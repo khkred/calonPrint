@@ -53,7 +53,7 @@ public class LotCategoryAdapter extends ArrayAdapter<Lot> {
             FilterResults results = new FilterResults();
             List<Lot> suggestions = new ArrayList<>();
 
-            if(charSequence == null|| charSequence.toString().isEmpty()) {
+            if(charSequence == null|| charSequence.length() == 0) {
                 suggestions.add((Lot) lotList);
             } else {
                 String filterPattern = charSequence.toString().toLowerCase().trim();
@@ -74,8 +74,14 @@ public class LotCategoryAdapter extends ArrayAdapter<Lot> {
         protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
 
             clear();
-            addAll((Collection<? extends Lot>) filterResults.values);
-            notifyDataSetChanged();
+
+            if (filterResults!=null && filterResults.count > 0) {
+                addAll((List) filterResults.values);
+                notifyDataSetChanged();
+            }  else  {
+                notifyDataSetInvalidated();
+            }
+
 
         }
 
