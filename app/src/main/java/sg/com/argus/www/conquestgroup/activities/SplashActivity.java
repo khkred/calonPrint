@@ -12,10 +12,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import sg.com.argus.www.conquestgroup.R;
+import sg.com.argus.www.conquestgroup.models.ObjectBox;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -25,10 +24,10 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ObjectBox.init(this);
         setContentView(R.layout.activity_splash);
 
         // Getting the Android Unique ID
-
         unique_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.e("uniqid","uniqid===>"+unique_id);
         //aae3ec516fbf30cb

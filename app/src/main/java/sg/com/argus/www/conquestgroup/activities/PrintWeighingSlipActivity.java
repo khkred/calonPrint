@@ -41,9 +41,14 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
+import java.util.function.Function;
 
+import io.objectbox.Box;
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
+import sg.com.argus.www.conquestgroup.models.ObjectBox;
+import sg.com.argus.www.conquestgroup.models.PrintSlip;
 import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
 import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.ESCUtil;
@@ -69,7 +74,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private TextView transactionNoTv, invoiceNoTv;
 
     SunmiPrintHelper sunmiPrintHelper;
-
+    Box<PrintSlip> box;
 
     //From Sunmi
     private String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "Windows-1252", "CP866", "CP852", "CP858", "CP874",  "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "utf-8"};
@@ -82,6 +87,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         final Activity activity = this;
+
+        box = ObjectBox.get().boxFor(PrintSlip.class);
         ll = (LinearLayout) findViewById(R.id.linearLayout);
 
         sunmiPrintHelper = SunmiPrintHelper.getInstance();
@@ -262,6 +269,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     public final String fileName = "drawable/Conquest1.png";
     // print data from printer
     private void sendData() throws IOException {
+
         try {
 
             /*Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "Fonts/DroidSansMono.ttf");
@@ -272,6 +280,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String formatted_Date = df.format(c.getTime());
+            addDataToBox(formatted_Date);
 
             StringBuilder printString = new StringBuilder();
 
@@ -279,21 +288,24 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
 //            WelcomeUserActivity.ngxPrinter.printText("Date    :" + formatted_Date);
          printString.append("Lot Id  :").append(lotId).append("\n");
-
-
             printString.append("CA Name :").append(cName).append("\n");
             printString.append("FARMER NAME     :").append("\n");
             printString.append( SName).append("\n");
+
             printString.append("COMMODITY:").append(Com).append("\n");
+
             printString.append("TRADER   :").append(tName).append("\n");
             printString.append("ACTUAL NO OF BAGS  :").append(roundOffTo0DecPlaces(ActualNoofBags)).append("\n");
             printString.append("TOTAL NO OF BAGS   :").append(noOfBag).append("\n");
             printString.append("-----------------------------").append("\n");
             printString.append("SERIAL NO" + "        QUANTITY(Kg)").append("\n");
+
+
             for (int i = 0; i < bagWeightList.size(); i++) {
                 k++;
                 printString.append("    ").append(k).append("              ").append(bagWeightList.get(i)).append("\n");
             }
+
 
             printString.append("-----------------------------").append("\n");
             printString.append("Gross Wt (Qt):     ").append(QuintalWeight).append("\n");
@@ -315,38 +327,39 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             printSlip(printString.toString(),Constants.DEFAULT_PRINT_SIZE,Constants.BOLD_OFF);
 
 
-            /*print(translator.toMiniLeft("Date       :" + formatted_Date));
-            print(translator.toMiniLeft("Lot Id     :" + lotId));
-            print(translator.toMiniLeft("CA Name :" + cName));
-            print(translator.toMiniLeft("FARMER NAME:" + SName));
-            print(translator.toMiniLeft("COMMODITY  :" + Com));
-            print(translator.toMiniLeft("TRADER     :" + tName));
-            print(translator.toMiniLeft("ACTUAL NO OF BAGS:" + roundOffTo0DecPlaces(ActualNoofBags)));
-            print(translator.toMiniLeft("TOTAL NO OF BAGS :" + noOfBag));
-            print(translator.toMiniLeft("------------------------------"));
 
-            print(translator.toMiniLeft("SERIAL NO" + "        QUANTITY(Kg)"));
-            for (int i = 0; i < dr.length; i++) {
-                k++;
-                print(translator.toMiniLeft("    " + k + "              " + dr[i]));
-            }
-            print(translator.toMiniLeft("-------------------------------"));
-            print(translator.toMiniLeft("Gross Wt (Qt):     " + QuintalWeight));
-            print(translator.toMiniLeft("Bag Wt (Qt)  :     " + roundOffTo3DecPlaces(BagsWeightValue / 100)));
-            print(translator.toMiniLeft("-------------------------------"));
-            print(translator.toMiniLeft("Net Wt (Qt)  :     " + roundOffTo3DecPlaces(NetWeightValue / 100)));
-            print(translator.toMiniLeft("Lot Amt (Rs) :     " + lRate));
-            print(translator.toMiniLeft("Net Amt (Rs) :     " + netAmt));
-            print(translator.toMiniLeft("-------------------------------"));
-            print(translator.toMiniLeft("\n"));
-            print(translator.toMiniLeft("Sign of Farmer"));
-            print(translator.toMiniLeft("\n"));
-            print(translator.toMiniLeft("Sign of Dadwal"));
-            print(translator.toMiniLeft("-------------------------------"));
-            print(translator.toMiniLeft("\n"));*/
         } catch (Exception excep) {
             Toast.makeText(PrintWeighingSlipActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void addDataToBox(String formatted_date) {
+        PrintSlip pSlip = new PrintSlip();
+        pSlip.formatted_Date = formatted_date;
+        pSlip.lotId = lotId;
+        pSlip.cName = cName;
+        pSlip.SName = SName;
+        pSlip.Com = Com;
+        pSlip.tName = tName;
+        pSlip.ActualNoofBags = ActualNoofBags;
+        pSlip.noOfBag = noOfBag;
+
+        List<String> bagWtList = new ArrayList<String>();
+
+        for(double bagWeight: bagWeightList){
+            bagWtList.add(String.valueOf(bagWeight));
+        }
+
+        pSlip.bagWeightList = bagWtList;
+        pSlip.QuintalWeight = QuintalWeight;
+        pSlip.BagsWeightValue = BagsWeightValue;
+        pSlip.NetWeightValue = NetWeightValue;
+        pSlip.lRate = lRate;
+        pSlip.netAmt = netAmt;
+        pSlip.transactionNo = transactionNo;
+        pSlip.invoiceDocNo = invoiceDocNo;
+
+        box.put(pSlip);
     }
 
     private void AddBag() {
