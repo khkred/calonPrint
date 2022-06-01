@@ -17,6 +17,9 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -69,7 +72,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private String userActualName;
     private ArrayList<Double> bagWeightList;
 
-    private String transactionNo,invoiceDocNo;
+    private String transactionNo, invoiceDocNo;
 
     private TextView transactionNoTv, invoiceNoTv;
 
@@ -77,7 +80,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     Box<PrintSlip> box;
 
     //From Sunmi
-    private String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "Windows-1252", "CP866", "CP852", "CP858", "CP874",  "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "utf-8"};
+    private String[] mStrings = new String[]{"CP437", "CP850", "CP860", "CP863", "CP865", "CP857", "CP737", "Windows-1252", "CP866", "CP852", "CP858", "CP874", "CP855", "CP862", "CP864", "GB18030", "BIG5", "KSC5601", "utf-8"};
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -134,8 +137,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
          * Get Serialisable
          */
         Bundle bundle = intent.getBundleExtra("bundle");
-        bagWeightList = (ArrayList<Double>)bundle.getSerializable("bagWeightList");
-
+        bagWeightList = (ArrayList<Double>) bundle.getSerializable("bagWeightList");
 
 
         NetWeightValue = Double.parseDouble(NetWeight);
@@ -201,15 +203,34 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     }
 
 
-
-
     public void printSlip(String content, float size, boolean isBold) {
 
-      sunmiPrintHelper.printText(content, size, false, false, null);
+        sunmiPrintHelper.printText(content, size, false, false, null);
         sunmiPrintHelper.feedPaper();
 
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater menuInflater= getMenuInflater();
+        menuInflater.inflate(R.menu.menu_print_slip,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        int itemId = item.getItemId();
+
+        if (itemId == R.id.past_prints) {
+            Intent intent = new Intent(PrintWeighingSlipActivity.this,PrintSlipsList.class);
+            startActivity(intent);
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
 
     private byte codeParse(int value) {
         byte res = 0x00;
@@ -262,11 +283,9 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     }
 
 
-
-
-
     //logo
     public final String fileName = "drawable/Conquest1.png";
+
     // print data from printer
     private void sendData() throws IOException {
 
@@ -287,10 +306,10 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             printString.append("Date    :").append(formatted_Date).append("\n");
 
 //            WelcomeUserActivity.ngxPrinter.printText("Date    :" + formatted_Date);
-         printString.append("Lot Id  :").append(lotId).append("\n");
+            printString.append("Lot Id  :").append(lotId).append("\n");
             printString.append("CA Name :").append(cName).append("\n");
             printString.append("FARMER NAME     :").append("\n");
-            printString.append( SName).append("\n");
+            printString.append(SName).append("\n");
 
             printString.append("COMMODITY:").append(Com).append("\n");
 
@@ -312,20 +331,19 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             printString.append("Bag Wt (Qt)  :     ").append(roundOffTo3DecPlaces(BagsWeightValue / 100)).append("\n");
             printString.append("-----------------------------").append("\n");
             printString.append("Net Wt (Qt)  :     ").append(roundOffTo5DecPlaces(NetWeightValue / 100)).append("\n");
-           printString.append("Lot Amt (Rs) :     ").append(lRate).append("\n");
+            printString.append("Lot Amt (Rs) :     ").append(lRate).append("\n");
             printString.append("Net Amt (Rs) :     ").append(netAmt).append("\n");
             printString.append("Transaction No:").append("\n\t").append(transactionNo).append("\n");
             printString.append("Invoice No:     ").append(invoiceDocNo).append("\n");
             printString.append("-----------------------------").append("\n");
             printString.append("\n\n");
             printString.append("Sign of Farmer").append("\n");
-           printString.append("\n\n");
+            printString.append("\n\n");
             printString.append("Sign of Dadwal").append("\n");
             printString.append("-----------------------------").append("\n");
-             printString.append("\n\n");
+            printString.append("\n\n");
 
-            printSlip(printString.toString(),Constants.DEFAULT_PRINT_SIZE,Constants.BOLD_OFF);
-
+            printSlip(printString.toString(), Constants.DEFAULT_PRINT_SIZE, Constants.BOLD_OFF);
 
 
         } catch (Exception excep) {
@@ -346,7 +364,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
         List<String> bagWtList = new ArrayList<String>();
 
-        for(double bagWeight: bagWeightList){
+        for (double bagWeight : bagWeightList) {
             bagWtList.add(String.valueOf(bagWeight));
         }
 
@@ -523,7 +541,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         intent.putExtra("actualBags", actualBags.toString());
         intent.putExtra("bagTypeId", bagTypeId.toString());
         intent.putExtra("TotalWeight", TotalWeight.toString());
-        intent.putExtra("username",userActualName);
+        intent.putExtra("username", userActualName);
         startActivity(intent);
         finish();
     }
