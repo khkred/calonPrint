@@ -18,10 +18,8 @@ import android.os.Bundle;
 
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -34,8 +32,6 @@ import android.widget.Toast;
 import com.android.volley.AuthFailureError;
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 
 import org.json.JSONArray;
@@ -55,12 +51,12 @@ import java.util.Set;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.ConnectionDetector;
+import sg.com.argus.www.conquestgroup.adapters.LotCategoryAdapter;
 import sg.com.argus.www.conquestgroup.adapters.Stateadapter1;
 import sg.com.argus.www.conquestgroup.models.AppController;
+import sg.com.argus.www.conquestgroup.models.Lot;
 import sg.com.argus.www.conquestgroup.models.MenuCategories;
-import sg.com.argus.www.conquestgroup.utils.BluetoothUtil;
 import sg.com.argus.www.conquestgroup.utils.Constants;
-import sg.com.argus.www.conquestgroup.utils.ESCUtil;
 import sg.com.argus.www.conquestgroup.utils.SunmiPrintHelper;
 
 public class WelcomeUserActivity extends AppCompatActivity {
@@ -69,10 +65,10 @@ public class WelcomeUserActivity extends AppCompatActivity {
     private final boolean mConnected = false;
     ConnectionDetector cd;
     Boolean isInternetPresent = false;
-    ImageView searchbtn;
-    private AutoCompleteTextView searchLotDetails;
+    ImageView searchbtnIV2;
+    private AutoCompleteTextView searchLotDetails2;
     private String username, loginid, password, orgid, userid, bagTypeId, lotId, caName, lotRate, traderName, actualBags;
-    private SharedPreferences savedata;
+    private SharedPreferences saveDataSharedPreference;
     private TextView sellerName, commodity, lotPrice, tradderName, welcomeuser, logout, onlyBagWeight;
     private Spinner bagType, fee_category;
     private double bagtypecal, newbagTypeValue;
@@ -107,9 +103,9 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 
-        savedata = getSharedPreferences("weighing_scale", MODE_PRIVATE);
+        saveDataSharedPreference = getSharedPreferences("weighing_scale", MODE_PRIVATE);
 
-        searchbtn = findViewById(R.id.searchbtn);
+        searchbtnIV2 = findViewById(R.id.searchbtn_2);
         Button next = findViewById(R.id.next);
         sellerName = findViewById(R.id.sellerName);
         commodity = findViewById(R.id.commodity);
@@ -119,7 +115,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         tradderName = findViewById(R.id.tradderName);
         welcomeuser = findViewById(R.id.welcomeuser);
         logout = findViewById(R.id.logout);
-        searchLotDetails = findViewById(R.id.searchLotDetails);
+        searchLotDetails2 = findViewById(R.id.searchLotDetails_2);
 
         final Intent intent = getIntent(); //Get the Intent that launched this activity
         if (intent != null) {
@@ -149,15 +145,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
         logout.setOnClickListener(v -> {
             showLogoutAlert(WelcomeUserActivity.this);
         });
-        searchbtn.setOnClickListener(v -> ShowData(searchLotDetails.getText().toString()));
-        searchLotDetails.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    ShowData(searchLotDetails.getText().toString());
-                }
-                return false;
-            }
-        });
+        searchbtnIV2.setOnClickListener(v -> ShowData(searchLotDetails2.getText().toString()));
         next.setOnClickListener(v -> {
 
             //Check if there are any paired devices
@@ -549,7 +537,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                 if (result[0].contains("statusMsg\":\"S\"") && result[1].contains("statusMsg\":\"S\"")) {
                     try {
                         JSONObject object = new JSONObject(result[0]);
-                        SharedPreferences.Editor edit = savedata.edit();
+                        SharedPreferences.Editor edit = saveDataSharedPreference.edit();
                         edit.putString("LotIdDetails", object.toString());
                         edit.commit();
                     } catch (Exception e) {
@@ -597,21 +585,25 @@ public class WelcomeUserActivity extends AppCompatActivity {
         }
 
     }
-
     public void AutoCompleteLotId() {
         try {
 
-            String getArray = savedata.getString("LotIdDetails", "");
+            List<Lot> lotList = new ArrayList<>();
+            String getArray = saveDataSharedPreference.getString("LotIdDetails", "");
             JSONObject jsonGet = new JSONObject(getArray);
             JSONArray jarrayGet = jsonGet.getJSONArray("getListofLotDtl");
             for (int j = 0; j < jarrayGet.length(); j++) {
                 JSONObject json = jarrayGet.getJSONObject(j);
                 stringLotArray.add(json.getString("lotId"));
+
+                lotList.add(new Lot(json.getString("lotId")));
+
             }
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>
-                    (this, android.R.layout.select_dialog_item, stringLotArray);
-            searchLotDetails.setThreshold(1);//will start working from first character
-            searchLotDetails.setAdapter(adapter);
+
+            LotCategoryAdapter lotCategoryAdapter = new LotCategoryAdapter(this,lotList);
+            searchLotDetails2.setThreshold(1);
+            searchLotDetails2.setAdapter(lotCategoryAdapter);
+
         } catch (JSONException je) {
             Log.d("RECKON_ ", "error :" + je);
         }
@@ -619,7 +611,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
     public void ShowData(String SearchLotId) {
 
-        String shareddata = savedata.getString("LotIdDetails", "");
+        String shareddata = saveDataSharedPreference.getString("LotIdDetails", "");
         //if (!shareddata.equals("")) {
         if (shareddata.contains(SearchLotId) && !SearchLotId.equals("")) {
             try {

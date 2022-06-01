@@ -1,5 +1,9 @@
 package sg.com.argus.www.conquestgroup.utils;
 
+/**
+ * SUNMI V2
+ */
+
 public class Constants {
     public static final String  BASE_URL = "https://enam.gov.in/NamWebSrv/rest/";
 

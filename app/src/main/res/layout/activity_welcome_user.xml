@@ -47,7 +47,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,7 +63,7 @@
 
                 <AutoCompleteTextView
                     android:inputType="number"
-                    android:id="@+id/searchLotDetails"
+                    android:id="@+id/searchLotDetails_2"
                     android:layout_width="@dimen/margin_220dp"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/margin_20dp"
@@ -79,7 +78,7 @@
                 </AutoCompleteTextView>
 
                 <ImageView
-                    android:id="@+id/searchbtn"
+                    android:id="@+id/searchbtn_2"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/margin_35dp"
                     android:layout_gravity="center"
@@ -88,6 +87,7 @@
                     android:src="@drawable/search_button" />
 
             </LinearLayout>
+
 
             <LinearLayout
                 android:layout_width="match_parent"
