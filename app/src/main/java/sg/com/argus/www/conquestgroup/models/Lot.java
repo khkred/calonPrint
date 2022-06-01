@@ -4,7 +4,7 @@ public class Lot {
     private String lotId;
 
     public Lot(String lotId) {
-        this.lotId = lotId;
+       setLotId(lotId);
     }
 
     public String getLotId() {

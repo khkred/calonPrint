@@ -53,7 +53,7 @@ public class LotCategoryAdapter extends ArrayAdapter<Lot> {
             FilterResults results = new FilterResults();
             List<Lot> suggestions = new ArrayList<>();
 
-            if(charSequence == null|| charSequence.toString().isEmpty()) {
+            if(charSequence == null|| charSequence.length() == 0) {
                 suggestions.add((Lot) lotList);
             } else {
                 String filterPattern = charSequence.toString().toLowerCase().trim();
