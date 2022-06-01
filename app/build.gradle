@@ -11,12 +11,12 @@ android {
 
 
 android {
-    compileSdkVersion 26
+    compileSdkVersion 28
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
         applicationId "com.argus.www.conquestgroup"
         minSdkVersion 19
-        targetSdkVersion 26
+        targetSdkVersion 28
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -34,10 +34,10 @@ dependencies {
     androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    implementation 'com.android.support:appcompat-v7:26.1.0'
+        implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation "androidx.cardview:cardview:1.0.0"
-    implementation 'com.android.support:design:26.1.0'
-    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.android.support:design:28.0.0'
+    implementation 'com.android.support:cardview-v7:28.0.0'
     implementation 'com.github.castorflex.smoothprogressbar:library:1.0.0'
     implementation 'com.google.zxing:core:3.3.0'
     implementation 'com.journeyapps:zxing-android-embedded:3.4.0'

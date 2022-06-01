@@ -4,18 +4,11 @@ import static java.util.Calendar.getInstance;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.content.FileProvider;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,6 +18,11 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -155,7 +153,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             lRate = "0";
         }
 
-        CalNetAmout();
+        //CalNetAmout();
         lotid.setText("" + lotId);
         CaName.setText("" + cName);
         sellerNAme.setText("" + SName);
@@ -493,34 +491,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     }
 
-    // Method for opening a pdf file
-    private void viewPdf(String file, String directory) {
-        File pdfFile = new File(Environment.getExternalStorageDirectory() + "/" + directory + "/" + file);
 
-        Uri path = FileProvider.getUriForFile(PrintWeighingSlipActivity.this, BuildConfig.APPLICATION_ID + ".provider", pdfFile);
-
-        // Setting the intent for pdf reader
-        Intent pdfIntent = new Intent(Intent.ACTION_VIEW);
-        pdfIntent.setDataAndType(path, "application/pdf");
-        pdfIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        // pdfIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        pdfIntent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-
-        try {
-            startActivity(pdfIntent);
-        } catch (ActivityNotFoundException e) {
-            Toast.makeText(PrintWeighingSlipActivity.this, "Can't read pdf file", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    public void CalNetAmout() {
-        double Netamount = Double.parseDouble(lRate) * Double.parseDouble(roundOffTo2DecPlaces(NetWeightValue / 100));
-        netAmt = roundOffTo2DecPlaces(Netamount);
-    }
-
-    protected void onPause() {
-        super.onPause();
-    }
 
     @Override
     public void onBackPressed() {

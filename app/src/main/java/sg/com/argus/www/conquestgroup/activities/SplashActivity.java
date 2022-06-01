@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,12 +12,14 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.models.ObjectBox;
 
 public class SplashActivity extends AppCompatActivity {
 
-    String refreshedToken,unique_id;
+    String unique_id;
     String defaultid = "6cfdc54d9a06a128";
 
     @Override
