@@ -124,6 +124,14 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         cd = new ConnectionDetector(this);
         submit = findViewById(R.id.submit);
 
+        /**
+         * Clear bag weight list
+         */
+
+        bagWeightList.clear();
+        bagArrayList.clear();
+
+
 //        bagsLinearLayout = findViewById(R.id.bags_list_linear_layout);
         scrollView = findViewById(R.id.scrollView);
 
@@ -351,8 +359,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     @Override
     protected void onStop() {
         super.onStop();
-//        bagWeightList.clear();
-//        bagArrayList.clear();
 
     }
 
@@ -629,6 +635,9 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         intent.putExtra("opr_id", oprId);
         startActivity(intent);
         BluetoothActivity.this.finish();
+        bagWeightList.clear();
+        bagArrayList.clear();
+
 
     }
 }
