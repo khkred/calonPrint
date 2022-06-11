@@ -7,7 +7,6 @@ import android.app.ProgressDialog;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Color;
@@ -36,9 +35,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -73,7 +70,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     RecyclerView bagRecyclerView;
 
     TextView liveFeedTV;
-    EditText manualBagsToAdd;
+    EditText manualBagsToAddET;
     public String liveFeedString = "";
 
     //=========Single Bag Layout Variables================
@@ -142,7 +139,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         bluetooth_devices = findViewById(R.id.bluetoothDevices);
         onlyBagWeight = findViewById(R.id.onlyBagWeight);
         NumofBags = findViewById(R.id.numBag);
-        manualBagsToAdd = findViewById(R.id.how_many_bags_edit_text);
+        manualBagsToAddET = findViewById(R.id.how_many_bags_edit_text);
         TotalWeightInQuintal = findViewById(R.id.totalWeight);
         addMultipleBagsBtn = findViewById(R.id.add_multiple_bags_btn);
         final Intent intent = getIntent();
@@ -226,7 +223,16 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         addMultipleBagsBtn.setOnClickListener(v -> {
             if (bluetooth_devices.getSelectedItem() != null) {
                 // emptyBagWeight shouldn't be more than 3 KG.
-                Integer manualBagsToAddVal = Integer.parseInt(manualBagsToAdd.getText().toString());
+
+                String bagsToAddString = manualBagsToAddET.getText().toString();
+
+                if(bagsToAddString.isEmpty()){
+                    Toast.makeText(this, "No Bags Added", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int manualBagsToAddVal = Integer.parseInt(bagsToAddString);
+
+
                 String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
                 Double weightOfBagVal = Double.parseDouble(WeightOfBag);
 
@@ -245,7 +251,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     for (int i = 0; i < manualBagsToAddVal; i++) {
                         addSingleBag(weightOfBagVal);
                     }
-                    manualBagsToAdd.setText("1");
+                    manualBagsToAddET.setText("1");
                 }
             } else {
                 Toast.makeText(BluetoothActivity.this, "Device is not connected", Toast.LENGTH_SHORT).show();
