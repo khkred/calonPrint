@@ -47,8 +47,8 @@ import sg.com.argus.www.conquestgroup.utils.Constants;
 import sg.com.argus.www.conquestgroup.utils.DialogScreens;
 
 public class LoginActivity extends AppCompatActivity {
-    private Button login, Cancel;
-    private EditText loginid, userpassword;
+    private Button loginBtn, cancelBtn;
+    private EditText loginidET, userPasswordET;
     private String username, password;
     ConnectionDetector cd;
     Boolean isInternetPresent = false;
@@ -70,15 +70,15 @@ public class LoginActivity extends AppCompatActivity {
 
         cd = new ConnectionDetector(this);
 
-        loginid = (EditText) findViewById(R.id.login_id_edit_text);
-        userpassword = (EditText) findViewById(R.id.password_edit_text);
-        saveLoginCheckBox = (CheckBox) findViewById(R.id.saveLoginCheckBox);
-        login = (Button) findViewById(R.id.LogIn);
-        Cancel = (Button) findViewById(R.id.Cancel);
-        spin_states = (Spinner) findViewById(R.id.spin_states);
-        RelativeLayout rl_spin = (RelativeLayout) findViewById(R.id.rl_spin);
+        loginidET = findViewById(R.id.login_id_edit_text);
+        userPasswordET = findViewById(R.id.password_edit_text);
+        saveLoginCheckBox = findViewById(R.id.saveLoginCheckBox);
+        loginBtn = findViewById(R.id.LogIn);
+        cancelBtn = findViewById(R.id.Cancel);
+        spin_states = findViewById(R.id.spin_states);
+        RelativeLayout rl_spin = findViewById(R.id.rl_spin);
 
-        Toolbar mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
 
@@ -87,8 +87,8 @@ public class LoginActivity extends AppCompatActivity {
 
         saveLogin = loginPreferences.getBoolean("saveLogin", false);
         if (saveLogin) {
-            loginid.setText(loginPreferences.getString("username", ""));
-            userpassword.setText(loginPreferences.getString("password", ""));
+            loginidET.setText(loginPreferences.getString("username", ""));
+            userPasswordET.setText(loginPreferences.getString("password", ""));
             saveLoginCheckBox.setChecked(true);
         }
         GetLogid = getIntent().getStringExtra("screen");
@@ -107,49 +107,46 @@ public class LoginActivity extends AppCompatActivity {
 
         }
 
-        login.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                isInternetPresent = cd.isConnectingToInternet();
+        loginBtn.setOnClickListener(v -> {
+            isInternetPresent = cd.isConnectingToInternet();
 
-                /**
-                 * Following 3 lines hide keyboard when the login button is clicked
-                 */
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                //Suggested by IDE to insert the assert
-                assert imm != null;
-                imm.hideSoftInputFromWindow(loginid.getWindowToken(), 0);
+            /**
+             * Following 3 lines hide keyboard when the login button is clicked
+             */
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            //Suggested by IDE to insert the assert
+            assert imm != null;
+            imm.hideSoftInputFromWindow(loginidET.getWindowToken(), 0);
 
-                username = loginid.getText().toString();
-                if (username.isEmpty()){
-                    Toast.makeText(LoginActivity.this, "Enter Username", Toast.LENGTH_SHORT).show();
-                    return;
-                }
-                password = userpassword.getText().toString();
-                if (password.isEmpty()) {
-                    Toast.makeText(LoginActivity.this,"Enter Password",Toast.LENGTH_SHORT).show();
-                    return;
-                }
-               // save username and password in shared preferences
-                if (isInternetPresent) {
-                    if (saveLoginCheckBox.isChecked()) {
-                        loginPrefsEditor.putBoolean("saveLogin", true);
-                        loginPrefsEditor.putString("username", username);
-                        loginPrefsEditor.putString("password", password);
-                        loginPrefsEditor.commit();
-                    } else {
-                        loginPrefsEditor.clear();
-                        loginPrefsEditor.commit();
-                    }
-                    new LoginUser().execute();
-                } else {
-                    showInternetAlert();
-                }
-
+            username = loginidET.getText().toString();
+            if (username.isEmpty()){
+                Toast.makeText(LoginActivity.this, "Enter Username", Toast.LENGTH_SHORT).show();
+                return;
             }
+            password = userPasswordET.getText().toString();
+            if (password.isEmpty()) {
+                Toast.makeText(LoginActivity.this,"Enter Password",Toast.LENGTH_SHORT).show();
+                return;
+            }
+           // save username and password in shared preferences
+            if (isInternetPresent) {
+                if (saveLoginCheckBox.isChecked()) {
+                    loginPrefsEditor.putBoolean("saveLogin", true);
+                    loginPrefsEditor.putString("username", username);
+                    loginPrefsEditor.putString("password", password);
+                    loginPrefsEditor.commit();
+                } else {
+                    loginPrefsEditor.clear();
+                    loginPrefsEditor.commit();
+                }
+                new LoginUser().execute();
+            } else {
+                showInternetAlert();
+            }
+
         });
 
-        Cancel.setOnClickListener(new View.OnClickListener() {
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 DialogScreens.showExitAlert(LoginActivity.this);
@@ -208,8 +205,8 @@ public class LoginActivity extends AppCompatActivity {
             p.setCancelable(false);
             p.show();
 
-            uname = loginid.getText().toString();
-            pass = userpassword.getText().toString();
+            uname = loginidET.getText().toString();
+            pass = userPasswordET.getText().toString();
 
         }
 
@@ -276,20 +273,20 @@ public class LoginActivity extends AppCompatActivity {
 
                     if(GetLogid.equalsIgnoreCase("1")){
                         Intent intent = new Intent(LoginActivity.this, WelcomeUserActivity.class);
-                        intent.putExtra("opr_id", Constants.APMC_OPR_ID.toString());
-                        intent.putExtra("u_name", loginid.getText().toString());
+                        intent.putExtra("opr_id", Constants.APMC_OPR_ID);
+                        intent.putExtra("u_name", loginidET.getText().toString());
                         intent.putExtra("username", client.getUsername());
-                        intent.putExtra("u_pass", userpassword.getText().toString());
+                        intent.putExtra("u_pass", userPasswordET.getText().toString());
                         intent.putExtra("u_orgid", client.getOrgId());
                         intent.putExtra("u_id", client.getUserId());
                         startActivity(intent);
                         finish();
                     }else if(GetLogid.equalsIgnoreCase("2")){
                         Intent intent = new Intent(LoginActivity.this, GateEntryActivity.class);
-                        intent.putExtra("opr_id", Constants.APMC_OPR_ID.toString());
-                        intent.putExtra("u_name", loginid.getText().toString());
+                        intent.putExtra("opr_id", Constants.APMC_OPR_ID);
+                        intent.putExtra("u_name", loginidET.getText().toString());
                         intent.putExtra("username", client.getUsername());
-                        intent.putExtra("u_pass", userpassword.getText().toString());
+                        intent.putExtra("u_pass", userPasswordET.getText().toString());
                         intent.putExtra("u_orgid", client.getOrgId());
                         intent.putExtra("u_id", client.getUserId());
                         startActivity(intent);
