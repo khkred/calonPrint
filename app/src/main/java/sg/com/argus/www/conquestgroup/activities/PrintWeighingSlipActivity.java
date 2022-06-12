@@ -292,6 +292,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
           //  printString.append("Transaction No:").append("\n\t").append(transactionNo).append("\n");
             defaultPrint("Transaction No:");
+            defaultPrint();
             defaultPrint(" "+transactionNo);
 
            // printString.append("Invoice No:     ").append(invoiceDocNo).append("\n");
@@ -475,7 +476,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     }
 
     public void CalNetAmout() {
-        double Netamount = Double.parseDouble(lRate) * Double.parseDouble(roundOffTo2DecPlaces(NetWeightValue / 100));
+        double Netamount = Double.parseDouble(lRate) * Double.parseDouble(roundOffTo3DecPlaces(NetWeightValue / 100));
         netAmt = roundOffTo2DecPlaces(Netamount);
     }
 
