@@ -408,8 +408,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     @Override
     protected void onStop() {
         super.onStop();
-//        bagWeightList.clear();
-//        bagArrayList.clear();
+        bagWeightList.clear();
+        bagArrayList.clear();
 
     }
 
