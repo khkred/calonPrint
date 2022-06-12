@@ -263,6 +263,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     // print data from printer
     private void sendData() throws IOException {
         try {
+            k  = 0;
 
             /*Typeface tf = Typeface.createFromAsset(getActivity().getAssets(), "Fonts/DroidSansMono.ttf");
 
