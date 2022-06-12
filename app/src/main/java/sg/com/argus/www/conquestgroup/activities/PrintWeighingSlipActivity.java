@@ -199,6 +199,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     public final String fileName = "drawable/Conquest1.png";
     // print data from printer
     private void sendData() throws IOException {
+        k =0;
         try {
 
             Calendar c = Calendar.getInstance();
@@ -386,6 +387,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     }
 
     public void createandDisplayPdf(String date) {
+        k =0;
 
         //Creating a global Doc Variable
         // Document doc = new Document(PageSize.A4, 150, 5, 25, 5);
