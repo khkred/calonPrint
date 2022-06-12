@@ -230,7 +230,14 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         addMultipleBagsBtn.setOnClickListener(v -> {
             if (bluetooth_devices.getSelectedItem() != null) {
                 // emptyBagWeight shouldn't be more than 3 KG.
-                Integer manualBagsToAddVal = Integer.parseInt(manualBagsToAdd.getText().toString());
+
+                String bagsToAddString = manualBagsToAdd.getText().toString();
+
+                if(bagsToAddString.isEmpty()) {
+                    Toast.makeText(this, "No Bags Added", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                int manualBagsToAddVal = Integer.parseInt(manualBagsToAdd.getText().toString());
                 String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
                 Double weightOfBagVal = Double.parseDouble(WeightOfBag);
 
