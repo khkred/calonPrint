@@ -292,8 +292,8 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
           //  printString.append("Transaction No:").append("\n\t").append(transactionNo).append("\n");
             defaultPrint("Transaction No:");
-            defaultPrint();
             defaultPrint(" "+transactionNo);
+            defaultPrint();
 
            // printString.append("Invoice No:     ").append(invoiceDocNo).append("\n");
             defaultPrint("Invoice No:",Align.LEFT,false);
