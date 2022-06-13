@@ -78,6 +78,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
     private ArrayList<MenuCategories> hotelCnstsesList;
     String feeCategoryId;
     Handler handler;
+    String emptyBagWtKg;
 
     /**
      * Bluetooth Adapter
@@ -180,6 +181,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     i.putExtra("newBagTypeValue", Double.toString(newbagTypeValue));
                     i.putExtra("BagTypeDesc", bagType.getSelectedItem().toString());
                     i.putExtra("feeCategoryId", feeCategoryId);
+                    i.putExtra("emptyBagWtKg",emptyBagWtKg);
                     startActivity(i);
                     finish();
                 }
@@ -632,6 +634,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                         caName = json.getString("caName");
                         lotRate = json.getString("lotRate");
                         traderName = json.getString("traderName");
+                        emptyBagWtKg = json.getString("emptyBagWtKg");
                     }
 
                 }

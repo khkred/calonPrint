@@ -80,6 +80,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     BagViewAdapter bagViewAdapter;
     static ArrayList<Double> bagWeightList = new ArrayList<>();
     double emptyBagWeight;
+    String emptyBagWtKg;
 
     private String loginid, password, orgid, actualBags, userid, bagTypeId, lotId, caName, lotRate, SellerName, Commodity, traderName, feeCategoryId;
 
@@ -154,8 +155,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         String newBagTypeValue = intent.getStringExtra("newBagTypeValue");
         feeCategoryId = intent.getStringExtra("feeCategoryId");
         BagTypeDesc = intent.getStringExtra("BagTypeDesc");
+        emptyBagWtKg =  intent.getStringExtra("emptyBagWtKg");
 
-        emptyBagWeight = Double.parseDouble(onlyBagWeight.getText().toString());
+        emptyBagWeight = Double.parseDouble(emptyBagWtKg);
+        onlyBagWeight.setText(emptyBagWtKg);
 
         /**
          * Bag Recycler View code from Here
