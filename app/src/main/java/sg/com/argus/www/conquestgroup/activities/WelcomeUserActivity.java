@@ -11,8 +11,6 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -21,13 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -83,6 +78,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
     String feeCategoryId;
     Handler handler;
     String emptyBagWtKg;
+
 
     /**
      * Bluetooth Adapter
@@ -410,7 +406,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     JSONArray Jarray = object.getJSONArray("listFeeCategoryForAutoSaleModel");
                     for (int i = 0; i < Jarray.length(); i++) {
                         JSONObject json = Jarray.getJSONObject(i);
-                        String feeCategoryId = json.getString("feeCategoryId");
+                         feeCategoryId = json.getString("feeCategoryId");
                         String feeCategoryName = json.getString("feeCategoryName");
                         MenuCategories offersCnsts = new MenuCategories(feeCategoryId, feeCategoryName);
                         offersCnsts.setFeeCategoryId(feeCategoryId);

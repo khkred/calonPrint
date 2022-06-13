@@ -563,7 +563,6 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                         "\"netWeight\": \"" + getTotalNetWeight() + "\",\n" +
                         "\"noOfBags\": \"" + getBagsCount() + "\",\n" +
                         "\"bagTypeId\": \"" + bagTypeId + "\",\n" +
-//                        "\"bags\": " + IndividualBagWeight + ",\n" +
                         "\"feeCategoryId\": \"" + feeCategoryId +
                         "\"}\n" +
                         "}";
