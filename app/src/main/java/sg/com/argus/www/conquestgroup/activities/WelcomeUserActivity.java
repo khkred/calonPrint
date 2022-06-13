@@ -82,6 +82,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
     private ArrayList<MenuCategories> feeCategoryList;
     String feeCategoryId;
     Handler handler;
+    String emptyBagWtKg;
 
     /**
      * Bluetooth Adapter
@@ -184,6 +185,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     i.putExtra("newBagTypeValue", Double.toString(newbagTypeValue));
                     i.putExtra("BagTypeDesc", bagType.getSelectedItem().toString());
                     i.putExtra("feeCategoryId", feeCategoryId);
+                    i.putExtra("emptyBagWtKg",emptyBagWtKg);
                     startActivity(i);
                     finish();
                 }
@@ -619,15 +621,16 @@ public class WelcomeUserActivity extends AppCompatActivity {
 
                     if (json.getString("lotId").equals(SearchLotId)) {
                         lotId = json.getString("lotId");
-                        sellerName.setText("" + json.getString("farmerName"));
-                        commodity.setText("" + json.getString("commodityName"));
-                        lotPrice.setText("" + json.getString("lotRate"));
-                        traderNameTV.setText("" + json.getString("traderName"));
+                        sellerName.setText(json.getString("farmerName"));
+                        commodity.setText(json.getString("commodityName"));
+                        lotPrice.setText(json.getString("lotRate"));
+                        traderNameTV.setText(json.getString("traderName"));
                         bagTypeId = json.getString("typeOfBag");
                         actualBags = json.getString("noOfBags");
                         caName = json.getString("caName");
                         lotRate = json.getString("lotRate");
                         traderName = json.getString("traderName");
+                        emptyBagWtKg = json.getString("emptyBagWtKg");
                     }
 
                 }
