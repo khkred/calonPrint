@@ -42,9 +42,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import io.objectbox.Box;
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
+import sg.com.argus.www.conquestgroup.models.ObjectBox;
+import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
 
 public class PrintWeighingSlipActivity extends AppCompatActivity {
@@ -65,11 +69,10 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     private TextView transactionNoTv, invoiceNoTv;
 
-
     private static Printer2 a;
 
-
-
+    //Object Box
+    Box<PrintSlip> box;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_weighing_slip);
@@ -77,6 +80,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         final Activity activity = this;
+        box = ObjectBox.get().boxFor(PrintSlip.class);
         ll = findViewById(R.id.linearLayout);
 
         a = Printer2.getInstance(PrintWeighingSlipActivity.this);
@@ -188,7 +192,34 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     }
 
 
+    private void addDataToBox(String formatted_date) {
+        PrintSlip pSlip = new PrintSlip();
+        pSlip.formatted_Date = formatted_date;
+        pSlip.lotId = lotId;
+        pSlip.cName = cName;
+        pSlip.SName = SName;
+        pSlip.Com = Com;
+        pSlip.tName = tName;
+        pSlip.ActualNoofBags = ActualNoOfBags;
+        pSlip.noOfBag = noOfBag;
 
+        List<String> bagWtList = new ArrayList<String>();
+
+        for(double bagWeight: bagWeightList){
+            bagWtList.add(String.valueOf(bagWeight));
+        }
+
+        pSlip.bagWeightList = bagWtList;
+        pSlip.QuintalWeight = QuintalWeight;
+        pSlip.BagsWeightValue = BagsWeightValue;
+        pSlip.NetWeightValue = NetWeightValue;
+        pSlip.lRate = lRate;
+        pSlip.netAmt = netAmt;
+        pSlip.transactionNo = transactionNo;
+        pSlip.invoiceDocNo = invoiceDocNo;
+
+        box.put(pSlip);
+    }
 
 
 
@@ -205,7 +236,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String formatted_Date = df.format(c.getTime());
-
+            addDataToBox(formatted_Date);
 
           //  printString.append("Date    :").append(formatted_Date).append("\n");
             defaultPrint("Date:",Align.LEFT,false);
