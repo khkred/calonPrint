@@ -60,7 +60,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
     private Button printBtn;
     LinearLayout ll, llh;
     private TextView bagTxt, weightTxt;
-    int j = 0, k = 0;
+    int j = 0, k = 0,dbCount = 0;
     private double NetWeightValue, BagsWeightValue, ActualNoOfBags;
     String oprId;
     int permissionCheck, permissionCheckWrite;
@@ -260,8 +260,11 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String formatted_Date = df.format(c.getTime());
-            addDataToBox(formatted_Date);
 
+            if(dbCount ==0) {
+                addDataToBox(formatted_Date);
+            }
+            dbCount++;
           //  printString.append("Date    :").append(formatted_Date).append("\n");
             defaultPrint("Date:",Align.LEFT,false);
             defaultPrint(formatted_Date,Align.CENTER,false);
