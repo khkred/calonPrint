@@ -10,33 +10,31 @@ import java.util.List;
 
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.interfaces.ItemClickListener;
+import sg.com.argus.www.conquestgroup.models.Bag;
 import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
 public class PrintSlipAdapter extends RecyclerView.Adapter<PrintSlipAdapter.ViewHolder> {
-    private List<PrintSlip> printSlips;
-    private ItemClickListener clickListener;
+    private final List<PrintSlip> printSlips;
+    private ItemClickListener itemClickListener;
 
-    public PrintSlipAdapter(List<PrintSlip> printSlips) {
+    public PrintSlipAdapter(List<PrintSlip> printSlips, ItemClickListener listener) {
         this.printSlips = printSlips;
-    }
+        itemClickListener = listener;
+        }
 
-    public  class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public  interface  ItemClickListener{
+        void onItemClick(PrintSlip printSlip);
+        }
+    public  class ViewHolder extends RecyclerView.ViewHolder{
 
         TextView dateTV;
         public ViewHolder(View view) {
             super(view);
-
             dateTV = view.findViewById(R.id.date_text_view);
-            view.setOnClickListener(this);
         }
 
         public TextView getDateTV() {
             return dateTV;
-        }
-
-        @Override
-        public void onClick(View view) {
-            if (clickListener != null) clickListener.onClick(view, getAdapterPosition());
         }
     }
 
@@ -54,17 +52,18 @@ public class PrintSlipAdapter extends RecyclerView.Adapter<PrintSlipAdapter.View
         holder.getDateTV().setText(printSlips.get(position).formatted_Date);
 
         //Set on click listener to cardview
-
+        holder.itemView.setOnClickListener(view -> {
+            itemClickListener.onItemClick(printSlips.get(position));
+        });
     }
+
+
 
     @Override
     public int getItemCount() {
         return printSlips.size();
     }
 
-    public void setClickListener(ItemClickListener itemClickListener) {
-        this.clickListener = itemClickListener;
-    }
 
 
 

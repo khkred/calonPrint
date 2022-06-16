@@ -208,6 +208,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
         if (itemId == R.id.past_prints) {
             Intent intent = new Intent(PrintWeighingSlipActivity.this,PrintSlipsListActivity.class);
+
             startActivity(intent);
             return true;
         }

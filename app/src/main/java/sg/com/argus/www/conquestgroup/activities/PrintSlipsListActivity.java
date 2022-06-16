@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -26,7 +27,7 @@ import sg.com.argus.www.conquestgroup.interfaces.ItemClickListener;
 import sg.com.argus.www.conquestgroup.models.ObjectBox;
 import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
-public class PrintSlipsListActivity extends AppCompatActivity implements ItemClickListener {
+public class PrintSlipsListActivity extends AppCompatActivity{
 
     Box<PrintSlip> box;
     int k = 0;
@@ -50,7 +51,19 @@ public class PrintSlipsListActivity extends AppCompatActivity implements ItemCli
 
         printSlips = box.getAll();
 
-        PrintSlipAdapter printSlipAdapter = new PrintSlipAdapter(printSlips);
+        PrintSlipAdapter printSlipAdapter = new PrintSlipAdapter(printSlips, new PrintSlipAdapter.ItemClickListener() {
+            @Override
+            public void onItemClick(PrintSlip printSlip) {
+                Toast.makeText(PrintSlipsListActivity.this, "Printing the "+printSlip.toString(), Toast.LENGTH_SHORT).show();
+
+                try {
+                    printData(printSlip);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(PrintSlipsListActivity.this, "Error printing", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
 
         recyclerView.setAdapter(printSlipAdapter);
 
@@ -199,15 +212,4 @@ public class PrintSlipsListActivity extends AppCompatActivity implements ItemCli
     }
 
 
-    @Override
-    public void onClick(View view, int position) {
-
-        final PrintSlip printSlip = printSlips.get(position);
-        try {
-            printData(printSlip);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-    }
 }
