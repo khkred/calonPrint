@@ -30,10 +30,10 @@
         <RadioButton
             android:id="@+id/radioButton"
             android:layout_width="0dp"
-            android:layout_weight="0.5"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:checked="true"
+            android:layout_weight="0.3"
             android:text="Weighing Scale"
             />
 
@@ -43,9 +43,20 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginLeft="5dp"
-            android:layout_weight="0.5"
+            android:layout_weight="0.3"
             android:checked="false"
             android:text="Summary Print" />
+        <RadioButton
+            android:id="@+id/radioButton3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.4"
+            android:layout_marginLeft="5dp"
+            android:checked="false"
+            android:text="Past Prints" />
+
+
     </RadioGroup>
 
 

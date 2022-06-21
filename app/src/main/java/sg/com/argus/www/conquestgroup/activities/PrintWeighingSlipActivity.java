@@ -194,29 +194,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater menuInflater= getMenuInflater();
-        menuInflater.inflate(R.menu.menu_print_slip,menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        int itemId = item.getItemId();
-
-        if (itemId == R.id.past_prints) {
-            Intent intent = new Intent(PrintWeighingSlipActivity.this,PrintSlipsListActivity.class);
-
-            startActivity(intent);
-            return true;
-        }
-        else {
-            return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void addDataToBox(String formatted_date) {
         PrintSlip pSlip = new PrintSlip();
         pSlip.formatted_Date = formatted_date;

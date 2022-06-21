@@ -9,8 +9,6 @@ import android.widget.TextView;
 import java.util.List;
 
 import sg.com.argus.www.conquestgroup.R;
-import sg.com.argus.www.conquestgroup.interfaces.ItemClickListener;
-import sg.com.argus.www.conquestgroup.models.Bag;
 import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
 public class PrintSlipAdapter extends RecyclerView.Adapter<PrintSlipAdapter.ViewHolder> {

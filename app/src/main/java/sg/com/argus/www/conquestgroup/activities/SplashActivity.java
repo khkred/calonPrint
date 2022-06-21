@@ -117,6 +117,13 @@ public class SplashActivity extends AppCompatActivity {
                     alert.cancel();
                 }
 
+                if(radioButton.getText().equals("Past Prints")){
+                    Intent i =  new Intent(SplashActivity.this,PrintSlipsListActivity.class);
+                    startActivity(i);
+                    finish();
+                    alert.cancel();
+                }
+
             }
         });
 
