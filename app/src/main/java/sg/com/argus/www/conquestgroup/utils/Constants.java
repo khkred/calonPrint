@@ -5,7 +5,7 @@ package sg.com.argus.www.conquestgroup.utils;
  */
 
 public class Constants {
-    public static final String  BASE_URL = "https://enam.gov.in/NamWebSrv/rest/";
+    public static final String  BASE_URL = "https://train.enam.gov.in/NamWebSrv/rest/";
 
     public static final String GET_STATES_URL = BASE_URL + "MastersUpdate/getStates";
     public static final String VERIFY_USER_URL =  BASE_URL + "verifyUser";
@@ -26,7 +26,7 @@ public class Constants {
 
     //APMC OPR
 
-    public static final String APMC_OPR_ID = "76";
+    public static final String APMC_OPR_ID = "72";
     public static final String CONQUEST_GROUP = "Conquest Group";
 }
 

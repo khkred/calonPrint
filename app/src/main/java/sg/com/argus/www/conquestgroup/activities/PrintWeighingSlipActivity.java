@@ -17,6 +17,9 @@ import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -42,18 +45,23 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
+import io.objectbox.Box;
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
+import sg.com.argus.www.conquestgroup.adapters.PrintSlipAdapter;
+import sg.com.argus.www.conquestgroup.models.ObjectBox;
+import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
 
-public class PrintWeighingSlipActivity extends AppCompatActivity {
+public class PrintWeighingSlipActivity extends AppCompatActivity  {
     private String SName, Com, tName, cName, lRate, noOfBag, bagType, TotalWeight, bagTypeId, loginid, password, userid, orgid, lotId, QuintalWeight, NetWeight, BagsWeight, actualBags, netAmt;
     private TextView sellerNAme, commodity, TraderName, CaName, bidPrice, PbagType, PnumBag, lotid, actual_no_of_bag, gross_weight, net_weight, net_amt, bag_weight;
     private Button printBtn;
     LinearLayout ll, llh;
     private TextView bagTxt, weightTxt;
-    int j = 0, k = 0;
+    int j = 0, k = 0,dbCount = 0;
     private double NetWeightValue, BagsWeightValue, ActualNoOfBags;
     String oprId;
     int permissionCheck, permissionCheckWrite;
@@ -65,11 +73,10 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
 
     private TextView transactionNoTv, invoiceNoTv;
 
-
     private static Printer2 a;
 
-
-
+    //Object Box
+    Box<PrintSlip> box;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_weighing_slip);
@@ -77,6 +84,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         mToolbar.setTitleTextColor(Color.WHITE);
         setSupportActionBar(mToolbar);
         final Activity activity = this;
+        box = ObjectBox.get().boxFor(PrintSlip.class);
         ll = findViewById(R.id.linearLayout);
 
         a = Printer2.getInstance(PrintWeighingSlipActivity.this);
@@ -187,8 +195,34 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         }
     }
 
+    private void addDataToBox(String formatted_date) {
+        PrintSlip pSlip = new PrintSlip();
+        pSlip.formatted_Date = formatted_date;
+        pSlip.lotId = lotId;
+        pSlip.cName = cName;
+        pSlip.SName = SName;
+        pSlip.Com = Com;
+        pSlip.tName = tName;
+        pSlip.ActualNoofBags = ActualNoOfBags;
+        pSlip.noOfBag = noOfBag;
 
+        List<String> bagWtList = new ArrayList<String>();
 
+        for(double bagWeight: bagWeightList){
+            bagWtList.add(String.valueOf(bagWeight));
+        }
+
+        pSlip.bagWeightList = bagWtList;
+        pSlip.QuintalWeight = QuintalWeight;
+        pSlip.BagsWeightValue = BagsWeightValue;
+        pSlip.NetWeightValue = NetWeightValue;
+        pSlip.lRate = lRate;
+        pSlip.netAmt = netAmt;
+        pSlip.transactionNo = transactionNo;
+        pSlip.invoiceDocNo = invoiceDocNo;
+
+        box.put(pSlip);
+    }
 
 
 
@@ -206,8 +240,10 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
             SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String formatted_Date = df.format(c.getTime());
 
-
-          //  printString.append("Date    :").append(formatted_Date).append("\n");
+            if(dbCount ==0) {
+                addDataToBox(formatted_Date);
+            }
+            dbCount++;
             defaultPrint("Date:",Align.LEFT,false);
             defaultPrint(formatted_Date,Align.CENTER,false);
             defaultPrint();
@@ -508,6 +544,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
 
 
 }
