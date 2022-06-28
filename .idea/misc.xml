@@ -8,6 +8,7 @@
         <entry key="app/src/main/res/layout/activity_bluetooth.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_gateentry.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_login.xml" value="0.36041666666666666" />
+        <entry key="app/src/main/res/layout/activity_print_slips_list.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_print_weighing_slip.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_splash.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/activity_summary.xml" value="0.36041666666666666" />
@@ -22,6 +23,7 @@
         <entry key="app/src/main/res/layout/dialog_states.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/item_religion.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/lot_list.xml" value="0.3398148148148148" />
+        <entry key="app/src/main/res/layout/print_slip_card.xml" value="0.359375" />
         <entry key="app/src/main/res/layout/simple_spinner_dropdown_item.xml" value="0.36041666666666666" />
         <entry key="app/src/main/res/layout/toolbar.xml" value="0.36041666666666666" />
       </map>
