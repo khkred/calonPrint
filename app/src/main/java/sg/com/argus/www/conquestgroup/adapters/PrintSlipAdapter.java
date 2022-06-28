@@ -13,26 +13,39 @@ import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
 public class PrintSlipAdapter extends RecyclerView.Adapter<PrintSlipAdapter.ViewHolder> {
     private final List<PrintSlip> printSlips;
-    private ItemClickListener itemClickListener;
+    private  PrintSlipClickListener mPrintSlipListener;
 
-    public PrintSlipAdapter(List<PrintSlip> printSlips, ItemClickListener listener) {
+    public PrintSlipAdapter(List<PrintSlip> printSlips, PrintSlipClickListener printSlipClickListener) {
         this.printSlips = printSlips;
-        itemClickListener = listener;
+        mPrintSlipListener = printSlipClickListener;
+
+    }
+
+    public interface PrintSlipClickListener {
+        void onSlipItemClick(int position);
+    }
+
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        public TextView getLotIdTV() {
+            return lotIdTV;
         }
 
-        public  interface  ItemClickListener{
-        void onItemClick(PrintSlip printSlip);
-        }
-    public  class ViewHolder extends RecyclerView.ViewHolder{
+        TextView lotIdTV;
+        PrintSlipClickListener printSlipClickListener;
 
-        TextView dateTV;
-        public ViewHolder(View view) {
+        public ViewHolder(View view, PrintSlipClickListener printSlipClickListener) {
             super(view);
-            dateTV = view.findViewById(R.id.date_text_view);
+            lotIdTV = view.findViewById(R.id.lot_id_text_view);
+            view.setOnClickListener(this);
+            this.printSlipClickListener = printSlipClickListener;
         }
 
-        public TextView getDateTV() {
-            return dateTV;
+
+        @Override
+        public void onClick(View view) {
+            printSlipClickListener.onSlipItemClick(getAdapterPosition());
+
         }
     }
 
@@ -40,30 +53,22 @@ public class PrintSlipAdapter extends RecyclerView.Adapter<PrintSlipAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
 
         View view = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.print_slip_card,viewGroup,false);
-        return new ViewHolder(view);
+                .inflate(R.layout.print_slip_card, viewGroup, false);
+        return new ViewHolder(view,mPrintSlipListener);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
 
-        holder.getDateTV().setText(printSlips.get(position).formatted_Date);
+        holder.getLotIdTV().setText(printSlips.get(position).lotId);
 
-        //Set on click listener to cardview
-        holder.itemView.setOnClickListener(view -> {
-            itemClickListener.onItemClick(printSlips.get(position));
-        });
     }
-
 
 
     @Override
     public int getItemCount() {
         return printSlips.size();
     }
-
-
-
 
 
 }

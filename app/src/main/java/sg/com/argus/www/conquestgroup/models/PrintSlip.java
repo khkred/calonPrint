@@ -27,4 +27,26 @@ public class PrintSlip {
     public String invoiceDocNo;
 
 
+    @Override
+    public String toString() {
+        return "PrintSlip{" +
+                "id=" + id +
+                ", formatted_Date='" + formatted_Date + '\'' +
+                ", lotId='" + lotId + '\'' +
+                ", cName='" + cName + '\'' +
+                ", SName='" + SName + '\'' +
+                ", Com='" + Com + '\'' +
+                ", tName='" + tName + '\'' +
+                ", ActualNoofBags=" + ActualNoofBags +
+                ", noOfBag='" + noOfBag + '\'' +
+                ", bagWeightList=" + bagWeightList +
+                ", QuintalWeight='" + QuintalWeight + '\'' +
+                ", BagsWeightValue=" + BagsWeightValue +
+                ", NetWeightValue=" + NetWeightValue +
+                ", lRate='" + lRate + '\'' +
+                ", netAmt='" + netAmt + '\'' +
+                ", transactionNo='" + transactionNo + '\'' +
+                ", invoiceDocNo='" + invoiceDocNo + '\'' +
+                '}';
+    }
 }

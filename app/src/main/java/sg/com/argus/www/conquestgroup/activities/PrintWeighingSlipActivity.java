@@ -50,11 +50,12 @@ import java.util.List;
 import io.objectbox.Box;
 import sg.com.argus.www.conquestgroup.BuildConfig;
 import sg.com.argus.www.conquestgroup.R;
+import sg.com.argus.www.conquestgroup.adapters.PrintSlipAdapter;
 import sg.com.argus.www.conquestgroup.models.ObjectBox;
 import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
 
-public class PrintWeighingSlipActivity extends AppCompatActivity {
+public class PrintWeighingSlipActivity extends AppCompatActivity  {
     private String SName, Com, tName, cName, lRate, noOfBag, bagType, TotalWeight, bagTypeId, loginid, password, userid, orgid, lotId, QuintalWeight, NetWeight, BagsWeight, actualBags, netAmt;
     private TextView sellerNAme, commodity, TraderName, CaName, bidPrice, PbagType, PnumBag, lotid, actual_no_of_bag, gross_weight, net_weight, net_amt, bag_weight;
     private Button printBtn;
@@ -243,7 +244,6 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
                 addDataToBox(formatted_Date);
             }
             dbCount++;
-          //  printString.append("Date    :").append(formatted_Date).append("\n");
             defaultPrint("Date:",Align.LEFT,false);
             defaultPrint(formatted_Date,Align.CENTER,false);
             defaultPrint();
@@ -544,6 +544,7 @@ public class PrintWeighingSlipActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
 
 
 }

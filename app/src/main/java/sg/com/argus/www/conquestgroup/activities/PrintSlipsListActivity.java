@@ -6,7 +6,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.mswipetech.wisepad.sdk.Print;
@@ -23,25 +22,26 @@ import java.util.List;
 import io.objectbox.Box;
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.adapters.PrintSlipAdapter;
-import sg.com.argus.www.conquestgroup.interfaces.ItemClickListener;
 import sg.com.argus.www.conquestgroup.models.ObjectBox;
 import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
-public class PrintSlipsListActivity extends AppCompatActivity{
+public class PrintSlipsListActivity extends AppCompatActivity implements PrintSlipAdapter.PrintSlipClickListener {
 
     Box<PrintSlip> box;
     int k = 0;
 
     List<PrintSlip> printSlips;
 
-    private static Printer2 a;
+    private static Printer2 printer;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_print_slips_list);
 
-        a = Printer2.getInstance(PrintSlipsListActivity.this);
+        Print.init(PrintSlipsListActivity.this);
+
+        printer = Printer2.getInstance(PrintSlipsListActivity.this);
 
         RecyclerView recyclerView = findViewById(R.id.recycler_view);
         box = ObjectBox.get().boxFor(PrintSlip.class);
@@ -51,129 +51,119 @@ public class PrintSlipsListActivity extends AppCompatActivity{
 
         printSlips = box.getAll();
 
-        PrintSlipAdapter printSlipAdapter = new PrintSlipAdapter(printSlips, new PrintSlipAdapter.ItemClickListener() {
-            @Override
-            public void onItemClick(PrintSlip printSlip) {
-                Toast.makeText(PrintSlipsListActivity.this, "Printing the "+printSlip.toString(), Toast.LENGTH_SHORT).show();
-
-                try {
-                    printData(printSlip);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(PrintSlipsListActivity.this, "Error printing", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
+        PrintSlipAdapter printSlipAdapter = new PrintSlipAdapter(printSlips, this);
 
         recyclerView.setAdapter(printSlipAdapter);
 
     }
 
-    void defaultPrint(String content){
-        a.appendTextEntity2(new TextEntity(content , FontLattice.TWENTY_FOUR, true, Align.LEFT, true));
+    void defaultPrint(String content) {
+        printer.appendTextEntity2(new TextEntity(content, FontLattice.TWENTY_FOUR, true, Align.LEFT, true));
     }
 
     void defaultPrint() {
-        a.appendTextEntity2(new TextEntity("" ,FontLattice.TWENTY_FOUR, true, Align.LEFT, true));
+        printer.appendTextEntity2(new TextEntity("", FontLattice.TWENTY_FOUR, true, Align.LEFT, true));
     }
 
-    void defaultPrint(String content, Align align, boolean lineBreak){
-        a.appendTextEntity2(new TextEntity(content ,FontLattice.TWENTY_FOUR, true, align, lineBreak));
+    void defaultPrint(String content, Align align, boolean lineBreak) {
+        printer.appendTextEntity2(new TextEntity(content, FontLattice.TWENTY_FOUR, true, align, lineBreak));
     }
 
     private void printData(PrintSlip printSlip) throws IOException {
-        k =0;
+        k = 0;
+
+        String formatted_date = printSlip.formatted_Date;
+        String lotId = printSlip.lotId;
+        String cName = printSlip.cName;
+        String SName = printSlip.SName;
+        String Com = printSlip.Com;
+        String tName = printSlip.tName;
+        String noOfBag = printSlip.noOfBag;
+        double ActualNoofBags = printSlip.ActualNoofBags;
+        List<String> bagWeightList = printSlip.bagWeightList;
+        String QuintalWeight = printSlip.QuintalWeight;
+        double BagsWeightValue = printSlip.BagsWeightValue;
+        double NetWeightValue = printSlip.NetWeightValue;
+        String lRate = printSlip.lRate;
+        String netAmt = printSlip.netAmt;
+        String transactionNo = printSlip.transactionNo;
+        String invoiceDocNo = printSlip.invoiceDocNo;
+
+
         try {
-
-            Calendar c = Calendar.getInstance();
-            SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            String formatted_Date = df.format(c.getTime());
-
-            defaultPrint("Date:",Align.LEFT,false);
-            defaultPrint(formatted_Date,Align.CENTER,false);
+            defaultPrint("Date:", Align.LEFT, false);
+            defaultPrint(formatted_date, Align.CENTER, false);
             defaultPrint();
 
-            defaultPrint("Lot Id:",Align.LEFT,false);
-            defaultPrint(printSlip.lotId,Align.CENTER,false);
+            defaultPrint("Lot Id:", Align.LEFT, false);
+            defaultPrint(lotId, Align.CENTER, false);
             defaultPrint();
 
-            defaultPrint("CA Name:",Align.LEFT,false);
-            defaultPrint(printSlip.cName,Align.CENTER,false);
+            defaultPrint("CA Name:", Align.LEFT, false);
+            defaultPrint(cName, Align.CENTER, false);
             defaultPrint();
 
-            defaultPrint("FARMER NAME:",Align.LEFT,false);
+            defaultPrint("FARMER NAME:", Align.LEFT, false);
 
-            defaultPrint(printSlip.SName,Align.RIGHT,false);
+            defaultPrint(SName, Align.RIGHT, false);
             defaultPrint();
 
-            defaultPrint("COMMODITY: "+printSlip.Com);
-            defaultPrint("TRADER: "+printSlip.tName);
+            defaultPrint("COMMODITY: " + Com);
+            defaultPrint("TRADER: " + tName);
 
-            defaultPrint("ACTUAL NO OF BAGS: "+roundOffTo0DecPlaces(printSlip.ActualNoofBags));
+            defaultPrint("ACTUAL NO OF BAGS: " + roundOffTo0DecPlaces(ActualNoofBags));
 
-            //printString.append("TOTAL NO OF BAGS   :").append(noOfBag).append("\n");
-            defaultPrint("TOTAL NO OF BAGS: "+printSlip.noOfBag);
+            defaultPrint("TOTAL NO OF BAGS: " + noOfBag);
 
-            //printString.append("-----------------------------").append("\n");
             defaultPrint("-----------------------------");
 
-            //     printString.append("SERIAL NO" + "        QUANTITY(Kg)").append("\n");
-            defaultPrint("SERIAL NO",Align.LEFT,false);
-            defaultPrint("QUANTITY(Kg)",Align.RIGHT,false);
+            defaultPrint("SERIAL NO", Align.LEFT, false);
+            defaultPrint("QUANTITY(Kg)", Align.RIGHT, false);
             defaultPrint();
 
-            for (int i = 0; i < printSlip.bagWeightList.size(); i++) {
+            for (int i = 0; i < bagWeightList.size(); i++) {
                 k++;
-                defaultPrint(String.valueOf(k),Align.LEFT,false);
-                defaultPrint(String.valueOf(printSlip.bagWeightList.get(i)),Align.RIGHT,false);
+                defaultPrint(String.valueOf(k), Align.LEFT, false);
+                defaultPrint(String.valueOf(bagWeightList.get(i)), Align.RIGHT, false);
                 defaultPrint();
             }
-            a.startPrint();
+            printer.startPrint();
 
-            //  printString.append("-----------------------------").append("\n");
             defaultPrint("-----------------------------");
 
-            // printString.append("Gross Wt (Qt):     ").append(QuintalWeight).append("\n");
-            defaultPrint("Gross Wt (Qt):",Align.LEFT,false);
-            defaultPrint(String.valueOf(printSlip.QuintalWeight),Align.RIGHT,false);
+            defaultPrint("Gross Wt (Qt):", Align.LEFT, false);
+            defaultPrint(String.valueOf(QuintalWeight), Align.RIGHT, false);
             defaultPrint();
 
-            // printString.append("Bag Wt (Qt):     ").append(roundOffTo3DecPlaces(BagsWeightValue / 100)).append("\n");
-            defaultPrint("Bag Wt (Qt):",Align.LEFT,false);
-            defaultPrint(String.valueOf(roundOffTo3DecPlaces(printSlip.BagsWeightValue / 100)),Align.RIGHT,false);
+            defaultPrint("Bag Wt (Qt):", Align.LEFT, false);
+            defaultPrint(String.valueOf(roundOffTo3DecPlaces(BagsWeightValue / 100)), Align.RIGHT, false);
             defaultPrint();
 
-            //     printString.append("-----------------------------").append("\n");
             defaultPrint("-----------------------------");
 
-            // printString.append("Net Wt (Qt):     ").append(roundOffTo5DecPlaces(NetWeightValue / 100)).append("\n");
-            defaultPrint("Net Wt (Qt):",Align.LEFT,false);
-            defaultPrint(String.valueOf(roundOffTo5DecPlaces(printSlip.NetWeightValue / 100)),Align.RIGHT,false);
+            defaultPrint("Net Wt (Qt):", Align.LEFT, false);
+            defaultPrint(String.valueOf(roundOffTo5DecPlaces(NetWeightValue / 100)), Align.RIGHT, false);
             defaultPrint();
 
-            //   printString.append("Lot Amt(Rs):     ").append(lRate).append("\n");
-            defaultPrint("Lot Amt(Rs):",Align.LEFT,false);
-            defaultPrint(printSlip.lRate,Align.RIGHT,false);
+            defaultPrint("Lot Amt(Rs):", Align.LEFT, false);
+            defaultPrint(lRate, Align.RIGHT, false);
             defaultPrint();
 
-            //  printString.append("Net Amt(Rs):     ").append(netAmt).append("\n");
-            defaultPrint("Net Amt(Rs):",Align.LEFT,false);
-            defaultPrint(printSlip.netAmt,Align.RIGHT,false);
+            defaultPrint("Net Amt(Rs):", Align.LEFT, false);
+            defaultPrint(netAmt, Align.RIGHT, false);
             defaultPrint();
 
-            //  printString.append("Transaction No:").append("\n\t").append(transactionNo).append("\n");
             defaultPrint("Transaction No:");
-            defaultPrint(" "+printSlip.transactionNo);
+            defaultPrint(" " + transactionNo);
             defaultPrint();
 
             // printString.append("Invoice No:     ").append(invoiceDocNo).append("\n");
-            defaultPrint("Invoice No:",Align.LEFT,false);
-            defaultPrint(printSlip.invoiceDocNo,Align.RIGHT,false);
+            defaultPrint("Invoice No:", Align.LEFT, false);
+            defaultPrint(invoiceDocNo, Align.RIGHT, false);
             defaultPrint();
 
-            //  printString.append("-----------------------------").append("\n");
             defaultPrint("-----------------------------");
-            a.startPrint();
+            printer.startPrint();
             Print.StartPrinting();
             Print.StartPrinting();
 
@@ -189,10 +179,21 @@ public class PrintSlipsListActivity extends AppCompatActivity{
             defaultPrint("-----------------------------");
             Print.StartPrinting();
             Print.StartPrinting();
-
-        } catch (Exception excep) {
-            Toast.makeText(PrintSlipsListActivity.this, "Something went wrong", Toast.LENGTH_SHORT).show();
+        } catch (Exception exception) {
+            Toast.makeText(this, "Something Went Wrong", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    @Override
+    public void onSlipItemClick(int position) {
+
+        try {
+            printData(printSlips.get(position));
+        } catch (IOException e) {
+            Toast.makeText(this, "Something went wrong", Toast.LENGTH_SHORT).show();
+        }
+        Log.d("printharish", printSlips.get(position).toString());
     }
 
     String roundOffTo2DecPlaces(double val) {
