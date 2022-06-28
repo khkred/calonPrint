@@ -157,4 +157,10 @@ public class PrintSlipsListActivity extends AppCompatActivity implements PrintSl
         Log.d("printharish", printSlips.get(position).toString());
 
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }
