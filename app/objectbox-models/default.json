@@ -1,0 +1,112 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:1563211665533742855",
+      "lastPropertyId": "17:6808392075810203286",
+      "name": "PrintSlip",
+      "properties": [
+        {
+          "id": "1:4815287803657158295",
+          "name": "id",
+          "type": 6,
+          "flags": 1
+        },
+        {
+          "id": "2:588757585892270074",
+          "name": "formatted_Date",
+          "type": 9
+        },
+        {
+          "id": "3:2970666521761653302",
+          "name": "lotId",
+          "type": 9
+        },
+        {
+          "id": "4:5360691733997006249",
+          "name": "cName",
+          "type": 9
+        },
+        {
+          "id": "5:6257973579893090977",
+          "name": "SName",
+          "type": 9
+        },
+        {
+          "id": "6:1059446199030004269",
+          "name": "Com",
+          "type": 9
+        },
+        {
+          "id": "7:8362042931376189380",
+          "name": "tName",
+          "type": 9
+        },
+        {
+          "id": "8:6932813799910578887",
+          "name": "ActualNoofBags",
+          "type": 8
+        },
+        {
+          "id": "9:6496406161799678615",
+          "name": "noOfBag",
+          "type": 9
+        },
+        {
+          "id": "10:1101159380376749736",
+          "name": "bagWeightList",
+          "type": 30
+        },
+        {
+          "id": "11:1155645872930803695",
+          "name": "QuintalWeight",
+          "type": 9
+        },
+        {
+          "id": "12:8660996210821921677",
+          "name": "BagsWeightValue",
+          "type": 8
+        },
+        {
+          "id": "13:629404789094679716",
+          "name": "NetWeightValue",
+          "type": 8
+        },
+        {
+          "id": "14:8225930396179286649",
+          "name": "lRate",
+          "type": 9
+        },
+        {
+          "id": "15:2233879972655391669",
+          "name": "netAmt",
+          "type": 9
+        },
+        {
+          "id": "16:3465627065402969821",
+          "name": "transactionNo",
+          "type": 9
+        },
+        {
+          "id": "17:6808392075810203286",
+          "name": "invoiceDocNo",
+          "type": 9
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:1563211665533742855",
+  "lastIndexId": "0:0",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 5,
+  "modelVersionParserMinimum": 5,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
