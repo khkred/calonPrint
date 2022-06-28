@@ -15,13 +15,24 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
+
+import io.objectbox.Box;
 import sg.com.argus.www.conquestgroup.R;
 import sg.com.argus.www.conquestgroup.models.ObjectBox;
+import sg.com.argus.www.conquestgroup.models.PrintSlip;
 
 public class SplashActivity extends AppCompatActivity {
 
     String refreshedToken,unique_id;
     String defaultid = "6cfdc54d9a06a128";
+    Box<PrintSlip> box;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +45,77 @@ public class SplashActivity extends AppCompatActivity {
         unique_id = Settings.Secure.getString(getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID);
         Log.e("uniqid","uniqid===>"+unique_id);
         //aae3ec516fbf30cb
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        String formatted_Date = df.format(c.getTime());
+
+        List<PrintSlip> printSlips = box.getAll();
+        List<PrintSlip> olderThan2DaysPrintSlips = new ArrayList<>();
+
+        Date current_date;
+        Date old_date;
+        try {
+             current_date = df.parse(formatted_Date);
+
+             for(PrintSlip printSlip: printSlips){
+                 old_date = df.parse(printSlip.formatted_Date);
+                 long noOfDays = getDateDifference(current_date,old_date);
+
+                 if(noOfDays>2) {
+                     olderThan2DaysPrintSlips.add(printSlip);
+                 }
+             }
+
+             box.remove(olderThan2DaysPrintSlips);
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
         StartApp();
 
 
     }
+
+    long getDateDifference(Date currentDate, Date oldDate) {
+        // Calculate time difference
+        // in milliseconds
+        long difference_In_Time
+                = oldDate.getTime() - currentDate.getTime();
+
+        // Calculate time difference in
+        // seconds, minutes, hours, years,
+        // and days
+        long difference_In_Seconds
+                = (difference_In_Time
+                / 1000)
+                % 60;
+
+
+        long difference_In_Minutes
+                = (difference_In_Time
+                / (1000 * 60))
+                % 60;
+
+        long difference_In_Hours
+                = (difference_In_Time
+                / (1000 * 60 * 60))
+                % 24;
+
+        long difference_In_Years
+                = (difference_In_Time
+                / (1000l * 60 * 60 * 24 * 365));
+
+        long difference_In_Days
+                = (difference_In_Time
+                / (1000 * 60 * 60 * 24))
+                % 365;
+
+        return  difference_In_Days;
+
+    }
+
          /*
          * Showing splash screen with a timer. This will be useful when you
          * want to show case your app logo / company
