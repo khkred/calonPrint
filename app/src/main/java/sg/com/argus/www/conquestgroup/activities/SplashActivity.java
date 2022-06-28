@@ -105,8 +105,8 @@ public class SplashActivity extends AppCompatActivity {
                 int selectedId=group.getCheckedRadioButtonId();
                 final RadioButton radioButton=(RadioButton)promptView.findViewById(selectedId);
                 if (radioButton.getText().equals("Weighing Scale")){
-                  runLoginActivity();
-                  alert.cancel();
+                    runLoginActivity();
+                    alert.cancel();
                 }
                 if(radioButton.getText().equals("Summary Print")){
                     Intent i = new Intent(SplashActivity.this, SummaryActivity.class);
@@ -114,6 +114,13 @@ public class SplashActivity extends AppCompatActivity {
                     startActivity(i);
                     finish();
 
+                    alert.cancel();
+                }
+
+                if(radioButton.getText().equals("Old Prints")){
+                    Intent i =  new Intent(SplashActivity.this,PrintSlipsListActivity.class);
+                    startActivity(i);
+                    finish();
                     alert.cancel();
                 }
 
