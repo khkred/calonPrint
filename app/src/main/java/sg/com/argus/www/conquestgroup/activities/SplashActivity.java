@@ -50,27 +50,33 @@ public class SplashActivity extends AppCompatActivity {
         SimpleDateFormat df = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String formatted_Date = df.format(c.getTime());
 
-        List<PrintSlip> printSlips = box.getAll();
-        List<PrintSlip> olderThan2DaysPrintSlips = new ArrayList<>();
+        box = ObjectBox.get().boxFor(PrintSlip.class);
 
-        Date current_date;
-        Date old_date;
-        try {
-             current_date = df.parse(formatted_Date);
+        if(!box.isEmpty()) {
 
-             for(PrintSlip printSlip: printSlips){
-                 old_date = df.parse(printSlip.formatted_Date);
-                 long noOfDays = getDateDifference(current_date,old_date);
 
-                 if(noOfDays>2) {
-                     olderThan2DaysPrintSlips.add(printSlip);
-                 }
-             }
+            List<PrintSlip> printSlips = box.getAll();
+            List<PrintSlip> olderThan2DaysPrintSlips = new ArrayList<>();
 
-             box.remove(olderThan2DaysPrintSlips);
+            Date current_date;
+            Date old_date;
+            try {
+                current_date = df.parse(formatted_Date);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
+                for (PrintSlip printSlip : printSlips) {
+                    old_date = df.parse(printSlip.formatted_Date);
+                    long noOfDays = getDateDifference(current_date, old_date);
+
+                    if (noOfDays > 2) {
+                        olderThan2DaysPrintSlips.add(printSlip);
+                    }
+                }
+
+                box.remove(olderThan2DaysPrintSlips);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
 
         StartApp();
