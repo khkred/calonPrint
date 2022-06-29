@@ -242,13 +242,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     return;
                 }
                 int manualBagsToAddVal = Integer.parseInt(manualBagsToAdd.getText().toString());
-                String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
+                String WeightOfBag = liveFeedString;
                 Double weightOfBagVal = Double.parseDouble(WeightOfBag);
 
-                if(manualBagsToAddVal == 1) {
-                    addSingleBag(weightOfBagVal);
-                }
-                else if (manualBagsToAddVal < 2) {
+                 if (manualBagsToAddVal < 1) {
                     Toast.makeText(BluetoothActivity.this, "No of bags should be more than 0", Toast.LENGTH_SHORT).show();
                 } else if (emptyBagWeight >= 3) {
                     Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
@@ -367,10 +364,17 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     @Override
     public void onMessage(String str) {
-        liveFeedString = "=0000+0009";
+        liveFeedString = formatWeight(str);
         Display(str);
 
     }
+
+    String formatWeight(String str) {
+
+        return str.replace(" ", "").replaceAll("=0*\\+0*", "").replaceAll("000\\.", "00.");
+    }
+
+
 
     //==========================================================================================================
 
