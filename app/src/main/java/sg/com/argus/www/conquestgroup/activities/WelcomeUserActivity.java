@@ -559,7 +559,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     }
                     AutoCompleteLotId();
                 } else {
-                    Toast.makeText(WelcomeUserActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                    Toast.makeText(WelcomeUserActivity.this, "No Lot Details Found\nCheck Later...", Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
                 p.dismiss();

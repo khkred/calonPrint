@@ -63,7 +63,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
     LinearLayout blueDisable;
     private static TextView TotalWeightInQuintal;
     //    LinearLayout bagsLinearLayout, llh;
-    Button  submit, addMultipleBagsBtn;
+    Button submit, addMultipleBagsBtn;
     ConnectionDetector cd;
     private String userActualName;
     Boolean isInternetPresent = false;
@@ -155,8 +155,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         String newBagTypeValue = intent.getStringExtra("newBagTypeValue");
         feeCategoryId = intent.getStringExtra("feeCategoryId");
         BagTypeDesc = intent.getStringExtra("BagTypeDesc");
-        emptyBagWtKg =  intent.getStringExtra("emptyBagWtKg");
 
+        emptyBagWtKg = intent.getStringExtra("emptyBagWtKg");
         emptyBagWeight = Double.parseDouble(emptyBagWtKg);
         onlyBagWeight.setText(emptyBagWtKg);
 
@@ -216,13 +216,12 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
         });
 
 
-
         addMultipleBagsBtn.setOnClickListener(v -> {
             if (bluetooth_devices.getSelectedItem() != null) {
                 // emptyBagWeight shouldn't be more than 3 KG.
-                String bagsToAddString  = manualBagsToAdd.getText().toString();
+                String bagsToAddString = manualBagsToAdd.getText().toString();
 
-                if(bagsToAddString.isEmpty()) {
+                if (bagsToAddString.isEmpty()) {
                     Toast.makeText(this, "No bags added!", Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -230,21 +229,15 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 int manualBagsToAddVal = Integer.parseInt(manualBagsToAdd.getText().toString());
 
 
-                String WeightOfBag = liveFeedString.replace(" ", "").replaceAll("=0*\\+", "").replaceAll("000.", "00.");
-                Double weightOfBagVal = Double.parseDouble(WeightOfBag);
-
-                if(manualBagsToAddVal == 1) {
-                    addSingleBag(weightOfBagVal);
-                }
-                else if (manualBagsToAddVal < 2) {
+                String WeightOfBag = liveFeedString;
+                double weightOfBagVal = Double.parseDouble(WeightOfBag);
+                if (manualBagsToAddVal < 1) {
                     Toast.makeText(BluetoothActivity.this, "No of bags should be more than 0", Toast.LENGTH_SHORT).show();
                 } else if (emptyBagWeight >= 3) {
                     Toast.makeText(BluetoothActivity.this, "Empty Bag weight should not be greater than 3 Kg", Toast.LENGTH_SHORT).show();
-                }
-                else if(weightOfBagVal <= emptyBagWeight){
-                    Toast.makeText(BluetoothActivity.this, "Weight of the bag should be more than empty bag", Toast.LENGTH_SHORT).show();
-                }
-                else {
+                } else if (weightOfBagVal <= emptyBagWeight) {
+                    Toast.makeText(BluetoothActivity.this, "Weight of the goods should be more than empty bag", Toast.LENGTH_SHORT).show();
+                } else {
                     for (int i = 0; i < manualBagsToAddVal; i++) {
                         addSingleBag(weightOfBagVal);
                     }
@@ -351,11 +344,18 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     @Override
     public void onMessage(String str) {
-        liveFeedString = "=0000+0009";
+        liveFeedString = formatWeight(str);
 
-        Display(str);
+
+        Display(liveFeedString);
 
     }
+
+    String formatWeight(String str) {
+
+        return str.replace(" ", "").replaceAll("=0*\\+0*", "").replaceAll("000\\.", "00.");
+    }
+
 
     //==========================================================================================================
 
@@ -588,8 +588,8 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                     intent.putExtra("actualBags", actualBags);
                     intent.putExtra("traderName", traderName);
                     intent.putExtra("username", userActualName);
-                    intent.putExtra("transactionNo",transactionNo);
-                    intent.putExtra("invoiceDocNo",invoiceDocNo);
+                    intent.putExtra("transactionNo", transactionNo);
+                    intent.putExtra("invoiceDocNo", invoiceDocNo);
 
                     /**
                      * Serialisable Extra
@@ -616,10 +616,10 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
                 .setCancelable(false)
                 .setPositiveButton("Cancel",
                         (dialog, id) -> finish()).setNegativeButton("Retry",
-                (dialog, id) -> {
-                    finish();
-                    startActivity(getIntent());
-                });
+                        (dialog, id) -> {
+                            finish();
+                            startActivity(getIntent());
+                        });
 
         // Creating dialog box
         AlertDialog alert = builder.create();
