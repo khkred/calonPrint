@@ -25,7 +25,7 @@ public class Constants {
 
     //APMC OPR
 
-    public static final String APMC_OPR_ID = "72";
+    public static final String APMC_OPR_ID = "76";
     public static final String CONQUEST_GROUP = "Conquest Group";
 
 }
