@@ -306,7 +306,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                                 });
                             }
                         } else {
-                            Toast.makeText(WelcomeUserActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                            Toast.makeText(WelcomeUserActivity.this, "Something went wrong 3", Toast.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
 
@@ -429,7 +429,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     });
 
                 } else {
-                    Toast.makeText(WelcomeUserActivity.this, "Something Went Worng!....", Toast.LENGTH_LONG).show();
+                    Toast.makeText(WelcomeUserActivity.this, "Something Went Wrong 1....", Toast.LENGTH_LONG).show();
                 }
 
             } catch (Exception e) {
@@ -525,6 +525,10 @@ public class WelcomeUserActivity extends AppCompatActivity {
         }
 
         protected void onPostExecute(String[] result) {
+
+            for(String r:result) {
+                Log.d("ResultHarish",r);
+            }
             p.dismiss();
             try {
                 if (result[0].contains("statusMsg\":\"S\"") && result[1].contains("statusMsg\":\"S\"")) {
@@ -550,7 +554,7 @@ public class WelcomeUserActivity extends AppCompatActivity {
                     }
                     AutoCompleteLotId();
                 } else {
-                    Toast.makeText(WelcomeUserActivity.this, "Something went wrong", Toast.LENGTH_LONG).show();
+                    Toast.makeText(WelcomeUserActivity.this, "No Lot Details Found\nCheck Later...", Toast.LENGTH_LONG).show();
                 }
             } catch (Exception e) {
                 p.dismiss();

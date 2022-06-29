@@ -367,7 +367,7 @@ public class BluetoothActivity extends AppCompatActivity implements Bluetooth.Co
 
     @Override
     public void onMessage(String str) {
-        liveFeedString = str;
+        liveFeedString = "=0000+0009";
         Display(str);
 
     }
